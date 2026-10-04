@@ -1,4 +1,5 @@
-﻿import { world, system } from "@minecraft/server";
+import { message } from "./messages.js";
+import { world, system } from "@minecraft/server";
 import { isSupportValid, isFaceSupportValid, dropAndClear, mountFace } from "./support.js";
 import { worldOffset, ARM_NAMES, supportOffset, FACE_LIST, faceNormal } from "./surfaceFrame.js";
 import { cableConnectionMask, ARM_BITS } from "./cableTopology.js";
@@ -282,7 +283,7 @@ export function registerCableComponent() {
                         ? placed : cornerPlacementState(block.dimension,block.location);
                     if (!state) {
                         system.run(()=>{
-                            try { player?.sendMessage("[Starstone] Inner Corner needs two perpendicular solid support faces."); }
+                            try { player?.sendMessage(message("corner.support")); }
                             catch { /* Player may have left before the next tick. */ }
                         });
                         removeUnsupported(block);

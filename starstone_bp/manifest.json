@@ -1,8 +1,8 @@
 {
     "format_version": 2,
     "header": {
-        "name": "Starstone BP",
-        "description": "Script logic for the Starstone add-on.",
+        "name": "pack.name",
+        "description": "pack.description",
         "uuid": "e5cc8cea-7404-4865-a365-8725a830b9f1",
         "version": [1, 0, 5],
         "min_engine_version": [1, 21, 120]

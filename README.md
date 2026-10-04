@@ -207,3 +207,7 @@ Still open:
 | Silk Touch and Fortune ore drops | Not tested (plain mining works) |
 | Actual unloaded-middle or alternate save/unload/load sequence (TEST-WORLD gate 7.6) | Not run |
 | 1k/5k/10k real ticks, queue observations and watchdog logs | Not run |
+
+## Localization
+
+Nine locales use a mod-scoped contextual catalog. See [the localization notes](docs/LOCALIZATION.md) before adding or changing player-facing text.

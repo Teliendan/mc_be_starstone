@@ -1,0 +1,2556 @@
+{
+  "version": 1,
+  "locales": [
+    "en_US",
+    "cs_CZ",
+    "es_ES",
+    "es_MX",
+    "pt_PT",
+    "pt_BR",
+    "de_DE",
+    "fr_FR",
+    "pl_PL"
+  ],
+  "policy": "AI-authored contextual translations; independent language review and in-game layout testing pending. en_GB aliases en_US and fr_CA aliases fr_FR. Preserve lore names and mod brands.",
+  "packs": {
+    "starstone_bp": {
+      "kind": "behavior",
+      "entries": {
+        "pack.name": {
+          "source": "Starstone — Behavior Pack",
+          "context": {
+            "meaning": "Pack title or description for starstone_bp. BP means behavior pack; RP means resource pack. Keep mod brands unchanged.",
+            "location": "starstone_bp: pack selection screen",
+            "trigger": "Shown when the player views or uses this content.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Pack title or a complete description; localize pack type and descriptive words.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Starstone — Balíček chování",
+              "based_on": "9afdea71e97ad000b57f18f0412ede40bc0f0ad4bcbf9487d178def444ee86c6",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Starstone — Paquete de comportamiento",
+              "based_on": "9afdea71e97ad000b57f18f0412ede40bc0f0ad4bcbf9487d178def444ee86c6",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Starstone — Paquete de comportamiento",
+              "based_on": "9afdea71e97ad000b57f18f0412ede40bc0f0ad4bcbf9487d178def444ee86c6",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Starstone — Pacote de comportamento",
+              "based_on": "9afdea71e97ad000b57f18f0412ede40bc0f0ad4bcbf9487d178def444ee86c6",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Starstone — Pacote de comportamento",
+              "based_on": "9afdea71e97ad000b57f18f0412ede40bc0f0ad4bcbf9487d178def444ee86c6",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone — Verhaltenspaket",
+              "based_on": "9afdea71e97ad000b57f18f0412ede40bc0f0ad4bcbf9487d178def444ee86c6",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Starstone — Pack de comportement",
+              "based_on": "9afdea71e97ad000b57f18f0412ede40bc0f0ad4bcbf9487d178def444ee86c6",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Starstone — Pakiet zachowań",
+              "based_on": "9afdea71e97ad000b57f18f0412ede40bc0f0ad4bcbf9487d178def444ee86c6",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "pack.description": {
+          "source": "Starstone behavior pack: electrical networks and crafting.",
+          "context": {
+            "meaning": "Pack title or description for starstone_bp. BP means behavior pack; RP means resource pack. Keep mod brands unchanged.",
+            "location": "starstone_bp: pack selection screen",
+            "trigger": "Shown when the player views or uses this content.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Pack title or a complete description; localize pack type and descriptive words.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Balíček chování Starstone: elektrické sítě a výroba.",
+              "based_on": "282a65fe8bbbed1f71daa868430838fa177102d5b2d990e10208ba26ccd69ea3",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Paquete de comportamiento de Starstone: redes eléctricas y fabricación.",
+              "based_on": "282a65fe8bbbed1f71daa868430838fa177102d5b2d990e10208ba26ccd69ea3",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Paquete de comportamiento de Starstone: redes eléctricas y fabricación.",
+              "based_on": "282a65fe8bbbed1f71daa868430838fa177102d5b2d990e10208ba26ccd69ea3",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Pacote de comportamento de Starstone: redes elétricas e fabrico.",
+              "based_on": "282a65fe8bbbed1f71daa868430838fa177102d5b2d990e10208ba26ccd69ea3",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Pacote de comportamento de Starstone: redes elétricas e fabricação.",
+              "based_on": "282a65fe8bbbed1f71daa868430838fa177102d5b2d990e10208ba26ccd69ea3",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Verhaltenspaket für Starstone: Stromnetze und Herstellung.",
+              "based_on": "282a65fe8bbbed1f71daa868430838fa177102d5b2d990e10208ba26ccd69ea3",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Pack de comportement de Starstone : réseaux électriques et fabrication.",
+              "based_on": "282a65fe8bbbed1f71daa868430838fa177102d5b2d990e10208ba26ccd69ea3",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Pakiet zachowań Starstone: sieci elektryczne i wytwarzanie.",
+              "based_on": "282a65fe8bbbed1f71daa868430838fa177102d5b2d990e10208ba26ccd69ea3",
+              "status": "ai-draft"
+            }
+          }
+        }
+      }
+    },
+    "starstone_rp": {
+      "kind": "resource",
+      "entries": {
+        "tile.starstone:cable.name": {
+          "source": "Starstone Cable",
+          "context": {
+            "meaning": "Starstone Cable. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Kabel Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Cable de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Cable de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Cabo de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Cabo de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Kabel",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Câble de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Kabel Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "item.starstone:cable_item": {
+          "source": "Starstone Cable",
+          "context": {
+            "meaning": "Starstone Cable. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Kabel Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Cable de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Cable de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Cabo de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Cabo de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Kabel",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Câble de Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Kabel Starstone",
+              "based_on": "cf8b48f15c5dfaee618526d0d47afad016f79fa9f43a600f9d113506ba41ad9b",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "item.starstone:inner_corner_item": {
+          "source": "Starstone Inner Corner",
+          "context": {
+            "meaning": "Cable component for an inside corner; requires two perpendicular solid support faces.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Vnitřní roh Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Esquina interior de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Esquina interior de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Canto interior de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Canto interno de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Innenecke",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Angle intérieur de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Narożnik wewnętrzny Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "tile.starstone:inner_corner.name": {
+          "source": "Starstone Inner Corner",
+          "context": {
+            "meaning": "Cable component for an inside corner; requires two perpendicular solid support faces.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Vnitřní roh Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Esquina interior de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Esquina interior de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Canto interior de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Canto interno de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Innenecke",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Angle intérieur de Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Narożnik wewnętrzny Starstone",
+              "based_on": "64c70bacfc5ab83a2225799d4de70318c01efce8898f4ccdcc305825a411966e",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "tile.starstone:bridge.name": {
+          "source": "Starstone Bridge",
+          "context": {
+            "meaning": "Electrical crossover component for cable networks, not a pedestrian bridge.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Křížení Starstone",
+              "based_on": "4bd5c542fb467dc7495295cf341ac14644ca90aff52b9083f98d89b7b7d879a1",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Cruce de Starstone",
+              "based_on": "4bd5c542fb467dc7495295cf341ac14644ca90aff52b9083f98d89b7b7d879a1",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Cruce de Starstone",
+              "based_on": "4bd5c542fb467dc7495295cf341ac14644ca90aff52b9083f98d89b7b7d879a1",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Cruzamento de Starstone",
+              "based_on": "4bd5c542fb467dc7495295cf341ac14644ca90aff52b9083f98d89b7b7d879a1",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Cruzamento de Starstone",
+              "based_on": "4bd5c542fb467dc7495295cf341ac14644ca90aff52b9083f98d89b7b7d879a1",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Kreuzung",
+              "based_on": "4bd5c542fb467dc7495295cf341ac14644ca90aff52b9083f98d89b7b7d879a1",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Croisement de Starstone",
+              "based_on": "4bd5c542fb467dc7495295cf341ac14644ca90aff52b9083f98d89b7b7d879a1",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Skrzyżowanie Starstone",
+              "based_on": "4bd5c542fb467dc7495295cf341ac14644ca90aff52b9083f98d89b7b7d879a1",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "tile.starstone:generator.name": {
+          "source": "Starstone Generator",
+          "context": {
+            "meaning": "Starstone Generator. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Generátor Starstone",
+              "based_on": "bff432cebccd6ba1e0e188d26ea70d897421bc83253bd5102f0bb663cb921846",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Generador de Starstone",
+              "based_on": "bff432cebccd6ba1e0e188d26ea70d897421bc83253bd5102f0bb663cb921846",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Generador de Starstone",
+              "based_on": "bff432cebccd6ba1e0e188d26ea70d897421bc83253bd5102f0bb663cb921846",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Gerador de Starstone",
+              "based_on": "bff432cebccd6ba1e0e188d26ea70d897421bc83253bd5102f0bb663cb921846",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Gerador de Starstone",
+              "based_on": "bff432cebccd6ba1e0e188d26ea70d897421bc83253bd5102f0bb663cb921846",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Generator",
+              "based_on": "bff432cebccd6ba1e0e188d26ea70d897421bc83253bd5102f0bb663cb921846",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Générateur de Starstone",
+              "based_on": "bff432cebccd6ba1e0e188d26ea70d897421bc83253bd5102f0bb663cb921846",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Generator Starstone",
+              "based_on": "bff432cebccd6ba1e0e188d26ea70d897421bc83253bd5102f0bb663cb921846",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "tile.starstone:lamp.name": {
+          "source": "Starstone Lamp",
+          "context": {
+            "meaning": "Starstone Lamp. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Lampa Starstone",
+              "based_on": "889e9c9b8e1544d878b0f412ccd7212e652e3d05bcf61832ba00306649304ad9",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Lámpara de Starstone",
+              "based_on": "889e9c9b8e1544d878b0f412ccd7212e652e3d05bcf61832ba00306649304ad9",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Lámpara de Starstone",
+              "based_on": "889e9c9b8e1544d878b0f412ccd7212e652e3d05bcf61832ba00306649304ad9",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Lâmpada de Starstone",
+              "based_on": "889e9c9b8e1544d878b0f412ccd7212e652e3d05bcf61832ba00306649304ad9",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Lâmpada de Starstone",
+              "based_on": "889e9c9b8e1544d878b0f412ccd7212e652e3d05bcf61832ba00306649304ad9",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Lampe",
+              "based_on": "889e9c9b8e1544d878b0f412ccd7212e652e3d05bcf61832ba00306649304ad9",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Lampe de Starstone",
+              "based_on": "889e9c9b8e1544d878b0f412ccd7212e652e3d05bcf61832ba00306649304ad9",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Lampa Starstone",
+              "based_on": "889e9c9b8e1544d878b0f412ccd7212e652e3d05bcf61832ba00306649304ad9",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "tile.starstone:conduit.name": {
+          "source": "Starstone Conduit",
+          "context": {
+            "meaning": "Electrical network conduit, not the vanilla underwater Conduit.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Vodič Starstone",
+              "based_on": "2a2a1c566eeeb4648e741cff54d03a85c77dfd4009e2698a0fadef3946ce2e9f",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Conducto de Starstone",
+              "based_on": "2a2a1c566eeeb4648e741cff54d03a85c77dfd4009e2698a0fadef3946ce2e9f",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Conducto de Starstone",
+              "based_on": "2a2a1c566eeeb4648e741cff54d03a85c77dfd4009e2698a0fadef3946ce2e9f",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Conduta de Starstone",
+              "based_on": "2a2a1c566eeeb4648e741cff54d03a85c77dfd4009e2698a0fadef3946ce2e9f",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Conduto de Starstone",
+              "based_on": "2a2a1c566eeeb4648e741cff54d03a85c77dfd4009e2698a0fadef3946ce2e9f",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Leitung",
+              "based_on": "2a2a1c566eeeb4648e741cff54d03a85c77dfd4009e2698a0fadef3946ce2e9f",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Conduit de Starstone",
+              "based_on": "2a2a1c566eeeb4648e741cff54d03a85c77dfd4009e2698a0fadef3946ce2e9f",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Przewód Starstone",
+              "based_on": "2a2a1c566eeeb4648e741cff54d03a85c77dfd4009e2698a0fadef3946ce2e9f",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "tile.starstone:redstone_input.name": {
+          "source": "Starstone Redstone Input",
+          "context": {
+            "meaning": "Starstone Redstone Input. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Redstonový vstup Starstone",
+              "based_on": "8cacdd91f2914d243bc7a15ff1e7f4ffc039152d718ca5a30b3f5b1ef7d1d9f1",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Entrada de redstone de Starstone",
+              "based_on": "8cacdd91f2914d243bc7a15ff1e7f4ffc039152d718ca5a30b3f5b1ef7d1d9f1",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Entrada de redstone de Starstone",
+              "based_on": "8cacdd91f2914d243bc7a15ff1e7f4ffc039152d718ca5a30b3f5b1ef7d1d9f1",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Entrada de redstone de Starstone",
+              "based_on": "8cacdd91f2914d243bc7a15ff1e7f4ffc039152d718ca5a30b3f5b1ef7d1d9f1",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Entrada de redstone de Starstone",
+              "based_on": "8cacdd91f2914d243bc7a15ff1e7f4ffc039152d718ca5a30b3f5b1ef7d1d9f1",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Redstone-Eingang",
+              "based_on": "8cacdd91f2914d243bc7a15ff1e7f4ffc039152d718ca5a30b3f5b1ef7d1d9f1",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Entrée de redstone de Starstone",
+              "based_on": "8cacdd91f2914d243bc7a15ff1e7f4ffc039152d718ca5a30b3f5b1ef7d1d9f1",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Wejście redstone Starstone",
+              "based_on": "8cacdd91f2914d243bc7a15ff1e7f4ffc039152d718ca5a30b3f5b1ef7d1d9f1",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "tile.starstone:redstone_output.name": {
+          "source": "Starstone Redstone Output",
+          "context": {
+            "meaning": "Starstone Redstone Output. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Redstonový výstup Starstone",
+              "based_on": "b7c4416b58f74e81b085e60a37028df072977b9eea0ff4cf957b9a1dc5f0a6d9",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Salida de redstone de Starstone",
+              "based_on": "b7c4416b58f74e81b085e60a37028df072977b9eea0ff4cf957b9a1dc5f0a6d9",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Salida de redstone de Starstone",
+              "based_on": "b7c4416b58f74e81b085e60a37028df072977b9eea0ff4cf957b9a1dc5f0a6d9",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Saída de redstone de Starstone",
+              "based_on": "b7c4416b58f74e81b085e60a37028df072977b9eea0ff4cf957b9a1dc5f0a6d9",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Saída de redstone de Starstone",
+              "based_on": "b7c4416b58f74e81b085e60a37028df072977b9eea0ff4cf957b9a1dc5f0a6d9",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Redstone-Ausgang",
+              "based_on": "b7c4416b58f74e81b085e60a37028df072977b9eea0ff4cf957b9a1dc5f0a6d9",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Sortie de redstone de Starstone",
+              "based_on": "b7c4416b58f74e81b085e60a37028df072977b9eea0ff4cf957b9a1dc5f0a6d9",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Wyjście redstone Starstone",
+              "based_on": "b7c4416b58f74e81b085e60a37028df072977b9eea0ff4cf957b9a1dc5f0a6d9",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "tile.starstone:ore.name": {
+          "source": "Starstone Ore",
+          "context": {
+            "meaning": "Starstone Ore. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Ruda Starstone",
+              "based_on": "a752fc25895d193d998eb5aa660824b52c9e1256ebdcca0f61323c1159a91a89",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Mena de Starstone",
+              "based_on": "a752fc25895d193d998eb5aa660824b52c9e1256ebdcca0f61323c1159a91a89",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Mineral de Starstone",
+              "based_on": "a752fc25895d193d998eb5aa660824b52c9e1256ebdcca0f61323c1159a91a89",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Minério de Starstone",
+              "based_on": "a752fc25895d193d998eb5aa660824b52c9e1256ebdcca0f61323c1159a91a89",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Minério de Starstone",
+              "based_on": "a752fc25895d193d998eb5aa660824b52c9e1256ebdcca0f61323c1159a91a89",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Erz",
+              "based_on": "a752fc25895d193d998eb5aa660824b52c9e1256ebdcca0f61323c1159a91a89",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Minerai de Starstone",
+              "based_on": "a752fc25895d193d998eb5aa660824b52c9e1256ebdcca0f61323c1159a91a89",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Ruda Starstone",
+              "based_on": "a752fc25895d193d998eb5aa660824b52c9e1256ebdcca0f61323c1159a91a89",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "item.starstone:dust": {
+          "source": "Starstone Dust",
+          "context": {
+            "meaning": "Starstone Dust. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Prášek Starstone",
+              "based_on": "a7b33588662ccb2417871b49c33bd0ba991b615ba86b630d27e14f984e9c287b",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Polvo de Starstone",
+              "based_on": "a7b33588662ccb2417871b49c33bd0ba991b615ba86b630d27e14f984e9c287b",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Polvo de Starstone",
+              "based_on": "a7b33588662ccb2417871b49c33bd0ba991b615ba86b630d27e14f984e9c287b",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Pó de Starstone",
+              "based_on": "a7b33588662ccb2417871b49c33bd0ba991b615ba86b630d27e14f984e9c287b",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Pó de Starstone",
+              "based_on": "a7b33588662ccb2417871b49c33bd0ba991b615ba86b630d27e14f984e9c287b",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Staub",
+              "based_on": "a7b33588662ccb2417871b49c33bd0ba991b615ba86b630d27e14f984e9c287b",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Poudre de Starstone",
+              "based_on": "a7b33588662ccb2417871b49c33bd0ba991b615ba86b630d27e14f984e9c287b",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Proszek Starstone",
+              "based_on": "a7b33588662ccb2417871b49c33bd0ba991b615ba86b630d27e14f984e9c287b",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "item.starstone:crystal": {
+          "source": "Starstone Crystal",
+          "context": {
+            "meaning": "Starstone Crystal. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Krystal Starstone",
+              "based_on": "2e024d4cc2847728ce1217491ef6aa8a3f1e25b08844cd7150b3e4a82bee278b",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Cristal de Starstone",
+              "based_on": "2e024d4cc2847728ce1217491ef6aa8a3f1e25b08844cd7150b3e4a82bee278b",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Cristal de Starstone",
+              "based_on": "2e024d4cc2847728ce1217491ef6aa8a3f1e25b08844cd7150b3e4a82bee278b",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Cristal de Starstone",
+              "based_on": "2e024d4cc2847728ce1217491ef6aa8a3f1e25b08844cd7150b3e4a82bee278b",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Cristal de Starstone",
+              "based_on": "2e024d4cc2847728ce1217491ef6aa8a3f1e25b08844cd7150b3e4a82bee278b",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone-Kristall",
+              "based_on": "2e024d4cc2847728ce1217491ef6aa8a3f1e25b08844cd7150b3e4a82bee278b",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Cristal de Starstone",
+              "based_on": "2e024d4cc2847728ce1217491ef6aa8a3f1e25b08844cd7150b3e4a82bee278b",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Kryształ Starstone",
+              "based_on": "2e024d4cc2847728ce1217491ef6aa8a3f1e25b08844cd7150b3e4a82bee278b",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "item.starstone:compressed_dust": {
+          "source": "Compressed Starstone Dust",
+          "context": {
+            "meaning": "Compressed Starstone Dust. Named Starstone electrical component; Starstone is the mod/material brand.",
+            "location": "starstone_rp: inventory/block tooltip, entity name or spawn egg",
+            "trigger": "Viewed in inventory, Creative inventory, block targeting or entity UI, as appropriate to this key.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone noun phrase, no sentence punctuation.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Lisovaný prášek Starstone",
+              "based_on": "1b63a9aa0d6813d30811450f2a1a4a7dda67b3937fa241ef746798ba3f25a092",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Polvo de Starstone comprimido",
+              "based_on": "1b63a9aa0d6813d30811450f2a1a4a7dda67b3937fa241ef746798ba3f25a092",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Polvo de Starstone comprimido",
+              "based_on": "1b63a9aa0d6813d30811450f2a1a4a7dda67b3937fa241ef746798ba3f25a092",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Pó de Starstone comprimido",
+              "based_on": "1b63a9aa0d6813d30811450f2a1a4a7dda67b3937fa241ef746798ba3f25a092",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Pó de Starstone comprimido",
+              "based_on": "1b63a9aa0d6813d30811450f2a1a4a7dda67b3937fa241ef746798ba3f25a092",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Gepresster Starstone-Staub",
+              "based_on": "1b63a9aa0d6813d30811450f2a1a4a7dda67b3937fa241ef746798ba3f25a092",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Poudre de Starstone compressée",
+              "based_on": "1b63a9aa0d6813d30811450f2a1a4a7dda67b3937fa241ef746798ba3f25a092",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Sprasowany proszek Starstone",
+              "based_on": "1b63a9aa0d6813d30811450f2a1a4a7dda67b3937fa241ef746798ba3f25a092",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.diagnose.counts": {
+          "source": "[Starstone] networks=%s nodes=%s rebuildJobs=%s",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] networks=%s nodes=%s rebuildJobs=%s. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [
+            {
+              "name": "network_count",
+              "type": "string",
+              "meaning": "network_count: active runtime networks"
+            },
+            {
+              "name": "node_count",
+              "type": "string",
+              "meaning": "node_count: electrical nodes"
+            },
+            {
+              "name": "rebuild_jobs",
+              "type": "string",
+              "meaning": "rebuild_jobs: 0 or 1; whether a rebuild is running"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] sítě=%s uzly=%s úlohy obnovy=%s",
+              "based_on": "ea6510a102e2b0e18973a55cd04dcae4fdc61e3fc83a8a87ad11df6894830453",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] redes=%s nodos=%s tareas de reconstrucción=%s",
+              "based_on": "ea6510a102e2b0e18973a55cd04dcae4fdc61e3fc83a8a87ad11df6894830453",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] redes=%s nodos=%s tareas de reconstrucción=%s",
+              "based_on": "ea6510a102e2b0e18973a55cd04dcae4fdc61e3fc83a8a87ad11df6894830453",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] redes=%s nós=%s tarefas de reconstrução=%s",
+              "based_on": "ea6510a102e2b0e18973a55cd04dcae4fdc61e3fc83a8a87ad11df6894830453",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] redes=%s nós=%s tarefas de reconstrução=%s",
+              "based_on": "ea6510a102e2b0e18973a55cd04dcae4fdc61e3fc83a8a87ad11df6894830453",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Netzwerke=%s Knoten=%s Neuaufbauaufträge=%s",
+              "based_on": "ea6510a102e2b0e18973a55cd04dcae4fdc61e3fc83a8a87ad11df6894830453",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] réseaux=%s nœuds=%s tâches de reconstruction=%s",
+              "based_on": "ea6510a102e2b0e18973a55cd04dcae4fdc61e3fc83a8a87ad11df6894830453",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] sieci=%s węzły=%s zadania odbudowy=%s",
+              "based_on": "ea6510a102e2b0e18973a55cd04dcae4fdc61e3fc83a8a87ad11df6894830453",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.diagnose.validation": {
+          "source": "[Starstone] mutationJobs=%s validation=%s/%s per %s ticks",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] mutationJobs=%s validation=%s/%s per %s ticks. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [
+            {
+              "name": "mutation_jobs",
+              "type": "string",
+              "meaning": "mutation_jobs: 0 or 1"
+            },
+            {
+              "name": "last_checked",
+              "type": "string",
+              "meaning": "last_checked: nodes checked in the last validation"
+            },
+            {
+              "name": "budget",
+              "type": "string",
+              "meaning": "budget: maximum nodes per validation interval"
+            },
+            {
+              "name": "interval_ticks",
+              "type": "string",
+              "meaning": "interval_ticks: validation interval in game ticks"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] úlohy změn=%s kontrola=%s/%s každých %s tiků",
+              "based_on": "5e27539a8d7edfb738796620f00e596c9cec42b302ce8b776ecfb2770144f834",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] tareas de modificación=%s validación=%s/%s cada %s ticks",
+              "based_on": "5e27539a8d7edfb738796620f00e596c9cec42b302ce8b776ecfb2770144f834",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] tareas de modificación=%s validación=%s/%s cada %s ticks",
+              "based_on": "5e27539a8d7edfb738796620f00e596c9cec42b302ce8b776ecfb2770144f834",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] tarefas de alteração=%s validação=%s/%s a cada %s ticks",
+              "based_on": "5e27539a8d7edfb738796620f00e596c9cec42b302ce8b776ecfb2770144f834",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] tarefas de alteração=%s validação=%s/%s a cada %s ticks",
+              "based_on": "5e27539a8d7edfb738796620f00e596c9cec42b302ce8b776ecfb2770144f834",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Änderungsaufträge=%s Prüfung=%s/%s alle %s Ticks",
+              "based_on": "5e27539a8d7edfb738796620f00e596c9cec42b302ce8b776ecfb2770144f834",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] tâches de modification=%s validation=%s/%s tous les %s ticks",
+              "based_on": "5e27539a8d7edfb738796620f00e596c9cec42b302ce8b776ecfb2770144f834",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] zadania zmian=%s sprawdzanie=%s/%s co %s ticków",
+              "based_on": "5e27539a8d7edfb738796620f00e596c9cec42b302ce8b776ecfb2770144f834",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.diagnose.logical": {
+          "source": "[Starstone] logicalNetworks=%s chunkJobs=%s chunkRetry=%s inputSources=%s inputPolled=%s",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] logicalNetworks=%s chunkJobs=%s chunkRetry=%s inputSources=%s inputPolled=%s. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [
+            {
+              "name": "logical_network_count",
+              "type": "string",
+              "meaning": "logical_network_count"
+            },
+            {
+              "name": "chunk_jobs",
+              "type": "string",
+              "meaning": "chunk_jobs: 0 or 1"
+            },
+            {
+              "name": "retry_count",
+              "type": "string",
+              "meaning": "retry_count: deferred chunk retries"
+            },
+            {
+              "name": "input_source_count",
+              "type": "string",
+              "meaning": "input_source_count"
+            },
+            {
+              "name": "polled_input_count",
+              "type": "string",
+              "meaning": "polled_input_count"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] logické sítě=%s úlohy chunků=%s opakování=%s vstupní zdroje=%s kontrolované vstupy=%s",
+              "based_on": "8730343ac07937d0abc5d27b1ad17d334b7aff4b2bf594a120fc572f2988c4c7",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] redes lógicas=%s tareas de chunks=%s reintentos=%s fuentes de entrada=%s entradas consultadas=%s",
+              "based_on": "8730343ac07937d0abc5d27b1ad17d334b7aff4b2bf594a120fc572f2988c4c7",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] redes lógicas=%s tareas de chunks=%s reintentos=%s fuentes de entrada=%s entradas consultadas=%s",
+              "based_on": "8730343ac07937d0abc5d27b1ad17d334b7aff4b2bf594a120fc572f2988c4c7",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] redes lógicas=%s tarefas de chunks=%s tentativas=%s fontes de entrada=%s entradas consultadas=%s",
+              "based_on": "8730343ac07937d0abc5d27b1ad17d334b7aff4b2bf594a120fc572f2988c4c7",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] redes lógicas=%s tarefas de chunks=%s tentativas=%s fontes de entrada=%s entradas consultadas=%s",
+              "based_on": "8730343ac07937d0abc5d27b1ad17d334b7aff4b2bf594a120fc572f2988c4c7",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] logische Netzwerke=%s Chunk-Aufträge=%s Wiederholungen=%s Eingangsquellen=%s abgefragte Eingänge=%s",
+              "based_on": "8730343ac07937d0abc5d27b1ad17d334b7aff4b2bf594a120fc572f2988c4c7",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] réseaux logiques=%s tâches de chunks=%s nouvelles tentatives=%s sources d’entrée=%s entrées interrogées=%s",
+              "based_on": "8730343ac07937d0abc5d27b1ad17d334b7aff4b2bf594a120fc572f2988c4c7",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] sieci logiczne=%s zadania chunków=%s ponowienia=%s źródła wejściowe=%s sprawdzone wejścia=%s",
+              "based_on": "8730343ac07937d0abc5d27b1ad17d334b7aff4b2bf594a120fc572f2988c4c7",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.diagnose.power": {
+          "source": "[Starstone] powerQueue=%s peak=%s planning=%s addon world dynamic-property bytes=%s",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] powerQueue=%s peak=%s planning=%s addon world dynamic-property bytes=%s. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [
+            {
+              "name": "queued_power_updates",
+              "type": "string",
+              "meaning": "queued_power_updates"
+            },
+            {
+              "name": "peak_queue_length",
+              "type": "string",
+              "meaning": "peak_queue_length"
+            },
+            {
+              "name": "planning_jobs",
+              "type": "string",
+              "meaning": "planning_jobs"
+            },
+            {
+              "name": "storage_bytes",
+              "type": "string",
+              "meaning": "storage_bytes: all this addon world dynamic properties, not JavaScript heap"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] fronta napájení=%s maximum=%s plánování=%s bajty dynamických vlastností doplňku ve světě=%s",
+              "based_on": "19be61376f26bd92ee3ed2297dfe2e3256dbedaf07f4adc7a9a575e0c1c6de49",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] cola de energía=%s máximo=%s planificación=%s bytes de propiedades dinámicas del complemento en el mundo=%s",
+              "based_on": "19be61376f26bd92ee3ed2297dfe2e3256dbedaf07f4adc7a9a575e0c1c6de49",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] cola de energía=%s máximo=%s planificación=%s bytes de propiedades dinámicas del complemento en el mundo=%s",
+              "based_on": "19be61376f26bd92ee3ed2297dfe2e3256dbedaf07f4adc7a9a575e0c1c6de49",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] fila de energia=%s máximo=%s planeamento=%s bytes de propriedades dinâmicas do complemento no mundo=%s",
+              "based_on": "19be61376f26bd92ee3ed2297dfe2e3256dbedaf07f4adc7a9a575e0c1c6de49",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] fila de energia=%s máximo=%s planejamento=%s bytes de propriedades dinâmicas do complemento no mundo=%s",
+              "based_on": "19be61376f26bd92ee3ed2297dfe2e3256dbedaf07f4adc7a9a575e0c1c6de49",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Stromwarteschlange=%s Spitze=%s Planung=%s Bytes der dynamischen Welteigenschaften des Add-ons=%s",
+              "based_on": "19be61376f26bd92ee3ed2297dfe2e3256dbedaf07f4adc7a9a575e0c1c6de49",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] file d’alimentation=%s maximum=%s planification=%s octets des propriétés dynamiques du monde pour l’extension=%s",
+              "based_on": "19be61376f26bd92ee3ed2297dfe2e3256dbedaf07f4adc7a9a575e0c1c6de49",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] kolejka zasilania=%s maksimum=%s planowanie=%s bajty dynamicznych właściwości dodatku w świecie=%s",
+              "based_on": "19be61376f26bd92ee3ed2297dfe2e3256dbedaf07f4adc7a9a575e0c1c6de49",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.target.none": {
+          "source": "[Starstone] looking at: no block targeted",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] looking at: no block targeted. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] zaměřeno: žádný blok",
+              "based_on": "011431bb7a7e51c01f494665a2011562ba230f660db1fbec4f57331223b1455d",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] objetivo: ningún bloque",
+              "based_on": "011431bb7a7e51c01f494665a2011562ba230f660db1fbec4f57331223b1455d",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] objetivo: ningún bloque",
+              "based_on": "011431bb7a7e51c01f494665a2011562ba230f660db1fbec4f57331223b1455d",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] alvo: nenhum bloco",
+              "based_on": "011431bb7a7e51c01f494665a2011562ba230f660db1fbec4f57331223b1455d",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] alvo: nenhum bloco",
+              "based_on": "011431bb7a7e51c01f494665a2011562ba230f660db1fbec4f57331223b1455d",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] anvisiert: kein Block",
+              "based_on": "011431bb7a7e51c01f494665a2011562ba230f660db1fbec4f57331223b1455d",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] cible : aucun bloc",
+              "based_on": "011431bb7a7e51c01f494665a2011562ba230f660db1fbec4f57331223b1455d",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] cel: brak bloku",
+              "based_on": "011431bb7a7e51c01f494665a2011562ba230f660db1fbec4f57331223b1455d",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.target.other": {
+          "source": "[Starstone] looking at: %s: not an electrical block",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] looking at: %s: not an electrical block. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [
+            {
+              "name": "block_id",
+              "type": "string",
+              "meaning": "block_id: namespace identifier; do not translate"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] zaměřeno: %s: není elektrický blok",
+              "based_on": "b36dda4707212206374b510515b537385a2b178397eece87d17c919da26180bf",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] objetivo: %s: no es un bloque eléctrico",
+              "based_on": "b36dda4707212206374b510515b537385a2b178397eece87d17c919da26180bf",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] objetivo: %s: no es un bloque eléctrico",
+              "based_on": "b36dda4707212206374b510515b537385a2b178397eece87d17c919da26180bf",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] alvo: %s: não é um bloco elétrico",
+              "based_on": "b36dda4707212206374b510515b537385a2b178397eece87d17c919da26180bf",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] alvo: %s: não é um bloco elétrico",
+              "based_on": "b36dda4707212206374b510515b537385a2b178397eece87d17c919da26180bf",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] anvisiert: %s: kein elektrischer Block",
+              "based_on": "b36dda4707212206374b510515b537385a2b178397eece87d17c919da26180bf",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] cible : %s : ce n’est pas un bloc électrique",
+              "based_on": "b36dda4707212206374b510515b537385a2b178397eece87d17c919da26180bf",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] cel: %s: to nie jest blok elektryczny",
+              "based_on": "b36dda4707212206374b510515b537385a2b178397eece87d17c919da26180bf",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.target.electrical": {
+          "source": "[Starstone] looking at: %s (%s), %s lane(s), %s powered",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] looking at: %s (%s), %s lane(s), %s powered. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [
+            {
+              "name": "block_id",
+              "type": "string",
+              "meaning": "block_id: namespace identifier; do not translate"
+            },
+            {
+              "name": "kind",
+              "type": "string",
+              "meaning": "kind: internal electrical component kind; diagnostic token"
+            },
+            {
+              "name": "lane_count",
+              "type": "string",
+              "meaning": "lane_count"
+            },
+            {
+              "name": "powered_lane_count",
+              "type": "string",
+              "meaning": "powered_lane_count"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] zaměřeno: %s (%s), počet vedení: %s, napájeno: %s",
+              "based_on": "c95b5f445b9b8fe187dd793a6a0a98579706cdf9d4a728a1eeabc09e96b582bb",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] objetivo: %s (%s), vías: %s, con energía: %s",
+              "based_on": "c95b5f445b9b8fe187dd793a6a0a98579706cdf9d4a728a1eeabc09e96b582bb",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] objetivo: %s (%s), vías: %s, con energía: %s",
+              "based_on": "c95b5f445b9b8fe187dd793a6a0a98579706cdf9d4a728a1eeabc09e96b582bb",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] alvo: %s (%s), vias: %s, com energia: %s",
+              "based_on": "c95b5f445b9b8fe187dd793a6a0a98579706cdf9d4a728a1eeabc09e96b582bb",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] alvo: %s (%s), vias: %s, com energia: %s",
+              "based_on": "c95b5f445b9b8fe187dd793a6a0a98579706cdf9d4a728a1eeabc09e96b582bb",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] anvisiert: %s (%s), Leitungen: %s, versorgt: %s",
+              "based_on": "c95b5f445b9b8fe187dd793a6a0a98579706cdf9d4a728a1eeabc09e96b582bb",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] cible : %s (%s), voies : %s, alimentées : %s",
+              "based_on": "c95b5f445b9b8fe187dd793a6a0a98579706cdf9d4a728a1eeabc09e96b582bb",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] cel: %s (%s), tory: %s, zasilane: %s",
+              "based_on": "c95b5f445b9b8fe187dd793a6a0a98579706cdf9d4a728a1eeabc09e96b582bb",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.debug.active": {
+          "source": "  [Starstone] debug logs are on",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command:   [Starstone] debug logs are on. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "  [Starstone] ladicí záznamy jsou zapnuté",
+              "based_on": "b916e0ce38d92361a02ca38a2415f8898a1d590b7f4df98b323343bf541f8b64",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "  [Starstone] registros de depuración activados",
+              "based_on": "b916e0ce38d92361a02ca38a2415f8898a1d590b7f4df98b323343bf541f8b64",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "  [Starstone] registros de depuración activados",
+              "based_on": "b916e0ce38d92361a02ca38a2415f8898a1d590b7f4df98b323343bf541f8b64",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "  [Starstone] registos de depuração ativos",
+              "based_on": "b916e0ce38d92361a02ca38a2415f8898a1d590b7f4df98b323343bf541f8b64",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "  [Starstone] registros de depuração ativos",
+              "based_on": "b916e0ce38d92361a02ca38a2415f8898a1d590b7f4df98b323343bf541f8b64",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "  [Starstone] Debug-Protokolle sind aktiviert",
+              "based_on": "b916e0ce38d92361a02ca38a2415f8898a1d590b7f4df98b323343bf541f8b64",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "  [Starstone] journaux de débogage activés",
+              "based_on": "b916e0ce38d92361a02ca38a2415f8898a1d590b7f4df98b323343bf541f8b64",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "  [Starstone] dzienniki debugowania są włączone",
+              "based_on": "b916e0ce38d92361a02ca38a2415f8898a1d590b7f4df98b323343bf541f8b64",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.debug.on": {
+          "source": "[Starstone] Debug logs: on",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] Debug logs: on. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Ladicí záznamy: zapnuté",
+              "based_on": "8c9d6a4c90b8e349fab3048851a3cdcdff8a79cc7b569717ac3493ac6fb67fea",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] Registros de depuración: activados",
+              "based_on": "8c9d6a4c90b8e349fab3048851a3cdcdff8a79cc7b569717ac3493ac6fb67fea",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] Registros de depuración: activados",
+              "based_on": "8c9d6a4c90b8e349fab3048851a3cdcdff8a79cc7b569717ac3493ac6fb67fea",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] Registos de depuração: ativos",
+              "based_on": "8c9d6a4c90b8e349fab3048851a3cdcdff8a79cc7b569717ac3493ac6fb67fea",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Registros de depuração: ativos",
+              "based_on": "8c9d6a4c90b8e349fab3048851a3cdcdff8a79cc7b569717ac3493ac6fb67fea",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Debug-Protokolle: aktiviert",
+              "based_on": "8c9d6a4c90b8e349fab3048851a3cdcdff8a79cc7b569717ac3493ac6fb67fea",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] Journaux de débogage : activés",
+              "based_on": "8c9d6a4c90b8e349fab3048851a3cdcdff8a79cc7b569717ac3493ac6fb67fea",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Dzienniki debugowania: włączone",
+              "based_on": "8c9d6a4c90b8e349fab3048851a3cdcdff8a79cc7b569717ac3493ac6fb67fea",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.debug.off": {
+          "source": "[Starstone] Debug logs: off",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] Debug logs: off. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Ladicí záznamy: vypnuté",
+              "based_on": "c500e4fcbd890c05a3987774dedd874ca7b0307be0d2e39e474f22dd336022ea",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] Registros de depuración: desactivados",
+              "based_on": "c500e4fcbd890c05a3987774dedd874ca7b0307be0d2e39e474f22dd336022ea",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] Registros de depuración: desactivados",
+              "based_on": "c500e4fcbd890c05a3987774dedd874ca7b0307be0d2e39e474f22dd336022ea",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] Registos de depuração: inativos",
+              "based_on": "c500e4fcbd890c05a3987774dedd874ca7b0307be0d2e39e474f22dd336022ea",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Registros de depuração: inativos",
+              "based_on": "c500e4fcbd890c05a3987774dedd874ca7b0307be0d2e39e474f22dd336022ea",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Debug-Protokolle: deaktiviert",
+              "based_on": "c500e4fcbd890c05a3987774dedd874ca7b0307be0d2e39e474f22dd336022ea",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] Journaux de débogage : désactivés",
+              "based_on": "c500e4fcbd890c05a3987774dedd874ca7b0307be0d2e39e474f22dd336022ea",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Dzienniki debugowania: wyłączone",
+              "based_on": "c500e4fcbd890c05a3987774dedd874ca7b0307be0d2e39e474f22dd336022ea",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.debug.usage_on": {
+          "source": "[Starstone] Debug logs: on. Use /scriptevent starstone:debug on|off",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] Debug logs: on. Use /scriptevent starstone:debug on|off. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Ladicí záznamy: zapnuté. Použijte /scriptevent starstone:debug on|off",
+              "based_on": "00d8d0f8e41473692f7238d4761530be920f910dc1c9a52bf4e2b3a9e446f18a",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] Registros de depuración: activados. Usa /scriptevent starstone:debug on|off",
+              "based_on": "00d8d0f8e41473692f7238d4761530be920f910dc1c9a52bf4e2b3a9e446f18a",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] Registros de depuración: activados. Usa /scriptevent starstone:debug on|off",
+              "based_on": "00d8d0f8e41473692f7238d4761530be920f910dc1c9a52bf4e2b3a9e446f18a",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] Registos de depuração: ativos. Usa /scriptevent starstone:debug on|off",
+              "based_on": "00d8d0f8e41473692f7238d4761530be920f910dc1c9a52bf4e2b3a9e446f18a",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Registros de depuração: ativos. Use /scriptevent starstone:debug on|off",
+              "based_on": "00d8d0f8e41473692f7238d4761530be920f910dc1c9a52bf4e2b3a9e446f18a",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Debug-Protokolle: aktiviert. Verwende /scriptevent starstone:debug on|off",
+              "based_on": "00d8d0f8e41473692f7238d4761530be920f910dc1c9a52bf4e2b3a9e446f18a",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] Journaux de débogage : activés. Utilise /scriptevent starstone:debug on|off",
+              "based_on": "00d8d0f8e41473692f7238d4761530be920f910dc1c9a52bf4e2b3a9e446f18a",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Dzienniki debugowania: włączone. Użyj /scriptevent starstone:debug on|off",
+              "based_on": "00d8d0f8e41473692f7238d4761530be920f910dc1c9a52bf4e2b3a9e446f18a",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.debug.usage_off": {
+          "source": "[Starstone] Debug logs: off. Use /scriptevent starstone:debug on|off",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] Debug logs: off. Use /scriptevent starstone:debug on|off. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Ladicí záznamy: vypnuté. Použijte /scriptevent starstone:debug on|off",
+              "based_on": "ec9f3319457f023b0a8c361c3010ec13a2fc632914cdd913efc3d7ea775fed4d",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] Registros de depuración: desactivados. Usa /scriptevent starstone:debug on|off",
+              "based_on": "ec9f3319457f023b0a8c361c3010ec13a2fc632914cdd913efc3d7ea775fed4d",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] Registros de depuración: desactivados. Usa /scriptevent starstone:debug on|off",
+              "based_on": "ec9f3319457f023b0a8c361c3010ec13a2fc632914cdd913efc3d7ea775fed4d",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] Registos de depuração: inativos. Usa /scriptevent starstone:debug on|off",
+              "based_on": "ec9f3319457f023b0a8c361c3010ec13a2fc632914cdd913efc3d7ea775fed4d",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Registros de depuração: inativos. Use /scriptevent starstone:debug on|off",
+              "based_on": "ec9f3319457f023b0a8c361c3010ec13a2fc632914cdd913efc3d7ea775fed4d",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Debug-Protokolle: deaktiviert. Verwende /scriptevent starstone:debug on|off",
+              "based_on": "ec9f3319457f023b0a8c361c3010ec13a2fc632914cdd913efc3d7ea775fed4d",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] Journaux de débogage : désactivés. Utilise /scriptevent starstone:debug on|off",
+              "based_on": "ec9f3319457f023b0a8c361c3010ec13a2fc632914cdd913efc3d7ea775fed4d",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Dzienniki debugowania: wyłączone. Użyj /scriptevent starstone:debug on|off",
+              "based_on": "ec9f3319457f023b0a8c361c3010ec13a2fc632914cdd913efc3d7ea775fed4d",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.rebuild.start": {
+          "source": "[Starstone] Rebuilding within %s blocks (%s up/down)...",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] Rebuilding within %s blocks (%s up/down).... Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/repair.js"
+            ]
+          },
+          "placeholders": [
+            {
+              "name": "horizontal_radius",
+              "type": "string",
+              "meaning": "horizontal_radius: blocks"
+            },
+            {
+              "name": "vertical_radius",
+              "type": "string",
+              "meaning": "vertical_radius: blocks above and below"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Obnova v dosahu %s bloků (%s nahoru/dolů)…",
+              "based_on": "6d8b81486be56a53ea42e957ae028747b99d4c0caac4b25e64b844b43ff52c10",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] Reconstruyendo en un radio de %s bloques (%s arriba/abajo)…",
+              "based_on": "6d8b81486be56a53ea42e957ae028747b99d4c0caac4b25e64b844b43ff52c10",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] Reconstruyendo en un radio de %s bloques (%s arriba/abajo)…",
+              "based_on": "6d8b81486be56a53ea42e957ae028747b99d4c0caac4b25e64b844b43ff52c10",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] A reconstruir num raio de %s blocos (%s acima/abaixo)…",
+              "based_on": "6d8b81486be56a53ea42e957ae028747b99d4c0caac4b25e64b844b43ff52c10",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Reconstruindo em um raio de %s blocos (%s acima/abaixo)…",
+              "based_on": "6d8b81486be56a53ea42e957ae028747b99d4c0caac4b25e64b844b43ff52c10",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Neuaufbau im Umkreis von %s Blöcken (%s nach oben/unten)…",
+              "based_on": "6d8b81486be56a53ea42e957ae028747b99d4c0caac4b25e64b844b43ff52c10",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] Reconstruction dans un rayon de %s blocs (%s vers le haut/bas)…",
+              "based_on": "6d8b81486be56a53ea42e957ae028747b99d4c0caac4b25e64b844b43ff52c10",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Odbudowa w promieniu %s bloków (%s w górę/dół)…",
+              "based_on": "6d8b81486be56a53ea42e957ae028747b99d4c0caac4b25e64b844b43ff52c10",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.rebuild.complete": {
+          "source": "[Starstone] Rebuild complete: %s electrical block(s), %s component(s).",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] Rebuild complete: %s electrical block(s), %s component(s).. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/repair.js"
+            ]
+          },
+          "placeholders": [
+            {
+              "name": "electrical_block_count",
+              "type": "string",
+              "meaning": "electrical_block_count"
+            },
+            {
+              "name": "connected_component_count",
+              "type": "string",
+              "meaning": "connected_component_count: connected groups, not item parts"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Obnova dokončena. Elektrické bloky: %s, součásti: %s.",
+              "based_on": "7cab47a097f23aed11706b7f8703156d8833e29a01c91e5d13df28595428475d",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] Reconstrucción terminada. Bloques eléctricos: %s; componentes: %s.",
+              "based_on": "7cab47a097f23aed11706b7f8703156d8833e29a01c91e5d13df28595428475d",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] Reconstrucción terminada. Bloques eléctricos: %s; componentes: %s.",
+              "based_on": "7cab47a097f23aed11706b7f8703156d8833e29a01c91e5d13df28595428475d",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] Reconstrução concluída. Blocos elétricos: %s; componentes: %s.",
+              "based_on": "7cab47a097f23aed11706b7f8703156d8833e29a01c91e5d13df28595428475d",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Reconstrução concluída. Blocos elétricos: %s; componentes: %s.",
+              "based_on": "7cab47a097f23aed11706b7f8703156d8833e29a01c91e5d13df28595428475d",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Neuaufbau abgeschlossen. Elektrische Blöcke: %s; Komponenten: %s.",
+              "based_on": "7cab47a097f23aed11706b7f8703156d8833e29a01c91e5d13df28595428475d",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] Reconstruction terminée. Blocs électriques : %s ; composants : %s.",
+              "based_on": "7cab47a097f23aed11706b7f8703156d8833e29a01c91e5d13df28595428475d",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Odbudowa zakończona. Bloki elektryczne: %s; komponenty: %s.",
+              "based_on": "7cab47a097f23aed11706b7f8703156d8833e29a01c91e5d13df28595428475d",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.rebuild.busy": {
+          "source": "[Starstone] A rebuild is already running; starting none.",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] A rebuild is already running; starting none.. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/repair.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Obnova už běží; další se nespustí.",
+              "based_on": "34c1ea7214ec5a7e9eb5e8d63c51ffea6aa167615bc0f17b6df32ed25a6d0f9b",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] Ya hay una reconstrucción en curso; no se iniciará otra.",
+              "based_on": "34c1ea7214ec5a7e9eb5e8d63c51ffea6aa167615bc0f17b6df32ed25a6d0f9b",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] Ya hay una reconstrucción en curso; no se iniciará otra.",
+              "based_on": "34c1ea7214ec5a7e9eb5e8d63c51ffea6aa167615bc0f17b6df32ed25a6d0f9b",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] Já está uma reconstrução em curso; não será iniciada outra.",
+              "based_on": "34c1ea7214ec5a7e9eb5e8d63c51ffea6aa167615bc0f17b6df32ed25a6d0f9b",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Já há uma reconstrução em andamento; nenhuma outra será iniciada.",
+              "based_on": "34c1ea7214ec5a7e9eb5e8d63c51ffea6aa167615bc0f17b6df32ed25a6d0f9b",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Ein Neuaufbau läuft bereits; es wird kein weiterer gestartet.",
+              "based_on": "34c1ea7214ec5a7e9eb5e8d63c51ffea6aa167615bc0f17b6df32ed25a6d0f9b",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] Une reconstruction est déjà en cours ; aucune autre ne sera lancée.",
+              "based_on": "34c1ea7214ec5a7e9eb5e8d63c51ffea6aa167615bc0f17b6df32ed25a6d0f9b",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Odbudowa już trwa; kolejna nie zostanie uruchomiona.",
+              "based_on": "34c1ea7214ec5a7e9eb5e8d63c51ffea6aa167615bc0f17b6df32ed25a6d0f9b",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.chunk.loaded": {
+          "source": "[Starstone] dimension=%s chunk=(%s,%s) y=%s loaded=true",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] dimension=%s chunk=(%s,%s) y=%s loaded=true. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": []
+          },
+          "placeholders": [
+            {
+              "name": "dimension_id",
+              "type": "string",
+              "meaning": "dimension_id: namespace identifier"
+            },
+            {
+              "name": "chunk_x",
+              "type": "string",
+              "meaning": "chunk_x: integer chunk coordinate"
+            },
+            {
+              "name": "chunk_z",
+              "type": "string",
+              "meaning": "chunk_z: integer chunk coordinate"
+            },
+            {
+              "name": "y",
+              "type": "string",
+              "meaning": "y: block height"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] dimenze=%s chunk=(%s,%s) y=%s načteno=ano",
+              "based_on": "cfea232e0331f3277b91848e4ce37e544a45a32fcb45bac1ec93fb2078fdc650",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] dimensión=%s chunk=(%s,%s) y=%s cargado=sí",
+              "based_on": "cfea232e0331f3277b91848e4ce37e544a45a32fcb45bac1ec93fb2078fdc650",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] dimensión=%s chunk=(%s,%s) y=%s cargado=sí",
+              "based_on": "cfea232e0331f3277b91848e4ce37e544a45a32fcb45bac1ec93fb2078fdc650",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] dimensão=%s chunk=(%s,%s) y=%s carregado=sim",
+              "based_on": "cfea232e0331f3277b91848e4ce37e544a45a32fcb45bac1ec93fb2078fdc650",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] dimensão=%s chunk=(%s,%s) y=%s carregado=sim",
+              "based_on": "cfea232e0331f3277b91848e4ce37e544a45a32fcb45bac1ec93fb2078fdc650",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Dimension=%s Chunk=(%s,%s) y=%s geladen=ja",
+              "based_on": "cfea232e0331f3277b91848e4ce37e544a45a32fcb45bac1ec93fb2078fdc650",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] dimension=%s chunk=(%s,%s) y=%s chargé=oui",
+              "based_on": "cfea232e0331f3277b91848e4ce37e544a45a32fcb45bac1ec93fb2078fdc650",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] wymiar=%s chunk=(%s,%s) y=%s wczytany=tak",
+              "based_on": "cfea232e0331f3277b91848e4ce37e544a45a32fcb45bac1ec93fb2078fdc650",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.chunk.unloaded": {
+          "source": "[Starstone] dimension=%s chunk=(%s,%s) y=%s loaded=false",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] dimension=%s chunk=(%s,%s) y=%s loaded=false. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": []
+          },
+          "placeholders": [
+            {
+              "name": "dimension_id",
+              "type": "string",
+              "meaning": "dimension_id: namespace identifier"
+            },
+            {
+              "name": "chunk_x",
+              "type": "string",
+              "meaning": "chunk_x: integer chunk coordinate"
+            },
+            {
+              "name": "chunk_z",
+              "type": "string",
+              "meaning": "chunk_z: integer chunk coordinate"
+            },
+            {
+              "name": "y",
+              "type": "string",
+              "meaning": "y: block height"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] dimenze=%s chunk=(%s,%s) y=%s načteno=ne",
+              "based_on": "4e6dea4deb1c8ff0a21ce52c03e9d4874e31bfd6214115d700a9c791078e6b2c",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] dimensión=%s chunk=(%s,%s) y=%s cargado=no",
+              "based_on": "4e6dea4deb1c8ff0a21ce52c03e9d4874e31bfd6214115d700a9c791078e6b2c",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] dimensión=%s chunk=(%s,%s) y=%s cargado=no",
+              "based_on": "4e6dea4deb1c8ff0a21ce52c03e9d4874e31bfd6214115d700a9c791078e6b2c",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] dimensão=%s chunk=(%s,%s) y=%s carregado=não",
+              "based_on": "4e6dea4deb1c8ff0a21ce52c03e9d4874e31bfd6214115d700a9c791078e6b2c",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] dimensão=%s chunk=(%s,%s) y=%s carregado=não",
+              "based_on": "4e6dea4deb1c8ff0a21ce52c03e9d4874e31bfd6214115d700a9c791078e6b2c",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Dimension=%s Chunk=(%s,%s) y=%s geladen=nein",
+              "based_on": "4e6dea4deb1c8ff0a21ce52c03e9d4874e31bfd6214115d700a9c791078e6b2c",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] dimension=%s chunk=(%s,%s) y=%s chargé=non",
+              "based_on": "4e6dea4deb1c8ff0a21ce52c03e9d4874e31bfd6214115d700a9c791078e6b2c",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] wymiar=%s chunk=(%s,%s) y=%s wczytany=nie",
+              "based_on": "4e6dea4deb1c8ff0a21ce52c03e9d4874e31bfd6214115d700a9c791078e6b2c",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.chunk.unavailable": {
+          "source": "[Starstone] dimension=%s chunk=(%s,%s) y=%s load status unavailable",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] dimension=%s chunk=(%s,%s) y=%s load status unavailable. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": []
+          },
+          "placeholders": [
+            {
+              "name": "dimension_id",
+              "type": "string",
+              "meaning": "dimension_id: namespace identifier"
+            },
+            {
+              "name": "chunk_x",
+              "type": "string",
+              "meaning": "chunk_x: integer chunk coordinate"
+            },
+            {
+              "name": "chunk_z",
+              "type": "string",
+              "meaning": "chunk_z: integer chunk coordinate"
+            },
+            {
+              "name": "y",
+              "type": "string",
+              "meaning": "y: block height"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] dimenze=%s chunk=(%s,%s) y=%s stav načtení není dostupný",
+              "based_on": "3eff60075cd4d83b3d6bdb11d5cea131adbb7a2e6cbd25002dbe7a3dc725a656",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] dimensión=%s chunk=(%s,%s) y=%s estado de carga no disponible",
+              "based_on": "3eff60075cd4d83b3d6bdb11d5cea131adbb7a2e6cbd25002dbe7a3dc725a656",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] dimensión=%s chunk=(%s,%s) y=%s estado de carga no disponible",
+              "based_on": "3eff60075cd4d83b3d6bdb11d5cea131adbb7a2e6cbd25002dbe7a3dc725a656",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] dimensão=%s chunk=(%s,%s) y=%s estado de carregamento indisponível",
+              "based_on": "3eff60075cd4d83b3d6bdb11d5cea131adbb7a2e6cbd25002dbe7a3dc725a656",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] dimensão=%s chunk=(%s,%s) y=%s estado de carregamento indisponível",
+              "based_on": "3eff60075cd4d83b3d6bdb11d5cea131adbb7a2e6cbd25002dbe7a3dc725a656",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Dimension=%s Chunk=(%s,%s) y=%s Ladestatus nicht verfügbar",
+              "based_on": "3eff60075cd4d83b3d6bdb11d5cea131adbb7a2e6cbd25002dbe7a3dc725a656",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] dimension=%s chunk=(%s,%s) y=%s état de chargement indisponible",
+              "based_on": "3eff60075cd4d83b3d6bdb11d5cea131adbb7a2e6cbd25002dbe7a3dc725a656",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] wymiar=%s chunk=(%s,%s) y=%s stan wczytania niedostępny",
+              "based_on": "3eff60075cd4d83b3d6bdb11d5cea131adbb7a2e6cbd25002dbe7a3dc725a656",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.chunk.usage": {
+          "source": "[Starstone] Use /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Coordinates must be integers.",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] Use /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Coordinates must be integers.. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Použijte /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Souřadnice musí být celá čísla.",
+              "based_on": "c002b68124d672cdaf4327eb2edf235bbccd48b9eff2cb45a06962df648ab1e0",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] Usa /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Las coordenadas deben ser números enteros.",
+              "based_on": "c002b68124d672cdaf4327eb2edf235bbccd48b9eff2cb45a06962df648ab1e0",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] Usa /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Las coordenadas deben ser números enteros.",
+              "based_on": "c002b68124d672cdaf4327eb2edf235bbccd48b9eff2cb45a06962df648ab1e0",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] Usa /scriptevent starstone:diagnose chunk <cx> <cz> [y]. As coordenadas têm de ser números inteiros.",
+              "based_on": "c002b68124d672cdaf4327eb2edf235bbccd48b9eff2cb45a06962df648ab1e0",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Use /scriptevent starstone:diagnose chunk <cx> <cz> [y]. As coordenadas devem ser números inteiros.",
+              "based_on": "c002b68124d672cdaf4327eb2edf235bbccd48b9eff2cb45a06962df648ab1e0",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Verwende /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Koordinaten müssen ganze Zahlen sein.",
+              "based_on": "c002b68124d672cdaf4327eb2edf235bbccd48b9eff2cb45a06962df648ab1e0",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] Utilise /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Les coordonnées doivent être des nombres entiers.",
+              "based_on": "c002b68124d672cdaf4327eb2edf235bbccd48b9eff2cb45a06962df648ab1e0",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Użyj /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Współrzędne muszą być liczbami całkowitymi.",
+              "based_on": "c002b68124d672cdaf4327eb2edf235bbccd48b9eff2cb45a06962df648ab1e0",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.cable.target": {
+          "source": "[Starstone] Look directly at a Starstone cable within 6 blocks, then use /scriptevent starstone:diagnose cable.",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] Look directly at a Starstone cable within 6 blocks, then use /scriptevent starstone:diagnose cable.. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Zaměřte kabel Starstone nejvýše 6 bloků daleko a použijte /scriptevent starstone:diagnose cable.",
+              "based_on": "e6b04d39eb8394a25aa44df3159d2ba33a73ec45b2d40053dcf207e2544e5587",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] Mira un cable de Starstone a un máximo de 6 bloques y usa /scriptevent starstone:diagnose cable.",
+              "based_on": "e6b04d39eb8394a25aa44df3159d2ba33a73ec45b2d40053dcf207e2544e5587",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] Mira un cable de Starstone a un máximo de 6 bloques y usa /scriptevent starstone:diagnose cable.",
+              "based_on": "e6b04d39eb8394a25aa44df3159d2ba33a73ec45b2d40053dcf207e2544e5587",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] Olha para um cabo de Starstone a até 6 blocos e usa /scriptevent starstone:diagnose cable.",
+              "based_on": "e6b04d39eb8394a25aa44df3159d2ba33a73ec45b2d40053dcf207e2544e5587",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Olhe para um cabo de Starstone a até 6 blocos e use /scriptevent starstone:diagnose cable.",
+              "based_on": "e6b04d39eb8394a25aa44df3159d2ba33a73ec45b2d40053dcf207e2544e5587",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Sieh ein Starstone-Kabel in höchstens 6 Blöcken Entfernung an und verwende /scriptevent starstone:diagnose cable.",
+              "based_on": "e6b04d39eb8394a25aa44df3159d2ba33a73ec45b2d40053dcf207e2544e5587",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] Vise un câble de Starstone à 6 blocs maximum, puis utilise /scriptevent starstone:diagnose cable.",
+              "based_on": "e6b04d39eb8394a25aa44df3159d2ba33a73ec45b2d40053dcf207e2544e5587",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Spójrz na kabel Starstone w odległości do 6 bloków i użyj /scriptevent starstone:diagnose cable.",
+              "based_on": "e6b04d39eb8394a25aa44df3159d2ba33a73ec45b2d40053dcf207e2544e5587",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.cable.invalid": {
+          "source": "[Starstone] Cable has an unreadable face or connection mask.",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] Cable has an unreadable face or connection mask.. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Nelze přečíst plochu nebo masku spojení kabelu.",
+              "based_on": "f0afdc7dd374f9f37af3cd15c2c73b1601796317f21fbb5dadb50f583302b7fa",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] No se puede leer la cara o la máscara de conexiones del cable.",
+              "based_on": "f0afdc7dd374f9f37af3cd15c2c73b1601796317f21fbb5dadb50f583302b7fa",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] No se puede leer la cara o la máscara de conexiones del cable.",
+              "based_on": "f0afdc7dd374f9f37af3cd15c2c73b1601796317f21fbb5dadb50f583302b7fa",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] Não é possível ler a face ou a máscara de ligações do cabo.",
+              "based_on": "f0afdc7dd374f9f37af3cd15c2c73b1601796317f21fbb5dadb50f583302b7fa",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] Não é possível ler a face ou a máscara de conexões do cabo.",
+              "based_on": "f0afdc7dd374f9f37af3cd15c2c73b1601796317f21fbb5dadb50f583302b7fa",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Kabelfläche oder Verbindungsmaske ist nicht lesbar.",
+              "based_on": "f0afdc7dd374f9f37af3cd15c2c73b1601796317f21fbb5dadb50f583302b7fa",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] La face ou le masque de connexion du câble est illisible.",
+              "based_on": "f0afdc7dd374f9f37af3cd15c2c73b1601796317f21fbb5dadb50f583302b7fa",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Nie można odczytać powierzchni lub maski połączeń kabla.",
+              "based_on": "f0afdc7dd374f9f37af3cd15c2c73b1601796317f21fbb5dadb50f583302b7fa",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.cable.state": {
+          "source": "[Starstone] cable=(%s,%s,%s) face=%s mask=%s arms=%s",
+          "context": {
+            "meaning": "Developer diagnostic displayed to players who invoke the relevant /scriptevent command: [Starstone] cable=(%s,%s,%s) face=%s mask=%s arms=%s. Translate labels; retain technical tokens and commands.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Player runs the relevant diagnostic command or enables the debug readout.",
+            "tone": "Technical and concise",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/diagnostics.js"
+            ]
+          },
+          "placeholders": [
+            {
+              "name": "x",
+              "type": "string",
+              "meaning": "x: block coordinate"
+            },
+            {
+              "name": "y",
+              "type": "string",
+              "meaning": "y: block coordinate"
+            },
+            {
+              "name": "z",
+              "type": "string",
+              "meaning": "z: block coordinate"
+            },
+            {
+              "name": "face",
+              "type": "string",
+              "meaning": "face: internal mounting-face enum"
+            },
+            {
+              "name": "mask",
+              "type": "string",
+              "meaning": "mask: connection bitmask integer"
+            },
+            {
+              "name": "arms",
+              "type": "string",
+              "meaning": "arms: internal connection direction tokens"
+            }
+          ],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] kabel=(%s,%s,%s) plocha=%s maska=%s ramena=%s",
+              "based_on": "70a9972a5f074b1eddba6d938266e5f5f3b677f526f8b8309f0cde24774552ff",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] cable=(%s,%s,%s) cara=%s máscara=%s brazos=%s",
+              "based_on": "70a9972a5f074b1eddba6d938266e5f5f3b677f526f8b8309f0cde24774552ff",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] cable=(%s,%s,%s) cara=%s máscara=%s brazos=%s",
+              "based_on": "70a9972a5f074b1eddba6d938266e5f5f3b677f526f8b8309f0cde24774552ff",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] cabo=(%s,%s,%s) face=%s máscara=%s braços=%s",
+              "based_on": "70a9972a5f074b1eddba6d938266e5f5f3b677f526f8b8309f0cde24774552ff",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] cabo=(%s,%s,%s) face=%s máscara=%s braços=%s",
+              "based_on": "70a9972a5f074b1eddba6d938266e5f5f3b677f526f8b8309f0cde24774552ff",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Kabel=(%s,%s,%s) Fläche=%s Maske=%s Arme=%s",
+              "based_on": "70a9972a5f074b1eddba6d938266e5f5f3b677f526f8b8309f0cde24774552ff",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] câble=(%s,%s,%s) face=%s masque=%s branches=%s",
+              "based_on": "70a9972a5f074b1eddba6d938266e5f5f3b677f526f8b8309f0cde24774552ff",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] kabel=(%s,%s,%s) powierzchnia=%s maska=%s ramiona=%s",
+              "based_on": "70a9972a5f074b1eddba6d938266e5f5f3b677f526f8b8309f0cde24774552ff",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "starstone.message.corner.support": {
+          "source": "[Starstone] Inner Corner needs two perpendicular solid support faces.",
+          "context": {
+            "meaning": "Placement of an electrical inside-corner piece refused: two perpendicular solid support faces are needed.",
+            "location": "starstone_rp: chat or action bar",
+            "trigger": "Placement of an electrical inside-corner piece refused: two perpendicular solid support faces are needed.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete sentence; address the player without assuming gender.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender.",
+            "source_paths": [
+              "starstone_bp/scripts/cableComponent.js"
+            ]
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "[Starstone] Vnitřní roh potřebuje dvě kolmé pevné opěrné plochy.",
+              "based_on": "8e462cc257a0c07c58ca8addc529dfbe2d92affa864069e2ffde84c276a40f93",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "[Starstone] La esquina interior necesita dos caras de apoyo sólidas y perpendiculares.",
+              "based_on": "8e462cc257a0c07c58ca8addc529dfbe2d92affa864069e2ffde84c276a40f93",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "[Starstone] La esquina interior necesita dos caras de apoyo sólidas y perpendiculares.",
+              "based_on": "8e462cc257a0c07c58ca8addc529dfbe2d92affa864069e2ffde84c276a40f93",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "[Starstone] O canto interior precisa de duas faces de apoio sólidas e perpendiculares.",
+              "based_on": "8e462cc257a0c07c58ca8addc529dfbe2d92affa864069e2ffde84c276a40f93",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "[Starstone] O canto interno precisa de duas faces de apoio sólidas e perpendiculares.",
+              "based_on": "8e462cc257a0c07c58ca8addc529dfbe2d92affa864069e2ffde84c276a40f93",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "[Starstone] Die Innenecke braucht zwei senkrecht zueinander stehende, feste Stützflächen.",
+              "based_on": "8e462cc257a0c07c58ca8addc529dfbe2d92affa864069e2ffde84c276a40f93",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "[Starstone] L’angle intérieur nécessite deux faces d’appui solides et perpendiculaires.",
+              "based_on": "8e462cc257a0c07c58ca8addc529dfbe2d92affa864069e2ffde84c276a40f93",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "[Starstone] Narożnik wewnętrzny wymaga dwóch prostopadłych, pełnych powierzchni podparcia.",
+              "based_on": "8e462cc257a0c07c58ca8addc529dfbe2d92affa864069e2ffde84c276a40f93",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "pack.name": {
+          "source": "Starstone — Resource Pack",
+          "context": {
+            "meaning": "Pack title or description for starstone_rp. BP means behavior pack; RP means resource pack. Keep mod brands unchanged.",
+            "location": "starstone_rp: pack selection screen",
+            "trigger": "Shown when the player views or uses this content.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Pack title or a complete description; localize pack type and descriptive words.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Starstone — Balíček zdrojů",
+              "based_on": "0dd0ecc5f46fbb14d3c4b6bb097a12a2c68e21ec0b0ebbc695ea8a246d661d09",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Starstone — Paquete de recursos",
+              "based_on": "0dd0ecc5f46fbb14d3c4b6bb097a12a2c68e21ec0b0ebbc695ea8a246d661d09",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Starstone — Paquete de recursos",
+              "based_on": "0dd0ecc5f46fbb14d3c4b6bb097a12a2c68e21ec0b0ebbc695ea8a246d661d09",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Starstone — Pacote de recursos",
+              "based_on": "0dd0ecc5f46fbb14d3c4b6bb097a12a2c68e21ec0b0ebbc695ea8a246d661d09",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Starstone — Pacote de recursos",
+              "based_on": "0dd0ecc5f46fbb14d3c4b6bb097a12a2c68e21ec0b0ebbc695ea8a246d661d09",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone — Ressourcenpaket",
+              "based_on": "0dd0ecc5f46fbb14d3c4b6bb097a12a2c68e21ec0b0ebbc695ea8a246d661d09",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Starstone — Pack de ressources",
+              "based_on": "0dd0ecc5f46fbb14d3c4b6bb097a12a2c68e21ec0b0ebbc695ea8a246d661d09",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Starstone — Pakiet zasobów",
+              "based_on": "0dd0ecc5f46fbb14d3c4b6bb097a12a2c68e21ec0b0ebbc695ea8a246d661d09",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "pack.description": {
+          "source": "Starstone resource pack: textures, models and text.",
+          "context": {
+            "meaning": "Pack title or description for starstone_rp. BP means behavior pack; RP means resource pack. Keep mod brands unchanged.",
+            "location": "starstone_rp: pack selection screen",
+            "trigger": "Shown when the player views or uses this content.",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Pack title or a complete description; localize pack type and descriptive words.",
+            "constraints": "Preserve namespace IDs, commands, coordinates, color codes, placeholder order and lore proper names. Action-bar labels must stay short; no assumed player gender."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Balíček zdrojů Starstone: textury, modely a texty.",
+              "based_on": "d9666ed92e75dd21e1b064de1136090a43f476d57f6d692fcfad56f8ec5941cd",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Paquete de recursos de Starstone: texturas, modelos y textos.",
+              "based_on": "d9666ed92e75dd21e1b064de1136090a43f476d57f6d692fcfad56f8ec5941cd",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Paquete de recursos de Starstone: texturas, modelos y textos.",
+              "based_on": "d9666ed92e75dd21e1b064de1136090a43f476d57f6d692fcfad56f8ec5941cd",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Pacote de recursos de Starstone: texturas, modelos e textos.",
+              "based_on": "d9666ed92e75dd21e1b064de1136090a43f476d57f6d692fcfad56f8ec5941cd",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Pacote de recursos de Starstone: texturas, modelos e textos.",
+              "based_on": "d9666ed92e75dd21e1b064de1136090a43f476d57f6d692fcfad56f8ec5941cd",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Ressourcenpaket für Starstone: Texturen, Modelle und Texte.",
+              "based_on": "d9666ed92e75dd21e1b064de1136090a43f476d57f6d692fcfad56f8ec5941cd",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Pack de ressources de Starstone : textures, modèles et textes.",
+              "based_on": "d9666ed92e75dd21e1b064de1136090a43f476d57f6d692fcfad56f8ec5941cd",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Pakiet zasobów Starstone: tekstury, modele i teksty.",
+              "based_on": "d9666ed92e75dd21e1b064de1136090a43f476d57f6d692fcfad56f8ec5941cd",
+              "status": "ai-draft"
+            }
+          }
+        }
+      }
+    }
+  },
+  "glossary": {
+    "brand": {
+      "policy": "Preserve Starstone as mod and material name in all locales."
+    },
+    "bridge": {
+      "meaning": "Electrical crossing component, not a walking bridge."
+    },
+    "conduit": {
+      "meaning": "Electrical conduit; distinct from vanilla underwater Conduit."
+    },
+    "diagnostics": {
+      "policy": "Translate descriptions and labels; keep command syntax, namespace IDs, direction enum values and internal component-kind tokens unchanged."
+    },
+    "vanilla_reference": {
+      "commit": "46ba6ea985fb5a92d79a9419198f10dda14c199d",
+      "url": "https://github.com/Mojang/bedrock-samples/tree/46ba6ea985fb5a92d79a9419198f10dda14c199d/resource_pack/texts",
+      "status": "Documented sample terminology, not checked in game. Installed extracted 1.26.52 .lang files are empty."
+    }
+  },
+  "style": {
+    "audience": "Minecraft players; concise UI and gentle woodland narrative where applicable.",
+    "address": "Czech respectful plural address; Spanish tú; Portuguese Portugal tu, Brazil você; German du; French tu; Polish ty. Avoid assuming player gender.",
+    "review": "AI draft, not independently language-reviewed or tested in game.",
+    "reference": "Locale list verified in installed 1.26.52 reference. Vanilla terminology checked against Mojang bedrock-samples commit 46ba6ea985fb5a92d79a9419198f10dda14c199d; sample terms documented, not checked in game."
+  }
+}

@@ -123,7 +123,8 @@ function remember(raw) {
 }
 for(const account of [user,observer,probe,noTarget,empty,invalidViewer,eastViewer]) for(const raw of account.rawMessages) remember(raw);
 const languageText=readFileSync('starstone_rp/texts/en_US.lang','utf8');
-const runtimeTemplates=languageText.split(/\r?\n/).filter(line=>line.startsWith('starstone.message.')).map(line=>{
+// Placement notices are exercised by innerCorner.test.mjs, not the diagnostic commands.
+const runtimeTemplates=languageText.split(/\r?\n/).filter(line=>line.startsWith('starstone.message.') && !line.startsWith('starstone.message.corner.')).map(line=>{
     const equals=line.indexOf('='); return [line.slice(0,equals),line.slice(equals+1)];
 });
 for(const [key,template] of runtimeTemplates) {

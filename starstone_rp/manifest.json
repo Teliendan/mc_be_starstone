@@ -1,8 +1,8 @@
 {
     "format_version": 2,
     "header": {
-        "name": "Starstone RP",
-        "description": "Textures, models and text for the Starstone add-on.",
+        "name": "pack.name",
+        "description": "pack.description",
         "uuid": "18f05c46-d615-4136-91f8-f0d9936c2488",
         "version": [1, 0, 5],
         "min_engine_version": [1, 21, 120]

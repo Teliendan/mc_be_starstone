@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { mc, fixture, drain } from './runtimeFixture.mjs';
+import { mc, fixture, drain, player } from './runtimeFixture.mjs';
 import { INNER_PAIRS, ARM_BIT, innerRoutes, stateOfFaces, facesOfPair, pairFromPermutation,
     armsFromPermutation, externalArms, oppositeFace, tangentFaces } from '../starstone_bp/scripts/innerCorner.js';
 import { FACE_LIST, ARM_NAMES, faceNormal, worldOffset } from '../starstone_bp/scripts/surfaceFrame.js';
@@ -147,6 +147,14 @@ mc.system.beforeEvents={startup:{subscribe(callback){callback({blockComponentReg
 registerCableComponent();
 const component=definitions.get('starstone:inner_corner');
 assert.ok(component?.beforeOnPlayerPlace);
+const unsupportedFixture=fixture();
+const unsupported=unsupportedFixture.put('starstone:inner_corner',0,0,0);
+const placingPlayer=player();
+component.onPlace({block:unsupported,player:placingPlayer});
+await drain();
+assert.equal(placingPlayer.rawMessages[0].translate,'starstone.message.corner.support');
+assert.match(placingPlayer.messages[0],/two perpendicular solid support faces/);
+assert.equal(unsupportedFixture.store.has('0,0,0'),false,'invalid placement still removes the corner');
 function visibleBones(corner) {
     const s={};
     for (const name of ['starstone:face_mask_low','starstone:face_mask_high','starstone:arms_low','starstone:arms_high'])
