@@ -138,6 +138,9 @@ block={'format_version':'1.21.120','minecraft:block':{
                   'starstone:powered':[False,True]}},
     'components':{'minecraft:selection_box':{'origin':[-8,0,-8],'size':[16,16,16]},
         'minecraft:collision_box':False,'minecraft:map_color':[30,40,60],
+        'minecraft:liquid_detection':{'detection_rules':[{
+            'liquid_type':'water','can_contain_liquid':True,'on_liquid_touches':'no_reaction',
+            'stops_liquid_flowing_from_direction':[]}]},
         'minecraft:destructible_by_mining':{'seconds_to_destroy':.5},
         'minecraft:loot':'loot_tables/blocks/inner_corner.json',
         'minecraft:geometry':{'identifier':'geometry.starstone_inner_corner',

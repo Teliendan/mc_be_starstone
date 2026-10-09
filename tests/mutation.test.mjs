@@ -67,21 +67,24 @@ assert.equal(globalThis.__mcWorldSubscribers.blockExplode.length, 1);
     assert.equal(runtime.invariantHolds(), true);
 }
 
-// A command replacement is repaired using known positions, with the cached
-// component providing survivor seeds even when the lost cable splits a network.
-{
+// Silent air/water replacement is repaired using known positions, with cached
+// survivor seeds even when a washed-away cable splits a network. Water is not
+// destroyed by the electrical cleanup. This tests reconciliation, not fluid physics.
+for (const replacement of ['minecraft:air', 'minecraft:water', 'minecraft:flowing_water']) {
     props.clear(); runtime.clearNetworks();
-    const f = world('test:command-repair');
+    const f = world(`test:silent-repair-${replacement.split(':')[1]}`);
     f.put('starstone:generator',0,0,0);
     f.put('starstone:cable',1,0,0); f.put('minecraft:stone',1,-1,0);
     const lamp = f.put('starstone:lamp',2,0,0); f.put('minecraft:stone',2,-1,0);
     repair.startRebuildNearby(player(f.dim), {radius:2,height:1}); await drain();
     for (let tick = 0; tick < 3; tick++) { mutation.validateKnownPositions(); await drain(); }
-    f.store.delete('1,0,0');
+    if (replacement === 'minecraft:air') f.store.delete('1,0,0');
+    else f.put(replacement,1,0,0);
     for (let tick = 0; tick < 3; tick++) { mutation.validateKnownPositions(); await drain(); }
     assert.equal(lamp.permutation.getState('starstone:powered'), false);
     assert.equal(runtime.networkIdOf(`${f.dim.id}|1|0|0#main`), undefined);
     assert.ok(!placementIndex.positionsInChunk(f.dim.id,0,0).some(p => p.x === 1));
+    assert.equal(f.dim.getBlock({x:1,y:0,z:0}).typeId, replacement, 'repair preserves replacement water');
     f.unloaded.add('0,0,0');
     for (let tick = 0; tick < 3; tick++) { mutation.validateKnownPositions(); await drain(); }
     assert.ok(placementIndex.positionsInChunk(f.dim.id,0,0).some(p => p.x === 0), 'unloaded hint survives');
