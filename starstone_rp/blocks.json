@@ -1,11 +1,30 @@
 {
     "format_version": "1.21.120",
-    "starstone:cable": {},
-    "starstone:bridge": {},
-    "starstone:generator": {},
-    "starstone:lamp": {},
-    "starstone:conduit": {},
-    "starstone:redstone_input": {},
-    "starstone:redstone_output": {},
-    "starstone:ore": {}
+    "starstone:cable": {
+        "sound": "wood"
+    },
+    "starstone:bridge": {
+        "sound": "wood"
+    },
+    "starstone:generator": {
+        "sound": "stone"
+    },
+    "starstone:lamp": {
+        "sound": "glass"
+    },
+    "starstone:conduit": {
+        "sound": "stone"
+    },
+    "starstone:redstone_input": {
+        "sound": "wood"
+    },
+    "starstone:redstone_output": {
+        "sound": "wood"
+    },
+    "starstone:ore": {
+        "sound": "stone"
+    },
+    "starstone:inner_corner": {
+        "sound": "wood"
+    }
 }

@@ -21,3 +21,16 @@ Check in game: compare conduit/generator and ore against their counterparts
 using hand, wrong tool and each pickaxe tier; check Efficiency, Silk Touch and
 Fortune drops; compare TNT/fire survival and network cleanup. These are source
 choices, not a claim of identical engine timings or lifecycle parity.
+
+Remaining-property batch, 2026-10-10 / target 1.26.52: Conduit now explicitly
+declares dampening 15, preserving its solid opaque cube. All nine blocks gain
+RP sounds from their recorded counterparts: conduit/generator/ore stone, lamp
+glass, the five thin repeater devices wood (including inner corner's RP entry).
+Vanilla repeater's sound is wood despite its stone base. Sourced `property_checks`
+enforce these values, including actual RP sound precedence over BP components.
+No block-format upgrade or script/network change was required.
+
+Conduit native conductivity remains its default false; Generator's existing true
+is preserved. Their destruction counterpart cannot decide this network/casing
+interaction. Owner question saved in workspace `docs/block-property-questions.md`.
+Check break/step/place sounds and opaque Conduit lighting after pack reload.

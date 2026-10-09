@@ -64,7 +64,7 @@ for (const [file, attempts, distribution, extent] of [
 }
 
 const blocks = readJson(rp, 'blocks.json');
-assert.deepEqual(blocks['starstone:ore'], {});
+assert.deepEqual(blocks['starstone:ore'], { sound: 'stone' });
 const terrain = readJson(rp, 'textures', 'terrain_texture.json');
 assert.equal(terrain.texture_data['starstone:ore'].textures, 'textures/blocks/starstone_ore');
 const items = readJson(rp, 'textures', 'item_texture.json');

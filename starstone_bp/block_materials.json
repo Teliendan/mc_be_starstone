@@ -3,39 +3,107 @@
   "blocks": {
     "starstone:bridge": {
       "profile": "redstone_device",
-      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate.",
+      "property_checks": {
+        "RP:sound": {
+          "counterpart": "minecraft:unpowered_repeater",
+          "expected": "wood",
+          "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        }
+      }
     },
     "starstone:cable": {
       "profile": "redstone_device",
-      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate.",
+      "property_checks": {
+        "RP:sound": {
+          "counterpart": "minecraft:unpowered_repeater",
+          "expected": "wood",
+          "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        }
+      }
     },
     "starstone:conduit": {
       "profile": "redstone_block",
-      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate.",
+      "property_checks": {
+        "minecraft:light_dampening": {
+          "counterpart": "minecraft:redstone_block",
+          "expected": 15,
+          "source": "https://github.com/PrismarineJS/minecraft-data/blob/master/data/bedrock/1.20.71/blocks.json; mods/starstone/docs/GRAPHICS.md; mods/starstone/starstone_rp/models/blocks/starstone_conduit.geo.json"
+        },
+        "RP:sound": {
+          "counterpart": "minecraft:redstone_block",
+          "expected": "stone",
+          "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        }
+      }
     },
     "starstone:generator": {
       "profile": "redstone_block",
-      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate.",
+      "property_checks": {
+        "RP:sound": {
+          "counterpart": "minecraft:redstone_block",
+          "expected": "stone",
+          "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        }
+      }
     },
     "starstone:inner_corner": {
       "profile": "redstone_device",
-      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate.",
+      "property_checks": {
+        "RP:sound": {
+          "counterpart": "minecraft:unpowered_repeater",
+          "expected": "wood",
+          "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        }
+      }
     },
     "starstone:lamp": {
       "profile": "redstone_lamp",
-      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate.",
+      "property_checks": {
+        "RP:sound": {
+          "counterpart": "minecraft:redstone_lamp",
+          "expected": "glass",
+          "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        }
+      }
     },
     "starstone:ore": {
       "profile": "redstone_ore",
-      "harvest": "Existing scripted iron/diamond/netherite gate, Silk Touch and Fortune; empty native loot prevents duplicates."
+      "harvest": "Existing scripted iron/diamond/netherite gate, Silk Touch and Fortune; empty native loot prevents duplicates.",
+      "property_checks": {
+        "RP:sound": {
+          "counterpart": "minecraft:redstone_ore",
+          "expected": "stone",
+          "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        }
+      }
     },
     "starstone:redstone_input": {
       "profile": "redstone_device",
-      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate.",
+      "property_checks": {
+        "RP:sound": {
+          "counterpart": "minecraft:unpowered_repeater",
+          "expected": "wood",
+          "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        }
+      }
     },
     "starstone:redstone_output": {
       "profile": "redstone_device",
-      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate.",
+      "property_checks": {
+        "RP:sound": {
+          "counterpart": "minecraft:unpowered_repeater",
+          "expected": "wood",
+          "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        }
+      }
     }
   }
 }
