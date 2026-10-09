@@ -70,10 +70,13 @@ a 17x9x17 seed volume; connected loaded components can extend beyond it.
 9. Explode TNT beside several middle cables and a surface support. Surviving
    components must split correctly, masks refresh and unsupported devices drop.
 10. Try a normal and sticky piston against every electrical block. The declared
-    policy is immovable. Move a vanilla supporting block away from a surface
-    device: bounded periodic validation must eventually drop the unsupported
-    device and repair its network. Delay scales with indexed-position count
-    and the diagnostic validation budget; it is not an immediate piston event.
+    policy is `push_pull` for generator/conduit/ore and `popped` for mounted
+    devices. Move a vanilla supporting block away from a surface device: settled
+    piston handling must drop it once even when a valid support replaces it.
+    Check the original/destination electrical indexes and both networks;
+    bounded periodic validation must also recover current unsupported devices
+    and repair their networks. Periodic delay scales with indexed-position count
+    and the diagnostic validation budget; piston events have their own local queue.
 11. Replace an indexed middle cable with air using `/setblock`. After periodic
     validation reaches it, its placement hint and runtime ownership disappear,
     and disconnected lamps turn off. Place unknown circuits with commands and

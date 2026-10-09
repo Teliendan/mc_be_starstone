@@ -12,6 +12,7 @@ import { CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDST
 import { placementIndex } from "./persistence.js";
 import { trackInput, refreshAdapterVisuals } from "./redstoneAdapters.js";
 import { queueMutation } from "./mutationController.js";
+import { pistonSupport } from "./pistonController.js";
 
 const SURFACES = new Set([CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID]);
 const OFFSETS = [[1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [0,0,1], [0,0,-1]];
@@ -143,8 +144,10 @@ function diagonalReader(dimension, location) {
 export function computeInnerCornerState(block) {
     const { dimension, location } = block;
     const active = facesOfPair(pairFromPermutation(block.permutation)) || [];
-    for (const { position } of innerSupports(location, stateOfFaces(active)) || [])
-        if (!read(dimension, position)) return null;
+    for (const { position } of innerSupports(location, stateOfFaces(active)) || []) {
+        const support=read(dimension, position);
+        if (!support || support.typeId === "minecraft:moving_block") return null;
+    }
     const supported = supportedFaces(dimension, location);
     const neighborAt = neighborReader(dimension, location);
     const diagonalAt = diagonalReader(dimension, location);
@@ -158,6 +161,7 @@ export function computeInnerCornerState(block) {
 }
 export function refreshInnerCorner(block, { notify = true } = {}) {
     if (!block?.isValid || block.type.id !== INNER_CORNER_ID) return;
+    if (pistonSupport.isPending(block.dimension, block.location)) return;
     const next = computeInnerCornerState(block);
     if (next === null) return;
     if (next === undefined) { removeUnsupported(block); return; }
@@ -194,6 +198,7 @@ export function flushPending() {
             const [x,y,z] = key.split(",").map(Number);
             const block = read(dim, { x,y,z });
             if (!block?.isValid || !SURFACES.has(block.type.id)) continue;
+            if (pistonSupport.isPending(dim, block.location)) continue;
             if ((block.type.id === INNER_CORNER_ID) !== cornersPass) continue;
             try {
                 let supports;
@@ -204,7 +209,10 @@ export function flushPending() {
                     supports=[{position:{x:x+dx,y:y+dy,z:z+dz}}];
                 }
                 // An unavailable support is not proof it was destroyed.
-                if (!supports || supports.some(({position})=>!read(dim,position))) continue;
+                if (!supports || supports.some(({position})=> {
+                    const support=read(dim,position);
+                    return !support || support.typeId === "minecraft:moving_block";
+                })) continue;
                 if (!isSupportValid(block)) removeUnsupported(block);
                 else if (block.type.id === CABLE_ID || block.type.id === INNER_CORNER_ID) refreshCable(block);
                 else refreshAdapterVisuals(block);

@@ -143,7 +143,9 @@ block={'format_version':'1.21.120','minecraft:block':{
         'minecraft:geometry':{'identifier':'geometry.starstone_inner_corner',
                               'bone_visibility':visibility},
         'minecraft:material_instances':material('off'),
-        'starstone:inner_corner':{},'minecraft:movable':{'movement_type':'immovable'},
+        'starstone:inner_corner':{},'starstone:piston_support':{},
+        'minecraft:tick':{'interval_range':[2,2],'looping':True},
+        'minecraft:movable':{'movement_type':'popped'},
         'minecraft:light_emission':0},
     'permutations':[
         {'condition':"query.block_state('starstone:powered') == true",

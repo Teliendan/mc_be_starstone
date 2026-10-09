@@ -39,6 +39,8 @@
             }
         },
         "components": {
+            "starstone:piston_support": {},
+            "minecraft:tick": { "interval_range": [2, 2], "looping": true },
           "minecraft:light_dampening": 0,
             "minecraft:selection_box": {
                 "origin": [
@@ -88,7 +90,7 @@
             },
             "starstone:cable": {},
             "minecraft:movable": {
-                "movement_type": "immovable"
+                "movement_type": "popped"
             },
             "minecraft:light_emission": 0
         },

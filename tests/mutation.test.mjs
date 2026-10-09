@@ -91,10 +91,11 @@ assert.equal(globalThis.__mcWorldSubscribers.blockExplode.length, 1);
     assert.equal(f.dim.getBlock({x:2,y:0,z:0}).type.id, 'minecraft:air');
 }
 
-assert.equal(mutation.PISTON_POLICY, 'immovable');
-for (const id of ['generator','cable','bridge','conduit','lamp']) {
+assert.deepEqual(mutation.PISTON_POLICY, {standalone:'push_pull', supported:'popped'});
+for (const id of ['generator','cable','inner_corner','bridge','conduit','lamp','redstone_input','redstone_output','ore']) {
     const block = JSON.parse(fs.readFileSync(`starstone_bp/blocks/${id}.json`,'utf8'))['minecraft:block'];
-    assert.equal(block.components['minecraft:movable'].movement_type, 'immovable', `${id} piston policy`);
+    assert.equal(block.components['minecraft:movable'].movement_type,
+        ['generator','conduit','ore'].includes(id) ? 'push_pull' : 'popped', `${id} piston policy`);
 }
 assert.equal(mutation.mutationStats().running, false);
 console.log('mutations: bounded indexed validation, explosion batching, support loss, command repair, unloaded hints and piston declarations passed');

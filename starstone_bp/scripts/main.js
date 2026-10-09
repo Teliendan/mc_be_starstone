@@ -13,6 +13,7 @@ import { registerMutationController } from "./mutationController.js";
 import { registerChunkController } from "./chunkController.js";
 import { registerRedstoneAdapters } from "./redstoneAdapters.js";
 import { registerOreLoot } from "./oreLoot.js";
+import { registerPistonController } from "./pistonController.js";
 
 const TAG = "[Starstone]";
 
@@ -103,3 +104,4 @@ registerMutationController();
 registerChunkController();
 registerRedstoneAdapters();
 registerOreLoot();
+registerPistonController();

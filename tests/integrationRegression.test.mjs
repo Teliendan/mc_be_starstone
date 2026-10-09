@@ -11,6 +11,7 @@ const definitions = new Map();
 mc.system.beforeEvents = { startup: { subscribe(cb) { cb({ blockComponentRegistry: { registerCustomComponent(id, component) { definitions.set(id,component); } } }); } } };
 cable.registerCableComponent();
 (await import('../starstone_bp/scripts/generatorComponent.js')).registerGeneratorController();
+(await import('../starstone_bp/scripts/pistonController.js')).registerPistonController();
 for (const name of ['cable','bridge','lamp','conduit','generator']) {
     const block = JSON.parse(readFileSync(new URL(`../starstone_bp/blocks/${name}.json`,import.meta.url),'utf8'))['minecraft:block'];
     for (const id of Object.keys(block.components).filter(id => !id.startsWith('minecraft:'))) assert.ok(definitions.has(id),`unregistered ${id}`);

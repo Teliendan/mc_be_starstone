@@ -9,18 +9,23 @@ import { computeCableMask, refreshCable, computeInnerCornerState } from "./cable
 import { isSupportValid, supportBlock } from "./support.js";
 import { KIND_BY_ID, CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID } from "./constants.js";
 import { innerSupports, pairFromPermutation, armsFromPermutation } from "./innerCorner.js";
+import { pistonSupport } from "./pistonController.js";
 
 export const VALIDATION_INTERVAL_TICKS = 100;
 export const VALIDATION_POSITION_BUDGET = 16;
-export const PISTON_POLICY = "immovable";
+export const PISTON_POLICY = Object.freeze({ standalone: "push_pull", supported: "popped" });
 const SURFACES = new Set([CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID]);
 function unsupported(block) {
+    if (pistonSupport.isPending(block.dimension, block.location)) return false;
     if (block.type.id === INNER_CORNER_ID) {
         const supports=innerSupports(block.location,pairFromPermutation(block.permutation));
-        return Boolean(supports?.every(({position})=>block.dimension.isChunkLoaded(position))) && !isSupportValid(block);
+        return Boolean(supports?.every(({position})=> {
+            if (!block.dimension.isChunkLoaded(position)) return false;
+            return read(block.dimension,position)?.typeId !== "minecraft:moving_block";
+        })) && !isSupportValid(block);
     }
     const support=SURFACES.has(block.type.id) ? supportBlock(block) : undefined;
-    return support?.isValid && !isSupportValid(block);
+    return support?.isValid && support.typeId !== "minecraft:moving_block" && !isSupportValid(block);
 }
 const LANES = ["main", "ns", "ew"];
 const OFFSETS = [[0,0,0], [1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [0,0,1], [0,0,-1]];

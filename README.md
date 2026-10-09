@@ -51,13 +51,17 @@ binary: any active source powers its connected component. Removing a support
 drops its surface device once and repairs the affected network. Partial-block
 support classification still needs in-game validation.
 
-All seven electrical blocks declare `minecraft:movable` as `immovable`.
-Explosions are reconciled in one deduplicated, yielded batch. Moving a vanilla
-support or changing an indexed block by command is caught by periodic
+Generator, conduit and ore move with pistons. Mounted devices pop when pushed,
+or when a selected original support moves, even if a valid block replaces it.
+Settled piston repair updates old and new network positions and placement hints.
+Explosions are reconciled in one deduplicated, yielded batch. Changing an indexed
+block by command is also caught by periodic
 maintenance. Validation visits at most 16 indexed cursor entries every 100 ticks;
 related topology repairs run as yielded jobs. It never scans a surrounding
 volume periodically. Unknown command-created circuits require nearby rebuilding.
-Piston and explosion behavior were accepted in game (2026-09-29).
+The previous piston policy and explosion behavior were accepted in game
+(2026-09-29). The new piston rollout is regression-tested; production engine
+acceptance and warming limits are in [SUPPORT-MOTION.md](docs/SUPPORT-MOTION.md).
 
 ## Recovery and durable chunk graph
 

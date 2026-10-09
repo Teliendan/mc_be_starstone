@@ -8,6 +8,7 @@
             }
         },
         "components": {
+            "minecraft:movable": { "movement_type": "push_pull" },
             "minecraft:map_color": [
                 46,
                 55,
