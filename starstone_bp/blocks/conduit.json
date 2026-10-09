@@ -1,5 +1,5 @@
 {
-    "format_version": "1.21.120",
+    "format_version": "1.26.50",
     "minecraft:block": {
         "description": {
             "identifier": "starstone:conduit",
@@ -19,6 +19,9 @@
             }
         },
         "components": {
+            "minecraft:tags": ["minecraft:is_pickaxe_item_destructible"],
+            "minecraft:flammable": false,
+            "minecraft:destructible_by_explosion": {"explosion_resistance": 6},
             "minecraft:liquid_detection": {"detection_rules": [{"liquid_type": "water", "can_contain_liquid": false, "on_liquid_touches": "blocking"}]},
             "starstone:piston_support": {},
             "minecraft:tick": { "interval_range": [2, 2], "looping": true },
@@ -29,7 +32,7 @@
                 60
             ],
             "minecraft:destructible_by_mining": {
-                "seconds_to_destroy": 0.5
+              "seconds_to_destroy": 5
             },
             "minecraft:loot": "loot_tables/blocks/conduit.json",
             "minecraft:geometry": {

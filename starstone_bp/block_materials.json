@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "blocks": {
+    "starstone:bridge": {
+      "profile": "redstone_device",
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+    },
+    "starstone:cable": {
+      "profile": "redstone_device",
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+    },
+    "starstone:conduit": {
+      "profile": "redstone_block",
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+    },
+    "starstone:generator": {
+      "profile": "redstone_block",
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+    },
+    "starstone:inner_corner": {
+      "profile": "redstone_device",
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+    },
+    "starstone:lamp": {
+      "profile": "redstone_lamp",
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+    },
+    "starstone:ore": {
+      "profile": "redstone_ore",
+      "harvest": "Existing scripted iron/diamond/netherite gate, Silk Touch and Fortune; empty native loot prevents duplicates."
+    },
+    "starstone:redstone_input": {
+      "profile": "redstone_device",
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+    },
+    "starstone:redstone_output": {
+      "profile": "redstone_device",
+      "harvest": "Existing block/item loot; tool effectiveness does not impose a new harvest gate."
+    }
+  }
+}

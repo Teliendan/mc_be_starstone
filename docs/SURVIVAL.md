@@ -7,13 +7,12 @@ generation frequency or allow it to shine through solid surrounding stone.
 
 `starstone:dust`, `starstone:compressed_dust`, and `starstone:crystal` are stackable items. Starstone Ore is a
 full block using the source texture already present in the resource pack.
-Its base mining time is 1.5 seconds. The documented
-`minecraft:destructible_by_mining.item_specific_speeds` field sets separate
-break times for pickaxe tiers: wooden 1.5, stone 1.0, iron 0.75, golden 0.5,
-diamond 0.6, and netherite 0.5 seconds. Iron is tuned to feel roughly like
-mining deepslate with an unenchanted iron pickaxe; these values still need an
-in-game timing check. Gold, wood, and stone pickaxes mine faster according to
-their tier but cannot collect ore drops.
+Ore now uses the normal Redstone Ore material profile: base mining parameter 3,
+blast resistance 3 and native pickaxe effectiveness. The old six hand-tuned
+`item_specific_speeds` are removed. This is the normal stone ore counterpart,
+not Deepslate Redstone Ore (4.5). Tool tier, enchantments and game modifiers
+determine actual break time; native timing still needs an in-game check.
+Gold, wood and stone pickaxes cannot collect ore drops.
 
 Starstone Ore drops 2–4 Dust when mined with an iron, diamond, or netherite
 pickaxe. Stone pickaxes are not sufficient. Silk Touch on a valid pickaxe drops

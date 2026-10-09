@@ -30,11 +30,11 @@ assert.equal(ore.components['minecraft:geometry'], 'minecraft:geometry.full_bloc
 assert.equal(ore.components['minecraft:loot'], 'loot_tables/blocks/ore.json');
 assert.equal(ore.components['minecraft:material_instances']['*'].texture, 'starstone:ore');
 const mining = ore.components['minecraft:destructible_by_mining'];
-assert.equal(mining.seconds_to_destroy, 1.5);
-assert.deepEqual(mining.item_specific_speeds, [
-  ['wooden', 1.5], ['stone', 1.0], ['iron', 0.75], ['golden', 0.5],
-  ['diamond', 0.6], ['netherite', 0.5],
-].map(([tier, destroy_speed]) => ({ item: `minecraft:${tier}_pickaxe`, destroy_speed })));
+assert.equal(mining.seconds_to_destroy, 3);
+assert.equal(mining.item_specific_speeds, undefined,
+  'native pickaxe effectiveness replaces the old hand-tuned tier times');
+assert.ok(ore.components['minecraft:tags'].includes('minecraft:is_pickaxe_item_destructible'));
+assert.equal(ore.components['minecraft:destructible_by_explosion'].explosion_resistance, 3);
 
 const loot = readJson(bp, 'loot_tables', 'blocks', 'ore.json');
 assert.deepEqual(loot.pools, [{ rolls: 1, entries: [{ type: 'empty' }] }],
