@@ -30,7 +30,11 @@ Vanilla repeater's sound is wood despite its stone base. Sourced `property_check
 enforce these values, including actual RP sound precedence over BP components.
 No block-format upgrade or script/network change was required.
 
-Conduit native conductivity remains its default false; Generator's existing true
-is preserved. Their destruction counterpart cannot decide this network/casing
-interaction. Owner question saved in workspace `docs/block-property-questions.md`.
-Check break/step/place sounds and opaque Conduit lighting after pack reload.
+Owner answer2026-10-10: Conduit's casing conducts ordinary native redstone.
+It now explicitly declares redstone_conductor true and records this reviewed
+opaque-casing choice. Generator retains its existing true. No native producer
+was added; the scripted Starstone network remains separate. The shared verifier
+checks the whole conduction object across inherited permutation states.
+Check ordinary native redstone through each conduit orientation, alongside
+Starstone signals, break/step/place sounds and opaque lighting after reload.
+No design question remains; actual native signal propagation needs game acceptance.

@@ -36,6 +36,14 @@
           "counterpart": "minecraft:redstone_block",
           "expected": "stone",
           "source": "reference/vanilla/current/resource_packs/vanilla/blocks.json"
+        },
+        "minecraft:redstone_conductivity": {
+          "counterpart": "minecraft:stone",
+          "expected": {
+            "redstone_conductor": true
+          },
+          "reason": "Owner approved native redstone conduction through the solid casing, 2026-10-10.",
+          "source": "Owner decision docs/block-property-questions.md; references/light-redstone-movement.md ordinary opaque conductor."
         }
       }
     },
