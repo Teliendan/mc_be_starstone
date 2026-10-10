@@ -25,7 +25,7 @@
     },
     "starstone:conduit": {
       "profile": "redstone_block",
-      "harvest": "Completed wrong-tool player breaks are removed without loot; any tagged pickaxe collects the native self-drop (redstone block counterpart).",
+      "harvest": "Owner 2026-10-10: any tool or hand collects the native self-drop; pickaxe effectiveness changes breaking speed without imposing a collection gate.",
       "property_checks": {
         "minecraft:light_dampening": {
           "counterpart": "minecraft:redstone_block",
@@ -50,14 +50,14 @@
         "loot_tables/blocks/conduit.json": {
           "counterpart": "minecraft:redstone_block",
           "source": "https://learn.microsoft.com/en-us/minecraft/creator/documents/lootandtradetablefunctions?view=minecraft-bedrock-stable; mods/starstone/docs/HARVEST.md",
-          "reason": "Native loot is sole item owner for allowed pickaxe mining and environmental destruction, with per-item blast decay.",
+          "reason": "Native loot is sole item owner for any-tool/hand mining and environmental destruction, with per-item blast decay.",
           "explosion_decay": true
         }
       }
     },
     "starstone:generator": {
       "profile": "redstone_block",
-      "harvest": "Completed wrong-tool player breaks are removed without loot; any tagged pickaxe collects the native self-drop (redstone block counterpart).",
+      "harvest": "Owner 2026-10-10: any tool or hand collects the native self-drop; pickaxe effectiveness changes breaking speed without imposing a collection gate.",
       "property_checks": {
         "RP:sound": {
           "counterpart": "minecraft:redstone_block",
@@ -69,7 +69,7 @@
         "loot_tables/blocks/generator.json": {
           "counterpart": "minecraft:redstone_block",
           "source": "https://learn.microsoft.com/en-us/minecraft/creator/documents/lootandtradetablefunctions?view=minecraft-bedrock-stable; mods/starstone/docs/HARVEST.md",
-          "reason": "Native loot is sole item owner for allowed pickaxe mining and environmental destruction, with per-item blast decay.",
+          "reason": "Native loot is sole item owner for any-tool/hand mining and environmental destruction, with per-item blast decay.",
           "explosion_decay": true
         }
       }

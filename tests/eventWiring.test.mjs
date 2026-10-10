@@ -72,8 +72,8 @@ fire('playerBreakBlock',{block:f.dim.getBlock(source.location),dimension:f.dim,b
 await drain();
 assert.ok(!saved().some(p => p.x === 0 && p.y === 0 && p.z === 0),'break removes saved hint even without a runtime owner');
 
-// A canceled wrong-tool break emits no native after-break callback. The real
-// gate must invoke the same placement-index/topology/support removal hooks.
+// Generator collection accepts hand and other tools. Its ordinary native break
+// must still invoke placement-index/topology/support removal hooks.
 runtime.clearNetworks();
 const harvestWorld = fixture();
 const harvestSource = harvestWorld.put('starstone:generator',0,0,0);
@@ -82,12 +82,18 @@ harvestWorld.put('minecraft:stone',1,-1,0);
 fire('playerPlaceBlock',{block:harvestSource}); await tick();
 assert.equal(harvestLamp.permutation.getState('starstone:powered'),true);
 assert.ok(saved().some(p => p.x === 0 && p.y === 0 && p.z === 0));
-const rejected = { block:harvestSource, itemStack:undefined, cancel:false,
+const nativeBreak = { block:harvestSource, itemStack:undefined, cancel:false,
     player:{isValid:true,selectedSlotIndex:0,getGameMode:()=> 'Survival'} };
-for (const cb of globalThis.__mcWorldBeforeSubscribers.playerBreakBlock) cb(rejected);
-assert.equal(rejected.cancel,true);
+for (const cb of globalThis.__mcWorldBeforeSubscribers.playerBreakBlock) cb(nativeBreak);
+assert.equal(nativeBreak.cancel,false,'hand collection must keep the native break route');
+await drain();
+assert.equal(harvestWorld.dim.getBlock(harvestSource.location).typeId,'starstone:generator','no deferred removal before native break');
+assert.equal(harvestLamp.permutation.getState('starstone:powered'),true);
+harvestWorld.store.delete('0,0,0');
+fire('playerBreakBlock',{block:harvestWorld.dim.getBlock(harvestSource.location),dimension:harvestWorld.dim,
+    brokenBlockPermutation:harvestSource.permutation,player:nativeBreak.player});
 await tick();
 assert.equal(harvestWorld.dim.getBlock(harvestSource.location).typeId,'minecraft:air');
-assert.equal(harvestLamp.permutation.getState('starstone:powered'),false,'rejected-tool removal must split powered network');
-assert.ok(!saved().some(p => p.x === 0 && p.y === 0 && p.z === 0),'rejected-tool removal must delete saved hint');
+assert.equal(harvestLamp.permutation.getState('starstone:powered'),false,'native hand break must split powered network');
+assert.ok(!saved().some(p => p.x === 0 && p.y === 0 && p.z === 0),'native hand break must delete saved hint');
 console.log('event wiring: real main startup, attachments, device-last placement, source toggles, support breaks and commands passed');

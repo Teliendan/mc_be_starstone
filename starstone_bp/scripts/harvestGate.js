@@ -4,12 +4,10 @@ import { damageRejectedTool } from "./harvestWear.js";
 const ORE_PICKS = new Set([
     "minecraft:iron_pickaxe", "minecraft:diamond_pickaxe", "minecraft:netherite_pickaxe"
 ]);
-const GATED_BLOCKS = new Set(["starstone:ore", "starstone:conduit", "starstone:generator"]);
+const GATED_BLOCKS = new Set(["starstone:ore"]);
 
 export function canCollect(blockId, tool) {
     if (blockId === "starstone:ore") return ORE_PICKS.has(tool?.typeId);
-    if (blockId === "starstone:conduit" || blockId === "starstone:generator")
-        return tool?.hasTag("minecraft:is_pickaxe") === true;
     return true;
 }
 

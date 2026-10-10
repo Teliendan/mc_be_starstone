@@ -15,9 +15,10 @@ fire and explosion behavior still needs game acceptance. Policy:
 All explicitly nonflammable. Ore's old per-tier fixed times are removed;
 native tool effectiveness applies. Ore retains its approved iron+ harvest tier
 and custom Silk Touch/Fortune quantities, now in exclusive native loot pools.
-Conduit and generator require any tagged pickaxe for collection. A guarded
-completed-break handler removes wrong-tool breaks without loot; native tables
-own allowed mining and explosion drops. See [HARVEST.md](HARVEST.md) for source
+Owner clarification 2026-10-10: Conduit and generator drop with any tool or hand;
+their pickaxe effectiveness only changes breaking speed. Ore alone uses a guarded
+completed-break handler to remove wrong-tool breaks without loot; native tables
+own mining and explosion drops. See [HARVEST.md](HARVEST.md) for source
 confidence, wear, network cleanup and remaining compatibility limits. Other
 blocks retain their existing loot behavior.
 

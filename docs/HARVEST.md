@@ -5,12 +5,14 @@ plus offline behavior tests. This new path has not been accepted in game.
 
 | Block | Vanilla counterpart | Collection | Native owning table |
 | --- | --- | --- | --- |
-| Conduit, generator | Redstone block | Any item tagged `minecraft:is_pickaxe`, including copper | One self item, then `explosion_decay` |
+| Conduit, generator | Redstone block material; owner collection policy | Any tool or hand; pickaxes only change breaking speed | One self item, then `explosion_decay` |
 | Ore | Normal redstone ore | Existing iron/diamond/netherite pickaxe IDs | Custom Dust 2-4; Fortune I/II/III+ 3-5/4-6/5-7; Silk Touch one Ore; decay last |
 
 Ore quantities retain the reviewed Starstone design; vanilla redstone's different
-Dust quantities do not override it. Custom tagged pickaxes collect conduit and
-generator; their ability to mine ore remains outside the approved exact-ID gate.
+Dust quantities do not override it. Owner clarification 2026-10-10: tool
+effectiveness normally changes breaking speed, without denying collection.
+Conduit and generator therefore use unconditional native self loot; their
+pickaxe efficiency remains. Ore retains its explicitly tested exact-ID exception.
 Other Starstone blocks keep their existing collection policy.
 
 ## Why there are two mechanisms
@@ -21,8 +23,8 @@ destruction. A negated tool test cannot distinguish an empty-handed player from
 an explosion. The old player-only ore item spawner and empty table lost all blast
 loot; they are removed.
 
-`harvestGate.js` intercepts only a completed wrong-tool survival/adventure player
-break through `world.beforeEvents.playerBreakBlock`. It cancels the native break
+`harvestGate.js` intercepts only a completed wrong-tool Ore survival/adventure
+player break through `world.beforeEvents.playerBreakBlock`. It cancels the native break
 and defers a guarded `Block.setType("minecraft:air")`, producing no items.
 Unrelated blocks, prior-canceled events, valid tools, Creative and Spectator pass
 through unchanged. Native tables own allowed mining and all environmental loot,
@@ -38,8 +40,8 @@ documented API; no unique block-instance token is exposed.
 
 Canceled breaks do not issue the normal after-player-break event. The callback
 explicitly runs Starstone's existing placement-index removal, network capture/
-split and neighboring support/connection refresh. Native allowed-tool breaks
-keep their existing event route.
+split and neighboring support/connection refresh. Native allowed-tool Ore breaks
+and every conduit/generator player break keep their existing event route.
 
 ## Tool wear and remaining limits
 
@@ -88,16 +90,18 @@ native behavior.
 Regressions: `oreLoot.test.mjs` evaluates exclusive native predicates and approved
 count endpoints (including no-tool context, Silk priority, Fortune III+ cap),
 requires decay, and rejects deliberately broken tables. `harvestGate.test.mjs`
-exercises tool tiers, tag use, pass-through, prior cancellation, deferred guards,
+exercises exact Ore tool tiers, any-tool/hand conduit and generator pass-through,
+prior cancellation, deferred guards,
 deduplication and replacement invalidation. `eventWiring.test.mjs` imports the
-real entry point and proves rejected generator mining removes its saved hint and
+real entry point and proves native empty-handed generator mining removes its saved hint and
 turns off the neighboring powered lamp. Wear has its own focused suite.
 
 After deployment/reload, compare hand, axe, shears, each pickaxe tier and relevant
 enchanted tools against redstone block/ore. Check durability/Unbreaking, Creative,
 doTileDrops false, TNT decay true/false and mob explosions, rapid attempts,
-replacement protection and network cleanup. This replaces the prior plain-mining
-acceptance for the changed harvest route; Fortune/Silk remain unverified in game.
+replacement protection and network cleanup. Conduit/generator collection must
+remain native for every tool, while Ore alone takes the rejected-tool route.
+Fortune/Silk remain unverified in game.
 
 ## Questions saved for the owner
 

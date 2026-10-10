@@ -24,10 +24,11 @@ in-game failure of matching a missing enchantment as level zero. Every owning
 entry applies native explosion decay after its count. Creative-mode breaks and
 `doTileDrops` follow native loot behavior.
 
-A completed wrong-tool player break is canceled and removed without items on
+A completed wrong-tool Ore player break is canceled and removed without items on
 the next tick, with replacement guards and existing network/support cleanup.
-Conduit and generator use the same mechanism with any tagged pickaxe, matching
-their redstone-block counterpart's collection requirement. See [HARVEST.md](HARVEST.md)
+Conduit and generator collect with any tool or hand, per the owner's 2026-10-10
+clarification; their native pickaxe effectiveness changes speed only. Their
+native break events still perform network/index cleanup. See [HARVEST.md](HARVEST.md)
 for sourced APIs, tool wear, compatibility limits and the in-game acceptance list.
 
 ## Generation tuning
