@@ -44,7 +44,7 @@
                 "*": {
                     "texture": "starstone:casing",
                     "face_dimming": false,
-                    "ambient_occlusion": false
+                    "ambient_occlusion": 0
                 }
             },
             "minecraft:movable": {
@@ -60,17 +60,17 @@
                         "*": {
                             "texture": "starstone:casing",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "east": {
                             "texture": "starstone:conduit_end_off",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "west": {
                             "texture": "starstone:conduit_end_off",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         }
                     },
                     "minecraft:light_emission": 0
@@ -83,17 +83,17 @@
                         "*": {
                             "texture": "starstone:casing",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "east": {
                             "texture": "starstone:conduit_end",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "west": {
                             "texture": "starstone:conduit_end",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         }
                     },
                     "minecraft:light_emission": 1
@@ -106,17 +106,17 @@
                         "*": {
                             "texture": "starstone:casing",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "up": {
                             "texture": "starstone:conduit_end_off",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "down": {
                             "texture": "starstone:conduit_end_off",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         }
                     },
                     "minecraft:light_emission": 0
@@ -129,17 +129,17 @@
                         "*": {
                             "texture": "starstone:casing",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "up": {
                             "texture": "starstone:conduit_end",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "down": {
                             "texture": "starstone:conduit_end",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         }
                     },
                     "minecraft:light_emission": 1
@@ -152,17 +152,17 @@
                         "*": {
                             "texture": "starstone:casing",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "north": {
                             "texture": "starstone:conduit_end_off",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "south": {
                             "texture": "starstone:conduit_end_off",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         }
                     },
                     "minecraft:light_emission": 0
@@ -175,17 +175,17 @@
                         "*": {
                             "texture": "starstone:casing",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "north": {
                             "texture": "starstone:conduit_end",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         },
                         "south": {
                             "texture": "starstone:conduit_end",
                             "face_dimming": false,
-                            "ambient_occlusion": false
+                            "ambient_occlusion": 0
                         }
                     },
                     "minecraft:light_emission": 1

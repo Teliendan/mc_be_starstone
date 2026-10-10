@@ -171,8 +171,10 @@ node mods/starstone/tests/stress.mjs
 ```
 
 The general verifier checks Bedrock loot-tool condition nesting and range
-field names as well as the earlier syntax/schema/API checks. Ore drops now use
-the pre-break tool through Script API. A deliberate
+field names as well as the earlier syntax/schema/API checks. Native ore loot now
+owns mining and explosion drops; a guarded completed-break handler enforces ore
+tier and conduit/generator pickaxe collection. See [HARVEST.md](docs/HARVEST.md)
+for remaining wrong-tool effects/statistics limits. A deliberate
 incompatible-face connection in an isolated copy is rejected by the graph suite.
 See [VERIFICATION.md](docs/VERIFICATION.md) for coverage.
 

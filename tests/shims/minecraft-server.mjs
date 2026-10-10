@@ -28,6 +28,9 @@ export const world = {
         if (value === undefined) dynamicProperties.delete(key);
         else dynamicProperties.set(key, value);
     },
+    beforeEvents: {
+        playerBreakBlock: { subscribe(cb) { ((globalThis.__mcWorldBeforeSubscribers ??= {}).playerBreakBlock ??= []).push(cb); } }
+    },
     afterEvents: {
         blockExplode: { subscribe(cb) { (globalThis.__mcWorldSubscribers.blockExplode ??= []).push(cb); } },
         pistonActivate: { subscribe(cb) { (globalThis.__mcWorldSubscribers.pistonActivate ??= []).push(cb); } },

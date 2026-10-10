@@ -37,8 +37,10 @@ assert.ok(ore.components['minecraft:tags'].includes('minecraft:is_pickaxe_item_d
 assert.equal(ore.components['minecraft:destructible_by_explosion'].explosion_resistance, 3);
 
 const loot = readJson(bp, 'loot_tables', 'blocks', 'ore.json');
-assert.deepEqual(loot.pools, [{ rolls: 1, entries: [{ type: 'empty' }] }],
-  'the script owns ore drops, so the loot table must never duplicate them');
+assert.equal(loot.pools.length, 5, 'native loot owns Silk Touch and four exclusive Dust branches');
+assert.ok(loot.pools.every(pool => pool.entries.every(entry =>
+  entry.functions?.at(-1)?.function === 'explosion_decay')),
+  'native explosion context must apply after the approved yield');
 
 const feature = readJson(bp, 'features', 'starstone_ore_feature.json')['minecraft:ore_feature'];
 assert.equal(feature.description.identifier, 'starstone:ore_feature');

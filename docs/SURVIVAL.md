@@ -12,20 +12,23 @@ blast resistance 3 and native pickaxe effectiveness. The old six hand-tuned
 `item_specific_speeds` are removed. This is the normal stone ore counterpart,
 not Deepslate Redstone Ore (4.5). Tool tier, enchantments and game modifiers
 determine actual break time; native timing still needs an in-game check.
-Gold, wood and stone pickaxes cannot collect ore drops.
+Gold, wood, stone and copper pickaxes cannot collect ore drops.
 
 Starstone Ore drops 2–4 Dust when mined with an iron, diamond, or netherite
 pickaxe. Stone pickaxes are not sufficient. Silk Touch on a valid pickaxe drops
 the ore block. Fortune I, II, and III yield 3–5, 4–6, and 5–7 Dust.
 
-The loot table has one explicit empty entry; a Script API break handler reads
-the pre-break tool and makes the only drop. This avoids unreliable zero-level
-enchantment predicates for unenchanted tools, which caused the ore to drop
-nothing in the previous in-game test. Creative-mode breaks yield nothing.
+Native loot now owns mining and explosion drops. Its exclusive branches use
+positive enchantment ranges and 26.50 condition negation, avoiding the old
+in-game failure of matching a missing enchantment as level zero. Every owning
+entry applies native explosion decay after its count. Creative-mode breaks and
+`doTileDrops` follow native loot behavior.
 
-The handler uses the documented `itemStackBeforeBreak`, item enchantments, and
-`dimension.spawnItem` APIs. The explicit empty loot entry is documented by
-Bedrock's [loot entry reference](https://learn.microsoft.com/en-us/minecraft/creator/reference/content/loottablereference/examples/loottablecomponents/loot_entry?view=minecraft-bedrock-stable).
+A completed wrong-tool player break is canceled and removed without items on
+the next tick, with replacement guards and existing network/support cleanup.
+Conduit and generator use the same mechanism with any tagged pickaxe, matching
+their redstone-block counterpart's collection requirement. See [HARVEST.md](HARVEST.md)
+for sourced APIs, tool wear, compatibility limits and the in-game acceptance list.
 
 ## Generation tuning
 

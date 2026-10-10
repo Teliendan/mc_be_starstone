@@ -13,9 +13,13 @@ fire and explosion behavior still needs game acceptance. Policy:
 | Cable, bridge, inner corner, redstone input/output | Repeater / thin redstone device | 0 | 0 | any |
 
 All explicitly nonflammable. Ore's old per-tier fixed times are removed;
-native tool effectiveness applies. Its existing scripted harvest tier, Silk Touch
-and Fortune logic is retained; see SURVIVAL.md. Other blocks retain their existing
-loot behavior; a speed tag does not impose a new pickaxe drop requirement.
+native tool effectiveness applies. Ore retains its approved iron+ harvest tier
+and custom Silk Touch/Fortune quantities, now in exclusive native loot pools.
+Conduit and generator require any tagged pickaxe for collection. A guarded
+completed-break handler removes wrong-tool breaks without loot; native tables
+own allowed mining and explosion drops. See [HARVEST.md](HARVEST.md) for source
+confidence, wear, network cleanup and remaining compatibility limits. Other
+blocks retain their existing loot behavior.
 
 Check in game: compare conduit/generator and ore against their counterparts
 using hand, wrong tool and each pickaxe tier; check Efficiency, Silk Touch and

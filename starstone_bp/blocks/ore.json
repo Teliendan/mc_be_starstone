@@ -29,7 +29,7 @@
                     "texture": "starstone:ore",
                     "render_method": "opaque",
                     "face_dimming": false,
-                    "ambient_occlusion": false
+                    "ambient_occlusion": 0
                 }
             },
             "minecraft:light_emission": 3

@@ -7,7 +7,12 @@
             "entries": [
                 {
                     "type": "item",
-                    "name": "starstone:conduit"
+                    "name": "starstone:conduit",
+                    "functions": [
+                        {
+                            "function": "explosion_decay"
+                        }
+                    ]
                 }
             ]
         }

@@ -4,7 +4,7 @@ import {
     removeAndSplitNetwork,
     captureRemovedNetworks
 } from "./networkController.js";
-import { registerCableComponent, schedulePlaced } from "./cableComponent.js";
+import { registerCableComponent, schedulePlaced, scheduleAffected } from "./cableComponent.js";
 import { registerGeneratorController } from "./generatorComponent.js";
 import { registerDiagnostics } from "./diagnostics.js";
 import { registerRecovery } from "./repair.js";
@@ -12,7 +12,7 @@ import { placementIndex } from "./persistence.js";
 import { registerMutationController } from "./mutationController.js";
 import { registerChunkController } from "./chunkController.js";
 import { registerRedstoneAdapters } from "./redstoneAdapters.js";
-import { registerOreLoot } from "./oreLoot.js";
+import { registerHarvestGate } from "./harvestGate.js";
 import { registerPistonController } from "./pistonController.js";
 
 const TAG = "[Starstone]";
@@ -61,7 +61,7 @@ world.afterEvents.playerPlaceBlock.subscribe((event) => {
 // captured synchronously in the event, then the re-fragmentation is deferred so
 // it can safely update surviving blocks. Non-Starstone removals are
 // skipped.
-world.afterEvents.playerBreakBlock.subscribe((event) => {
+function handleElectricalBreak(event) {
     const removed = event.brokenBlockPermutation;
     if (!removed || !removed.type || removed.type.id === undefined) {
         return;
@@ -88,6 +88,12 @@ world.afterEvents.playerBreakBlock.subscribe((event) => {
             console.warn(`${TAG} Could not split network after removal: ${err.message}`);
         }
     });
+}
+world.afterEvents.playerBreakBlock.subscribe(handleElectricalBreak);
+
+registerHarvestGate(({ dimension, location, typeId, block }) => {
+    handleElectricalBreak({ dimension, block: block ?? { location }, brokenBlockPermutation: { type: { id: typeId } } });
+    if (block) scheduleAffected(block);
 });
 
 registerCableComponent();
@@ -103,5 +109,4 @@ registerRecovery();
 registerMutationController();
 registerChunkController();
 registerRedstoneAdapters();
-registerOreLoot();
 registerPistonController();

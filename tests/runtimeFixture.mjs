@@ -8,6 +8,7 @@ globalThis.__mcRun = cb => { runs.push(cb); return runs.length; };
 globalThis.__mcRunJob = job => { jobs.push(job); return jobs.length; };
 globalThis.__mcRunInterval = cb => intervals.push(cb);
 globalThis.__mcWorldSubscribers = {};
+globalThis.__mcWorldBeforeSubscribers = {};
 const language = new Map(readFileSync('starstone_rp/texts/en_US.lang','utf8')
     .split(/\r?\n/).filter(line=>line && !line.startsWith('#')).map(line=>{
         const equals=line.indexOf('=');
@@ -47,6 +48,7 @@ function permutation(id, states) {
     return {
         type: { id },
         getState: key => states[key],
+        getAllStates: () => ({ ...states }),
         withState(key, value) {
             if (!(key in states)) throw new Error(`Unknown state ${key} on ${id}`);
             return permutation(id, { ...states, [key]: value });
@@ -75,7 +77,8 @@ export function fixture() {
         return {
             type: { id }, typeId: id, isValid: true, isAir: id === 'minecraft:air', isLiquid: false,
             dimension: dim, location: { x,y,z }, permutation: permutation(id, states), writes: 0,
-            setPermutation(perm) { this.permutation = perm; this.writes++; }
+            setPermutation(perm) { this.permutation = perm; this.writes++; },
+            setType(typeId) { store.set(`${x},${y},${z}`, make(typeId,x,y,z,{})); }
         };
     }
     function put(id,x,y,z,states = {}) {
