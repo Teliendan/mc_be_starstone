@@ -42,7 +42,7 @@ assert.ok(loot.pools.every(pool => pool.entries.every(entry =>
   entry.functions?.at(-1)?.function === 'explosion_decay')),
   'native explosion context must apply after the approved yield');
 
-const feature = readJson(bp, 'features', 'starstone_ore_feature.json')['minecraft:ore_feature'];
+const feature = readJson(bp, 'features', 'ore_feature.json')['minecraft:ore_feature'];
 assert.equal(feature.description.identifier, 'starstone:ore_feature');
 assert.equal(feature.count, 8);
 assert.equal(feature.replace_rules[0].places_block, 'starstone:ore');
@@ -52,10 +52,11 @@ assert.deepEqual(feature.replace_rules[0].may_replace.map(({ name }) => name), [
 assert.equal(Object.hasOwn(feature, 'discard_chance_on_air_exposure'), false);
 
 for (const [file, attempts, distribution, extent] of [
-  ['starstone_ore_underground.json', 4, 'uniform', [-64, 15]],
-  ['starstone_ore_deep.json', 8, 'triangle', [-96, -32]],
+  ['ore_underground.json', 4, 'uniform', [-64, 15]],
+  ['ore_deep.json', 8, 'triangle', [-96, -32]],
 ]) {
   const rule = readJson(bp, 'feature_rules', file)['minecraft:feature_rules'];
+  assert.equal(rule.description.identifier, `starstone:${path.basename(file, '.json')}`);
   assert.equal(rule.description.places_feature, 'starstone:ore_feature');
   assert.equal(rule.conditions.placement_pass, 'underground_pass');
   assert.equal(rule.distribution.iterations, attempts);
@@ -66,6 +67,7 @@ for (const [file, attempts, distribution, extent] of [
 }
 
 const blocks = readJson(rp, 'blocks.json');
+assert.equal(blocks.format_version, '1.21.40');
 assert.deepEqual(blocks['starstone:ore'], { sound: 'stone' });
 const terrain = readJson(rp, 'textures', 'terrain_texture.json');
 assert.equal(terrain.texture_data['starstone:ore'].textures, 'textures/blocks/starstone_ore');
