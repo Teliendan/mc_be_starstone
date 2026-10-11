@@ -89,7 +89,7 @@ export function registerPistonController() {
     system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
         blockComponentRegistry.registerCustomComponent("starstone:piston_support", {
             onPlace({block}) { pistonSupport.observe(block, {reset:true}); },
-            onTick({block}) { pistonSupport.observe(block); }
+            onRandomTick({block}) { pistonSupport.observe(block); }
         });
     });
     world.afterEvents.pistonActivate.subscribe(event => {
@@ -110,8 +110,8 @@ export function registerPistonController() {
             pistonSupport.resetAround(dimension, event.block.location);
         });
     }
-    // Existing saved circuits warm without scanning world volumes. Scheduled
-    // block ticks also initialize structures, commands and newly loaded chunks.
+    // Existing saved circuits warm without scanning world volumes. Piston-local
+    // discovery and sparse random ticks also handle previously untracked blocks.
     world.afterEvents.worldLoad.subscribe(() => system.runJob((function* () {
         for (const entry of placementIndex.entries()) {
             if (entry) {
@@ -119,7 +119,7 @@ export function registerPistonController() {
                     const dimension = world.getDimension(entry.dimensionId);
                     const block = readPistonBlock(dimension, entry.location);
                     if (block) pistonSupport.observe(block);
-                } catch { /* Unloaded records warm on their next block tick. */ }
+                } catch { /* Piston discovery/random ticks recover loaded records. */ }
             }
             yield;
         }

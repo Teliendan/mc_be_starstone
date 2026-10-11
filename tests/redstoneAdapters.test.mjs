@@ -6,8 +6,12 @@ const { pollInputs, trackInput, adapterStats, registerRedstoneAdapters } = await
 const { discoverAndRegisterNetwork } = await import('../starstone_bp/scripts/networkController.js');
 const { applyPower } = await import('../starstone_bp/scripts/powerPropagation.js');
 const {default:runtime} = await import('../starstone_bp/scripts/networkRuntime.js');
+const timers = new Map(); let timerSerial = 0;
+globalThis.__mcRunInterval = (fn, ticks) => { const id = ++timerSerial; timers.set(id,{fn,ticks}); return id; };
+globalThis.__mcClearRun = id => timers.delete(id);
 
 registerRedstoneAdapters();
+assert.equal(timers.size,0,'no input timer before discovery');
 for (const face of FACE_LIST) {
     runtime.clearNetworks();
     const f = fixture(); f.dim.id=`test:adapter_${face}`;
@@ -19,6 +23,18 @@ for (const face of FACE_LIST) {
     const output=f.put('starstone:redstone_output',x,y,z,{'minecraft:block_face':face});
     f.put('minecraft:stone',x+sx,y+sy,z+sz);
     const pending=discoverAndRegisterNetwork(input); await drain(); const net=await pending;
+    assert.equal(timers.size,1,'only one timer for tracked inputs');
+    assert.equal([...timers.values()][0].ticks,4,'six-neighbor response remains four ticks');
+    let reads=0;
+    const getBlock=f.dim.getBlock;
+    f.dim.getBlock=p=>{ reads++; return getBlock(p); };
+    pollInputs();
+    assert.equal(reads,7,'stable off input reads itself and six neighbors, not eight visual neighbors');
+    f.dim.getBlock=getBlock;
+    const [rx,ry,rz]=worldOffset(face,'local_n');
+    f.put('minecraft:lever',rx,ry,rz);
+    for(let i=0;i<24;i++) pollInputs();
+    assert.ok(input.permutation.getState('starstone:redstone_connections'),'slow cosmetic fallback catches command edits without a power edge');
     assert.ok(net.sources.has(`${f.dim.id}|0|0|0#main`),'off input is still a source');
     const id=runtime.networkIdOf(`${f.dim.id}|0|0|0#main`);
     // Discovery subscription alone must register an existing input on reload.
@@ -40,6 +56,7 @@ for (const face of FACE_LIST) {
     assert.equal(input.permutation.getState('starstone:powered'),true);
     f.store.delete('0,0,0'); const before=adapterStats().registeredInputs;
     pollInputs(); assert.equal(adapterStats().registeredInputs,before-1,'stale input removed');
+    assert.equal(timers.size,0,'last removed input stops timer');
 }
 const f=fixture();
 for(let x=0;x<1000;x++) trackInput(f.put('starstone:cable',x,0,0));
@@ -52,4 +69,4 @@ for(const [component,power] of [[base,0],[on,15]]) {
 }
 for(const face of FACE_LIST) assert.ok(output.permutations.some(p=>p.condition.includes(`'${face}'`) && p.components['minecraft:transformation']));
 const input=JSON.parse(fs.readFileSync('starstone_bp/blocks/redstone_input.json','utf8'))['minecraft:block'];
-assert.ok(!input.components['minecraft:redstone_consumer'],'polling baseline must not add unsupported native consumer');
+assert.ok(!input.components['minecraft:redstone_consumer'],'native self-power has not been proven equivalent to six-neighbor sensing');

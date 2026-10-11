@@ -5,7 +5,8 @@ export const system = {
     run: (callback) => globalThis.__mcRun(callback),
     runJob: (job) => globalThis.__mcRunJob(job),
     runInterval: (callback, tickInterval) =>
-        globalThis.__mcRunInterval(callback, tickInterval)
+        globalThis.__mcRunInterval(callback, tickInterval),
+    clearRun: id => globalThis.__mcClearRun?.(id)
 };
 
 // Subscribers registered by production modules (main.js, cableComponent.js) go

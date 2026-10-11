@@ -24,7 +24,7 @@ function setup() {
     f.dim.runCommand = command => { commands.push(command); return run(command); };
     return {...f, commands};
 }
-function warm(block) { definitions.get('starstone:piston_support').onTick({block}); }
+function warm(block) { definitions.get('starstone:piston_support').onPlace({block}); }
 function fire(f, positions, {origin={x:-1,y:-1,z:0}, facing=4, expanding=true}={}) {
     const piston = {isMoving:false, getAttachedBlocksLocations:() => positions};
     const block = f.put('minecraft:piston',origin.x,origin.y,origin.z,{facing_direction:facing});
@@ -57,7 +57,7 @@ assert.deepEqual(PISTON_AXES, [{x:0,y:-1,z:0},{x:0,y:1,z:0},{x:0,y:0,z:1},
     warm(lamp); await discover(source);
     assert.equal(lamp.permutation.getState('starstone:powered'),true);
     f.put('minecraft:piston_arm_collision',0,-1,0);
-    warm(cable);
+    pistonSupport.observe(cable);
     fire(f,[{x:0,y:-1,z:0},{x:1,y:-1,z:0}]);
     await drain();
     assert.equal(f.dim.getBlock(cable.location).typeId,'minecraft:air');
@@ -151,4 +151,14 @@ for (const enabled of [true,false]) {
     assert.equal(f.commands.length,1);
 }
 assert.ok(pistonSupport.size()>=0);
+assert.equal(definitions.get('starstone:piston_support').onTick,undefined);
+// Cold event discovery must preserve actual electrical teardown without polling.
+{
+    const f=setup();
+    f.put('starstone:cable',0,0,0);
+    f.put('minecraft:piston_arm_collision',0,-1,0);
+    fire(f,[{x:0,y:-1,z:0}]); await drain();
+    assert.equal(f.dim.getBlock({x:0,y:0,z:0}).typeId,'minecraft:air');
+    assert.equal(f.commands.filter(c=>c.includes('setblock 0 0 0 air destroy')).length,1);
+}
 console.log('pistons: original support, tick ordering, real network teardown/migration, chunk snapshots, cube states, chains, inner corners and unknown support passed');

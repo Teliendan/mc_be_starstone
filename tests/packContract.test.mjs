@@ -17,6 +17,8 @@ for (const registry of [terrain,items]) for (const entry of Object.values(regist
 const evaluate = (expression, states) => Function(`return (${expression.replace(/query.block_state\('([^']+)'\)/g,(_,key) => JSON.stringify(states[key]))});`)();
 for (const name of fs.readdirSync(`${bp}/blocks`)) {
     const block = read(`${bp}/blocks/${name}`)['minecraft:block'];
+    if (block.components['starstone:piston_support'])
+        assert.equal(block.components['minecraft:tick'],undefined,`${name}: no scheduled support polling`);
     for (const [state,definition] of Object.entries(block.description.states || {})) {
         const values = Array.isArray(definition) ? definition : definition?.values;
         if (Array.isArray(values)) assert.ok(values.length<=16,`${name}: ${state} exceeds Bedrock's 16 values per state`);

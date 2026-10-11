@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import { fixture, drain, mc } from './runtimeFixture.mjs';
+import { supportOffset, worldOffset } from '../starstone_bp/scripts/surfaceFrame.js';
+const { scheduleAffected, registerCableComponent } = await import('../starstone_bp/scripts/cableComponent.js');
+const callbacks = [];
+globalThis.__mcRun = fn => { callbacks.push(fn); return callbacks.length; };
+mc.system.beforeEvents = { startup: { subscribe() {} } };
+let intervals = 0;
+globalThis.__mcRunInterval = () => { intervals++; };
+registerCableComponent();
+assert.equal(intervals,0,'visual queue has no idle interval');
+const f = fixture();
+const input = f.put('starstone:redstone_input',0,0,0,{'minecraft:block_face':'down'});
+f.put('minecraft:stone',...supportOffset('down'));
+f.put('minecraft:lever',...worldOffset('down','local_e'));
+scheduleAffected(input); scheduleAffected(input); scheduleAffected(input);
+assert.equal(callbacks.length,1,'dirty events coalesce into one deferred flush');
+const flush=callbacks.shift();
+let reentrant=false;
+const setPermutation=input.setPermutation.bind(input);
+input.setPermutation=permutation=>{
+    setPermutation(permutation);
+    if (!reentrant) { reentrant=true; scheduleAffected(input); }
+};
+flush();
+assert.ok(input.permutation.getState('starstone:redstone_connections'),'flush updates contacts');
+assert.equal(callbacks.length,1,'work queued during flush schedules another pass');
+callbacks.shift()();
+assert.equal(callbacks.length,0,'queue becomes idle again');
+await drain();

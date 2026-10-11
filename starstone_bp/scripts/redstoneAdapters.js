@@ -11,19 +11,27 @@ import { applyPower } from "./powerPropagation.js";
 import { sourceChanged, subscribeNetworkDiscovery } from "./networkEvents.js";
 
 export const INPUT_POLL_TICKS = 4;
+const VISUAL_RECHECK_POLLS = 25; // 5 s fallback for command edits / stable powered neighbors
 export const INPUT_NEIGHBOR_OFFSETS = Object.freeze([
     [1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]
 ]);
 const inputs = new Map();
 let registered = false, lastPolled = 0, transitions = 0;
+let inputTimer;
+
+function syncInputTimer() {
+    if (registered && inputs.size && inputTimer === undefined) inputTimer = system.runInterval(pollInputs, INPUT_POLL_TICKS);
+    else if (!inputs.size && inputTimer !== undefined) { system.clearRun(inputTimer); inputTimer = undefined; }
+}
 
 export function trackInput(block) {
     if (!block?.isValid || block.typeId !== REDSTONE_INPUT_ID) return;
     const key = blockKey(block.dimension, block.location);
     if (!inputs.has(key)) inputs.set(key, {
         dimension: block.dimension, location: { ...block.location },
-        last: Boolean(block.permutation.getState(STATE_POWERED))
+        last: Boolean(block.permutation.getState(STATE_POWERED)), visualPolls: 0
     });
+    syncInputTimer();
 }
 
 export function adapterStats() {
@@ -126,12 +134,19 @@ export function pollInputs() {
             const block = dimension.getBlock(location);
             if (!block?.isValid) continue;
             if (block.typeId !== REDSTONE_INPUT_ID) { inputs.delete(key); continue; }
-            refreshAdapterVisuals(block);
+            if (++input.visualPolls >= VISUAL_RECHECK_POLLS) {
+                refreshAdapterVisuals(block);
+                input.visualPolls = 0;
+            }
             const sample = readAdjacentRedstone(block);
             if (!sample.on && !sample.complete) continue;
             lastPolled++;
             const on = sample.on;
             if (on === input.last && on === Boolean(block.permutation.getState(STATE_POWERED))) continue;
+            // Placement/break/piston dirty queues maintain static contacts.
+            // Only powered nonstandard contacts need a refresh on a power edge.
+            refreshAdapterVisuals(block);
+            input.visualPolls = 0;
             if (Boolean(block.permutation.getState(STATE_POWERED)) !== on) {
                 block.setPermutation(block.permutation.withState(STATE_POWERED, on));
             }
@@ -158,11 +173,12 @@ export function pollInputs() {
             console.warn(`[Starstone] Input poll deferred: ${error.message}`);
         }
     }
+    syncInputTimer();
 }
 
 export function registerRedstoneAdapters() {
     if (registered) return;
     subscribeNetworkDiscovery(observeSources);
-    system.runInterval(pollInputs, INPUT_POLL_TICKS);
     registered = true;
+    syncInputTimer();
 }

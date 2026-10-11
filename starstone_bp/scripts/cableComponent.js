@@ -24,6 +24,12 @@ for (let axis=0; axis<3; axis++) for (let other=axis+1; other<3; other++) {
 const same = (a,b) => a.every((value,i)=>value===b[i]);
 const pending = new Map();
 const discoveries = new Map();
+let flushScheduled = false;
+function scheduleFlush() {
+    if (flushScheduled) return;
+    flushScheduled = true;
+    system.run(() => { flushScheduled = false; flushPending(); });
+}
 function read(dim, location) {
     try {
         if (dim.isChunkLoaded?.(location) === false) return undefined;
@@ -40,6 +46,7 @@ export function scheduleAffected(block) {
     for (const [dx,dy,dz] of OFFSETS) {
         queue(pending, dimension, { x: location.x + dx, y: location.y + dy, z: location.z + dz });
     }
+    scheduleFlush();
 }
 export function schedulePlaced(block) {
     trackInput(block);
@@ -324,5 +331,4 @@ export function registerCableComponent() {
     world.afterEvents.playerPlaceBlock?.subscribe(event => {
         if (event.block) scheduleAffected(event.block);
     });
-    system.runInterval(flushPending, 1);
 }

@@ -1,6 +1,15 @@
 ﻿import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { mc, fixture, drain, intervals, player } from './runtimeFixture.mjs';
+let currentTick=0;
+const scheduledIntervals=new Map(); let intervalSerial=0;
+globalThis.__mcRunInterval=(callback,period)=>{
+    intervals.push(callback);
+    const id=++intervalSerial;
+    scheduledIntervals.set(id,{callback,period,next:currentTick+period});
+    return id;
+};
+globalThis.__mcClearRun=id=>scheduledIntervals.delete(id);
 const definitions = new Map();
 mc.system.beforeEvents = { startup:{ subscribe(cb) { cb({ blockComponentRegistry:{ registerCustomComponent(id,definition) {
     assert.ok(!definitions.has(id),`duplicate registration ${id}`); definitions.set(id,definition);
@@ -25,10 +34,24 @@ const runtime = (await import('../starstone_bp/scripts/networkRuntime.js')).defa
 const { createPlacementIndex } = await import('../starstone_bp/scripts/persistence.js');
 const saved = () => createPlacementIndex(mc.world).positionsInChunk('minecraft:overworld',0,0);
 function fire(name,event) { for (const cb of globalThis.__mcWorldSubscribers[name] || []) cb(event); }
-async function tick() { await drain(); for (const cb of intervals) cb(); await drain(); }
+async function tick() {
+    await drain(); currentTick++;
+    for (const task of scheduledIntervals.values()) if (task.next<=currentTick) {
+        task.next=currentTick+task.period; task.callback();
+    }
+    await drain();
+}
+function liveFixture() {
+    const f=fixture();
+    // Controllers resolve dimensions by id during deferred index validation.
+    // Each scenario replaces the fake overworld, so the world lookup must point
+    // at this scenario, rather than a previous discovery's cached dimension.
+    globalThis.__mcDimensions=new Map([[f.dim.id,f.dim]]);
+    return f;
+}
 for (const last of ['generator','lamp','cable']) {
     runtime.clearNetworks();
-    const f = fixture();
+    const f = liveFixture();
     const gen = f.put('starstone:generator',0,0,0);
     const cable = f.put('starstone:cable',1,0,0);
     const lamp = f.put('starstone:lamp',2,0,0);
@@ -52,7 +75,7 @@ for (const last of ['generator','lamp','cable']) {
     assert.ok(!saved().some(p => p.x === 1 && p.y === 0 && p.z === 0),'support drop removes placement hint');
     assert.equal(lamp.permutation.getState('starstone:powered'),false,'support event must split network');
 }
-const f = fixture();
+const f = liveFixture();
 const user = player(f.dim);
 commandHandler({id:'starstone:debug',sourceEntity:user,message:'on'});
 assert.equal(props.get('starstone:diagnostics:debug'),'on');
@@ -75,7 +98,7 @@ assert.ok(!saved().some(p => p.x === 0 && p.y === 0 && p.z === 0),'break removes
 // Generator collection accepts hand and other tools. Its ordinary native break
 // must still invoke placement-index/topology/support removal hooks.
 runtime.clearNetworks();
-const harvestWorld = fixture();
+const harvestWorld = liveFixture();
 const harvestSource = harvestWorld.put('starstone:generator',0,0,0);
 const harvestLamp = harvestWorld.put('starstone:lamp',1,0,0);
 harvestWorld.put('minecraft:stone',1,-1,0);
