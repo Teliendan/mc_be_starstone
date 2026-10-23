@@ -1,6 +1,6 @@
 // powerPropagation.js
 //
-// Task 4.3 â€” apply binary power to electrical blocks. Given a registered
+// Task 4.3 — apply binary power to electrical blocks. Given a registered
 // runtime network, write the network's `powered` result into every node's
 // applicable block state:
 //
