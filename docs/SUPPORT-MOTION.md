@@ -45,5 +45,5 @@ reported game lag. This is a qualitative result for the deployed combined setup,
 not an independent Starstone benchmark or acceptance of every motion/loot case.
 Do not attribute that recovery to later electrical optimizations. Avoid permanent
 fast per-block support polling; prefer native survival and bounded event-local
-work with the cheapest correct fallback. Workspace docs/bedrock-script-performance.md
+work with the cheapest correct fallback. Workspace .claude/skills/bedrock-scripting/references/performance.md
 records the shared lesson.

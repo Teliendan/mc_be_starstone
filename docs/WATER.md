@@ -3,7 +3,7 @@
 2026-10-09, Bedrock 1.26.52 / API 2.8.0. **Implemented; deployment authorized; not yet verified in game.**
 Owner accepted the revised policy, including the lamp's custom waterlogging behavior.
 The owner's later repeater/comparator comparison supersedes the first recommendation
-that supported electrical parts pop. Full evidence: C:/mcmods/docs/vanilla-water-counterparts.md.
+that supported electrical parts pop. Evidence: .claude/skills/bedrock-blocks/references/water.md (full research: workspace git 30442bb and earlier).
 
 | Block ID (prefix `starstone:`) | Bucket waterlogging | Incoming flow | Analogue / reason |
 | --- | --- | --- | --- |
