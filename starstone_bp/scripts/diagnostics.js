@@ -106,7 +106,7 @@ export function diagnose(player, rawMessage = "") {
     const lines = [
         message("diagnose.counts", runtime.networkCount(), runtime.nodeCount(), isRebuildRunning() ? 1 : 0),
         message("diagnose.validation", mutations.running ? 1 : 0, mutations.lastChecked, mutations.validationBudget, mutations.validationInterval),
-        message("diagnose.logical", chunks.logicalNetworks, chunks.running ? 1 : 0, chunks.retry, adapters.registeredInputs, adapters.lastPolled),
+        message("diagnose.logical", chunks.logicalNetworks, chunks.running ? 1 : 0, chunks.retry, adapters.registeredInputs, adapters.initialReads),
         // Counts all this addon's WORLD properties, including both saved banks;
         // this is neither active-segment bytes alone nor script heap memory.
         message("diagnose.power", power.queued, power.peakQueued, power.planning, bytes)

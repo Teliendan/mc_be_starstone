@@ -49,9 +49,6 @@
     "inner-corner": [
       "innerCorner.test.mjs"
     ],
-    "input-probe": [
-      "inputProbe.test.mjs"
-    ],
     "integration-regression": [
       "integrationRegression.test.mjs"
     ],
@@ -131,12 +128,7 @@
       "eventWiring.test.mjs",
       "survival.test.mjs"
     ],
-    "input-compatibility": [
-      "inputCompatibility.test.mjs"
-    ],
     "input-investigation": [
-      "inputCompatibility.test.mjs",
-      "inputProbe.test.mjs",
       "redstoneAdapters.test.mjs",
       "powerBudget.test.mjs",
       "powerPropagation.test.mjs",
@@ -146,8 +138,6 @@
       "redstoneAdapters.test.mjs",
       "supportConnections.test.mjs",
       "eventWiring.test.mjs",
-      "inputProbe.test.mjs",
-      "inputCompatibility.test.mjs",
       "powerBudget.test.mjs",
       "powerPropagation.test.mjs",
       "staleMetadata.test.mjs"

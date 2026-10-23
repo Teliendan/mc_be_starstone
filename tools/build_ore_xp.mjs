@@ -1,6 +1,6 @@
 // Native Bedrock XP orbs. Rebuild: node tools/build_ore_xp.mjs
 // Bedrock stores an Int named "experience value", not Java's Short "Value".
-// Sources and native acceptance limits: docs/ORE_EXPERIENCE.md.
+// Sources and native acceptance limits: docs/VANILLA_PARITY.md.
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';

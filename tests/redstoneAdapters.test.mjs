@@ -6,7 +6,6 @@ const {recheckInputs,trackInput,adapterStats,registerRedstoneAdapters,reactToRed
 const {discoverAndRegisterNetwork}=await import('../starstone_bp/scripts/networkController.js');
 const {applyPower}=await import('../starstone_bp/scripts/powerPropagation.js');
 const {default:runtime}=await import('../starstone_bp/scripts/networkRuntime.js');
-const {configureNetworkPersistence}=await import('../starstone_bp/scripts/networkEvents.js');
 const timers=new Map();let timerSerial=0;
 globalThis.__mcRunInterval=(fn,ticks)=>{const id=++timerSerial;timers.set(id,{fn,ticks});return id;};
 globalThis.__mcClearRun=id=>timers.delete(id);
@@ -54,24 +53,22 @@ for(const face of FACE_LIST) {
     assert.equal(output.writes,before+2,`dispatched two-tick pulse at phase ${phase}`);
   }
   input.redstonePower=15;recheckInputs();await drain();
-  assert.equal(output.permutation.getState('starstone:powered'),true,'recovery initializes a powered receiver without an event');
-  input.redstonePower=undefined;recheckInputs();await drain();
-  assert.equal(input.permutation.getState('starstone:powered'),true,'undefined receiver read is not off');
-  f.unloaded.add('0,0,0');input.redstonePower=0;recheckInputs();await drain();
-  assert.equal(input.permutation.getState('starstone:powered'),true,'unloaded receiver retains committed state');
-  f.unloaded.clear();recheckInputs();await drain();
-  assert.equal(output.permutation.getState('starstone:powered'),false,'reloaded receiver reconciles native zero');
+  assert.equal(input.permutation.getState('starstone:powered'),false,'periodic pass never reads power; callbacks own it');
   const [rx,ry,rz]=worldOffset(face,'local_n');f.put('minecraft:lever',rx,ry,rz);
   recheckInputs();await drain();assert.ok(input.permutation.getState('starstone:redstone_connections'),'slow refresh retains command-edit cosmetics');
-  let fail=true,commits=0;
-  configureNetworkPersistence({sourceChanged:()=>{commits++;if(fail)throw new Error('storage unavailable');return false;}});
-  const warn=console.warn;console.warn=()=>{};
-  try {event(input,15);} finally {console.warn=warn;}
-  fail=false;recheckInputs();await drain();
-  assert.equal(commits,2);assert.equal(output.permutation.getState('starstone:powered'),true);
-  configureNetworkPersistence({});
   f.store.delete('0,0,0');recheckInputs();await drain();
   assert.equal(timers.size,0,'last stale receiver stops its timer');
+}
+// First tracking reads the input's own power once (load/placement initialisation).
+{
+  runtime.clearNetworks();
+  const f=fixture();f.dim.id='test:initial_read';
+  const b=f.put('starstone:redstone_input',0,0,0);b.redstonePower=15;
+  trackInput(b);await drain();
+  assert.equal(b.permutation.getState('starstone:powered'),true,'initial read powers a pre-powered input');
+  b.redstonePower=0;recheckInputs();await drain();
+  assert.equal(b.permutation.getState('starstone:powered'),true,'later passes do not re-read power');
+  f.store.delete('0,0,0');recheckInputs();await drain();
 }
 // Two native sources retain binary OR ownership without a topology rebuild.
 {
@@ -97,7 +94,7 @@ const batch=fixture();batch.dim.id='test:bounded_inputs';
 try {
   for(let x=0;x<100;x++){const b=batch.put('starstone:redstone_input',x,0,0);b.redstonePower=0;trackInput(b);}
   assert.equal(callbacks.length,1,'new receivers share one deferred recovery batch');
-  callbacks.shift()();assert.equal(adapterStats().lastPolled,32);
+  const reads=adapterStats().initialReads;callbacks.shift()();assert.equal(adapterStats().initialReads-reads,32);
   assert.equal(adapterStats().queuedRechecks,68);assert.equal(callbacks.length,1);
   while(callbacks.length)callbacks.shift()();
   for(let x=0;x<100;x++)batch.store.delete(`${x},0,0`);
@@ -114,4 +111,4 @@ const input=JSON.parse(fs.readFileSync('starstone_bp/blocks/redstone_input.json'
 assert.equal(input.format_version,'1.26.0');
 assert.deepEqual(input['minecraft:block'].components['minecraft:redstone_consumer'],{min_power:0,propagates_power:false});
 assert.ok(input['minecraft:block'].components['minecraft:liquid_detection'].detection_rules.every(r=>r.use_liquid_clipping===true));
-console.log('native inputs: six mounts, dispatched pulse phases, analog dedup, source ownership, recovery/failure gates and bounded work passed');
+console.log('native inputs: six mounts, dispatched pulse phases, analog dedup, source ownership, initial read and bounded work passed');

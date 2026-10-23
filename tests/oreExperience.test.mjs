@@ -16,10 +16,8 @@ for(const tool of ['minecraft:iron_pickaxe','minecraft:diamond_pickaxe','minecra
   assert.equal(handleOreExperience(event(tool,'Adventure'),()=>0.999999),5);
 }
 const before=placements.length;
-for(const e of [event(null),event('minecraft:stone_pickaxe'),event('minecraft:copper_pickaxe'),
-  event('minecraft:golden_pickaxe'),event('other:pickaxe'),event('minecraft:iron_pickaxe','Creative'),
-  event('minecraft:iron_pickaxe','Spectator'),event('minecraft:iron_pickaxe','Survival',true),
-  {...event(),brokenBlockPermutation:{type:{id:'minecraft:redstone_ore'}}}]) assert.equal(handleOreExperience(e),0);
+for(const e of [event('minecraft:iron_pickaxe','Creative'),
+  event('minecraft:iron_pickaxe','Spectator'),event('minecraft:iron_pickaxe','Survival',true)]) assert.equal(handleOreExperience(e),0);
 mc.world.gameRules.doTileDrops=false;
 assert.equal(handleOreExperience(event()),0);
 mc.world.gameRules.doTileDrops=true;

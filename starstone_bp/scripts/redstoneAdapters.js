@@ -10,11 +10,12 @@ import { anySourceOn } from "./networkController.js";
 import { applyPower } from "./powerPropagation.js";
 import { sourceChanged, subscribeNetworkDiscovery } from "./networkEvents.js";
 
-export const INPUT_RECHECK_TICKS = 100; // Recovery/cosmetics; native events own signal changes.
+export const INPUT_RECHECK_TICKS = 100; // Cosmetic refresh only; native events own signal changes.
 export const INPUT_RECHECK_BATCH = 32;
 const inputs = new Map();
 const rechecks = new Set();
-let registered = false, lastPolled = 0, transitions = 0;
+const initial = new Set(); // Inputs whose first power read is still pending.
+let registered = false, initialReads = 0, transitions = 0;
 let inputTimer;
 let recheckScheduled = false;
 
@@ -23,12 +24,14 @@ function syncInputTimer() {
     else if (!inputs.size && inputTimer !== undefined) { system.clearRun(inputTimer); inputTimer = undefined; }
 }
 
-export function trackInput(block) {
+// fromEvent: the callback is the first power authority, so no initial read.
+export function trackInput(block, fromEvent = false) {
     if (!block?.isValid || block.typeId !== REDSTONE_INPUT_ID) return;
     const key = blockKey(block.dimension, block.location);
     if (!inputs.has(key)) {
         inputs.set(key, { dimension: block.dimension, location: { ...block.location }, last: undefined });
         rechecks.add(key);
+        if (!fromEvent) initial.add(key);
         scheduleRechecks();
     }
     syncInputTimer();
@@ -36,7 +39,7 @@ export function trackInput(block) {
 }
 
 export function adapterStats() {
-    return { mode: "native", registeredInputs: inputs.size, lastPolled, transitions,
+    return { mode: "native", registeredInputs: inputs.size, initialReads, transitions,
         interval: INPUT_RECHECK_TICKS, recheckBudget: INPUT_RECHECK_BATCH, queuedRechecks: rechecks.size };
 }
 
@@ -136,8 +139,9 @@ function commitInput(block, input, on, visualsReady = false) {
 // Compare against committed/live state, not previousPowerLevel (previous tick).
 export function reactToRedstoneUpdate(event) {
     const block = event.block;
-    const input = trackInput(block);
+    const input = trackInput(block, true);
     if (!input) return;
+    initial.delete(blockKey(block.dimension, block.location));
     try { commitInput(block, input, event.powerLevel > 0); }
     catch (error) { console.warn(`[Starstone] Native input update deferred: ${error.message}`); }
 }
@@ -150,7 +154,6 @@ function scheduleRechecks() {
 }
 
 function processRechecks() {
-    lastPolled = 0;
     let visited = 0;
     for (const key of rechecks) {
         if (visited++ >= INPUT_RECHECK_BATCH) break;
@@ -162,17 +165,19 @@ function processRechecks() {
             if (!dimension.isChunkLoaded(location)) continue;
             const block = dimension.getBlock(location);
             if (!block?.isValid) continue;
-            if (block.typeId !== REDSTONE_INPUT_ID) { inputs.delete(key); continue; }
+            if (block.typeId !== REDSTONE_INPUT_ID) { inputs.delete(key); initial.delete(key); continue; }
             refreshAdapterVisuals(block);
-            // Recovery uses receiver power too. Undefined does not establish off.
-            const power = block.getRedstonePower();
-            if (power === undefined) continue;
-            lastPolled++;
-            commitInput(block, input, power > 0, true);
+            // Only the first tracking reads the block's own power (load/placement
+            // initialisation); afterwards callbacks are the only power authority.
+            if (initial.delete(key)) {
+                const power = block.getRedstonePower();
+                if (power !== undefined) {
+                    initialReads++;
+                    commitInput(block, input, power > 0, true);
+                }
+            }
         } catch (error) {
-            // Preserve the last committed input value so a transient storage
-            // or world-access failure retries instead of silently losing power.
-            console.warn(`[Starstone] Input recovery deferred: ${error.message}`);
+            console.warn(`[Starstone] Input refresh failed: ${error.message}`);
         }
     }
     recheckScheduled = false;
