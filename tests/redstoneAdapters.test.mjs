@@ -1,72 +1,117 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { fixture, drain } from './runtimeFixture.mjs';
-import { FACE_LIST, worldOffset, supportOffset } from '../starstone_bp/scripts/surfaceFrame.js';
-const { pollInputs, trackInput, adapterStats, registerRedstoneAdapters } = await import('../starstone_bp/scripts/redstoneAdapters.js');
-const { discoverAndRegisterNetwork } = await import('../starstone_bp/scripts/networkController.js');
-const { applyPower } = await import('../starstone_bp/scripts/powerPropagation.js');
-const {default:runtime} = await import('../starstone_bp/scripts/networkRuntime.js');
-const timers = new Map(); let timerSerial = 0;
-globalThis.__mcRunInterval = (fn, ticks) => { const id = ++timerSerial; timers.set(id,{fn,ticks}); return id; };
-globalThis.__mcClearRun = id => timers.delete(id);
-
+import {fixture,drain} from './runtimeFixture.mjs';
+import {FACE_LIST,worldOffset,supportOffset} from '../starstone_bp/scripts/surfaceFrame.js';
+const {recheckInputs,trackInput,adapterStats,registerRedstoneAdapters,reactToRedstoneUpdate}=await import('../starstone_bp/scripts/redstoneAdapters.js');
+const {discoverAndRegisterNetwork}=await import('../starstone_bp/scripts/networkController.js');
+const {applyPower}=await import('../starstone_bp/scripts/powerPropagation.js');
+const {default:runtime}=await import('../starstone_bp/scripts/networkRuntime.js');
+const {configureNetworkPersistence}=await import('../starstone_bp/scripts/networkEvents.js');
+const timers=new Map();let timerSerial=0;
+globalThis.__mcRunInterval=(fn,ticks)=>{const id=++timerSerial;timers.set(id,{fn,ticks});return id;};
+globalThis.__mcClearRun=id=>timers.delete(id);
 registerRedstoneAdapters();
-assert.equal(timers.size,0,'no input timer before discovery');
-for (const face of FACE_LIST) {
-    runtime.clearNetworks();
-    const f = fixture(); f.dim.id=`test:adapter_${face}`;
-    const input=f.put('starstone:redstone_input',0,0,0,{'minecraft:block_face':face});
-    const [sx,sy,sz]=supportOffset(face);
-    const support=f.put('minecraft:stone',sx,sy,sz);
-    let level=0; support.getRedstonePower=()=>level;
-    const [x,y,z]=worldOffset(face,'local_e');
-    const output=f.put('starstone:redstone_output',x,y,z,{'minecraft:block_face':face});
-    f.put('minecraft:stone',x+sx,y+sy,z+sz);
-    const pending=discoverAndRegisterNetwork(input); await drain(); const net=await pending;
-    assert.equal(timers.size,1,'only one timer for tracked inputs');
-    assert.equal([...timers.values()][0].ticks,4,'six-neighbor response remains four ticks');
-    let reads=0;
-    const getBlock=f.dim.getBlock;
-    f.dim.getBlock=p=>{ reads++; return getBlock(p); };
-    pollInputs();
-    assert.equal(reads,7,'stable off input reads itself and six neighbors, not eight visual neighbors');
-    f.dim.getBlock=getBlock;
-    const [rx,ry,rz]=worldOffset(face,'local_n');
-    f.put('minecraft:lever',rx,ry,rz);
-    for(let i=0;i<24;i++) pollInputs();
-    assert.ok(input.permutation.getState('starstone:redstone_connections'),'slow cosmetic fallback catches command edits without a power edge');
-    assert.ok(net.sources.has(`${f.dim.id}|0|0|0#main`),'off input is still a source');
-    const id=runtime.networkIdOf(`${f.dim.id}|0|0|0#main`);
-    // Discovery subscription alone must register an existing input on reload.
-    level=1; pollInputs(); await drain();
-    assert.equal(output.permutation.getState('starstone:powered'),true,`${face} support0->1`);
-    const count=adapterStats().transitions, writes=output.writes;
-    level=15; pollInputs(); await drain();
-    assert.equal(adapterStats().transitions,count,'1->15 is not a binary change');
-    assert.equal(output.writes,writes);
-    level=0; pollInputs(); await drain();
-    assert.equal(output.permutation.getState('starstone:powered'),false,`${face} support15->0`);
-    assert.equal(runtime.networkIdOf(`${f.dim.id}|0|0|0#main`),id,'input changes do not rebuild topology');
-    applyPower({...net,powered:true},f.dim); await drain();
-    assert.equal(input.permutation.getState('starstone:powered'),false,'Starstone power cannot write the redstone input source flag');
-    f.unloaded.add(`${sx},${sy},${sz}`); level=15;
-    pollInputs(); await drain();
-    assert.equal(input.permutation.getState('starstone:powered'),false,'unavailable support retains source state');
-    f.unloaded.clear(); pollInputs(); await drain();
-    assert.equal(input.permutation.getState('starstone:powered'),true);
-    f.store.delete('0,0,0'); const before=adapterStats().registeredInputs;
-    pollInputs(); assert.equal(adapterStats().registeredInputs,before-1,'stale input removed');
-    assert.equal(timers.size,0,'last removed input stops timer');
+assert.equal(timers.size,0,'no idle input recovery timer');
+const event=(input,power,previous=0)=>{
+  input.redstonePower=power;
+  reactToRedstoneUpdate({block:input,powerLevel:power,previousPowerLevel:previous});
+};
+for(const face of FACE_LIST) {
+  runtime.clearNetworks();
+  const f=fixture();f.dim.id=`test:native_${face}`;
+  const input=f.put('starstone:redstone_input',0,0,0,{'minecraft:block_face':face});input.redstonePower=0;
+  const [sx,sy,sz]=supportOffset(face);const support=f.put('minecraft:stone',sx,sy,sz);
+  const [x,y,z]=worldOffset(face,'local_e');
+  const output=f.put('starstone:redstone_output',x,y,z,{'minecraft:block_face':face});
+  f.put('minecraft:stone',x+sx,y+sy,z+sz);
+  const pending=discoverAndRegisterNetwork(input);await drain();const net=await pending;
+  const id=runtime.networkIdOf(`${f.dim.id}|0|0|0#main`);
+  assert.equal(timers.size,1);assert.equal([...timers.values()][0].ticks,100,'slow recovery, not signal polling');
+  assert.equal(adapterStats().mode,'native');
+  support.redstonePower=15;recheckInputs();await drain();
+  assert.equal(input.permutation.getState('starstone:powered'),false,'neighbor-only power cannot override receiver off');
+  event(input,1);assert.equal(input.permutation.getState('starstone:powered'),true,'native source commits in callback');
+  await drain();assert.equal(output.permutation.getState('starstone:powered'),true,`${face} native on`);
+  const count=adapterStats().transitions,writes=output.writes;
+  event(input,15,1);event(input,7,15);await drain();
+  assert.equal(adapterStats().transitions,count,'analog changes do not create binary edges');assert.equal(output.writes,writes);
+  event(input,0,7);await drain();
+  assert.equal(output.permutation.getState('starstone:powered'),false,`${face} native off despite powered neighbor`);
+  assert.equal(runtime.networkIdOf(`${f.dim.id}|0|0|0#main`),id,'native changes preserve topology');
+  applyPower({...net,powered:true},f.dim);await drain();
+  assert.equal(input.permutation.getState('starstone:powered'),false,'blue conduction cannot overwrite red source');
+  applyPower({...net,powered:false},f.dim);await drain();
+  // Dispatched callback cases, not native observer/game measurements.
+  event(input,0);await drain();
+  for(let phase=0;phase<4;phase++) {
+    const before=output.writes;
+    for(let tick=0;tick<8;tick++) {
+      if(tick===phase)event(input,15);
+      if(tick===phase+2)event(input,0,15);
+      await drain();
+      assert.equal(output.permutation.getState('starstone:powered'),tick>=phase&&tick<phase+2);
+    }
+    assert.equal(output.writes,before+2,`dispatched two-tick pulse at phase ${phase}`);
+  }
+  input.redstonePower=15;recheckInputs();await drain();
+  assert.equal(output.permutation.getState('starstone:powered'),true,'recovery initializes a powered receiver without an event');
+  input.redstonePower=undefined;recheckInputs();await drain();
+  assert.equal(input.permutation.getState('starstone:powered'),true,'undefined receiver read is not off');
+  f.unloaded.add('0,0,0');input.redstonePower=0;recheckInputs();await drain();
+  assert.equal(input.permutation.getState('starstone:powered'),true,'unloaded receiver retains committed state');
+  f.unloaded.clear();recheckInputs();await drain();
+  assert.equal(output.permutation.getState('starstone:powered'),false,'reloaded receiver reconciles native zero');
+  const [rx,ry,rz]=worldOffset(face,'local_n');f.put('minecraft:lever',rx,ry,rz);
+  recheckInputs();await drain();assert.ok(input.permutation.getState('starstone:redstone_connections'),'slow refresh retains command-edit cosmetics');
+  let fail=true,commits=0;
+  configureNetworkPersistence({sourceChanged:()=>{commits++;if(fail)throw new Error('storage unavailable');return false;}});
+  const warn=console.warn;console.warn=()=>{};
+  try {event(input,15);} finally {console.warn=warn;}
+  fail=false;recheckInputs();await drain();
+  assert.equal(commits,2);assert.equal(output.permutation.getState('starstone:powered'),true);
+  configureNetworkPersistence({});
+  f.store.delete('0,0,0');recheckInputs();await drain();
+  assert.equal(timers.size,0,'last stale receiver stops its timer');
 }
-const f=fixture();
-for(let x=0;x<1000;x++) trackInput(f.put('starstone:cable',x,0,0));
-assert.equal(adapterStats().registeredInputs,0,'cables never enter polling registry');
+// Two native sources retain binary OR ownership without a topology rebuild.
+{
+  runtime.clearNetworks();
+  const f=fixture();f.dim.id='test:two_native_sources';
+  const left=f.put('starstone:redstone_input',0,0,0),right=f.put('starstone:redstone_input',2,0,0);
+  const lamp=f.put('starstone:lamp',1,0,0);
+  for(let x=0;x<3;x++)f.put('minecraft:stone',x,-1,0);
+  left.redstonePower=0;right.redstonePower=0;
+  const pending=discoverAndRegisterNetwork(left);await drain();await pending;
+  event(left,15);event(right,15);await drain();
+  event(left,0,0);await drain();
+  assert.equal(lamp.permutation.getState('starstone:powered'),true,'another native source keeps the network on');
+  event(right,0,0);await drain();
+  assert.equal(lamp.permutation.getState('starstone:powered'),false,'current committed state beats previousPowerLevel on final off');
+  f.store.delete('0,0,0');f.store.delete('2,0,0');recheckInputs();await drain();
+}
+// Bounded recovery avoids reading every registered receiver in one callback.
+runtime.clearNetworks();
+const callbacks=[],oldRun=globalThis.__mcRun;
+globalThis.__mcRun=cb=>{callbacks.push(cb);return callbacks.length;};
+const batch=fixture();batch.dim.id='test:bounded_inputs';
+try {
+  for(let x=0;x<100;x++){const b=batch.put('starstone:redstone_input',x,0,0);b.redstonePower=0;trackInput(b);}
+  assert.equal(callbacks.length,1,'new receivers share one deferred recovery batch');
+  callbacks.shift()();assert.equal(adapterStats().lastPolled,32);
+  assert.equal(adapterStats().queuedRechecks,68);assert.equal(callbacks.length,1);
+  while(callbacks.length)callbacks.shift()();
+  for(let x=0;x<100;x++)batch.store.delete(`${x},0,0`);
+  recheckInputs();while(callbacks.length)callbacks.shift()();
+} finally {globalThis.__mcRun=oldRun;}
+assert.equal(timers.size,0);
+const other=fixture();trackInput(other.put('starstone:cable',0,0,0));
+assert.equal(adapterStats().registeredInputs,0,'non-input blocks are never registered');
 const output=JSON.parse(fs.readFileSync('starstone_bp/blocks/redstone_output.json','utf8'))['minecraft:block'];
 const base=output.components['minecraft:redstone_producer'];
 const on=output.permutations.find(p=>p.components['minecraft:redstone_producer']).components['minecraft:redstone_producer'];
-for(const [component,power] of [[base,0],[on,15]]) {
-    assert.deepEqual(component,{power,connected_faces:['down','up','north','south','west','east'],strongly_powered_face:'down',transform_relative:true});
-}
-for(const face of FACE_LIST) assert.ok(output.permutations.some(p=>p.condition.includes(`'${face}'`) && p.components['minecraft:transformation']));
-const input=JSON.parse(fs.readFileSync('starstone_bp/blocks/redstone_input.json','utf8'))['minecraft:block'];
-assert.ok(!input.components['minecraft:redstone_consumer'],'native self-power has not been proven equivalent to six-neighbor sensing');
+for(const [component,power] of [[base,0],[on,15]])assert.deepEqual(component,{power,connected_faces:['down','up','north','south','west','east'],strongly_powered_face:'down',transform_relative:true});
+const input=JSON.parse(fs.readFileSync('starstone_bp/blocks/redstone_input.json','utf8'));
+assert.equal(input.format_version,'1.26.0');
+assert.deepEqual(input['minecraft:block'].components['minecraft:redstone_consumer'],{min_power:0,propagates_power:false});
+assert.ok(input['minecraft:block'].components['minecraft:liquid_detection'].detection_rules.every(r=>r.use_liquid_clipping===true));
+console.log('native inputs: six mounts, dispatched pulse phases, analog dedup, source ownership, recovery/failure gates and bounded work passed');

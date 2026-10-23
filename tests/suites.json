@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "suites": {
+    "adapter-visual": [
+      "adapterVisual.test.mjs"
+    ],
+    "block-keys": [
+      "blockKeys.test.mjs"
+    ],
+    "cable-direction-regression": [
+      "cableDirectionRegression.test.mjs"
+    ],
+    "cable-topology": [
+      "cableTopology.test.mjs"
+    ],
+    "cable-visual": [
+      "cableVisual.test.mjs"
+    ],
+    "chunk-controller": [
+      "chunkController.test.mjs"
+    ],
+    "chunk-segments": [
+      "chunkSegments.test.mjs"
+    ],
+    "descriptor": [
+      "descriptor.test.mjs"
+    ],
+    "diagnostics": [
+      "diagnostics.test.mjs"
+    ],
+    "dirty-queue": [
+      "dirtyQueue.test.mjs"
+    ],
+    "event-wiring": [
+      "eventWiring.test.mjs"
+    ],
+    "generator-toggle": [
+      "generatorToggle.test.mjs"
+    ],
+    "graph-neighbor": [
+      "graphNeighbor.test.mjs"
+    ],
+    "harvest-gate": [
+      "harvestGate.test.mjs"
+    ],
+    "harvest-wear": [
+      "harvestWear.test.mjs"
+    ],
+    "inner-corner": [
+      "innerCorner.test.mjs"
+    ],
+    "input-probe": [
+      "inputProbe.test.mjs"
+    ],
+    "integration-regression": [
+      "integrationRegression.test.mjs"
+    ],
+    "mutation": [
+      "mutation.test.mjs"
+    ],
+    "network-merge": [
+      "networkMerge.test.mjs"
+    ],
+    "network-runtime": [
+      "networkRuntime.test.mjs"
+    ],
+    "network-split": [
+      "networkSplit.test.mjs"
+    ],
+    "ore-experience": [
+      "oreExperience.test.mjs"
+    ],
+    "ore-loot": [
+      "oreLoot.test.mjs"
+    ],
+    "outer-corner": [
+      "outerCorner.test.mjs"
+    ],
+    "pack-contract": [
+      "packContract.test.mjs"
+    ],
+    "persistence": [
+      "persistence.test.mjs"
+    ],
+    "piston": [
+      "piston.test.mjs"
+    ],
+    "placement-guard": [
+      "placementGuard.test.mjs"
+    ],
+    "port-directions": [
+      "portDirections.test.mjs"
+    ],
+    "power-budget": [
+      "powerBudget.test.mjs"
+    ],
+    "power-propagation": [
+      "powerPropagation.test.mjs"
+    ],
+    "redstone-adapters": [
+      "redstoneAdapters.test.mjs"
+    ],
+    "repair": [
+      "repair.test.mjs"
+    ],
+    "segment-graph": [
+      "segmentGraph.test.mjs"
+    ],
+    "stale-metadata": [
+      "staleMetadata.test.mjs"
+    ],
+    "support-connections": [
+      "supportConnections.test.mjs"
+    ],
+    "support-policy": [
+      "supportPolicy.test.mjs"
+    ],
+    "surface-frame": [
+      "surfaceFrame.test.mjs"
+    ],
+    "survival": [
+      "survival.test.mjs"
+    ],
+    "visual-geometry": [
+      "visualGeometry.test.mjs"
+    ],
+    "ore-parity": [
+      "oreExperience.test.mjs",
+      "oreLoot.test.mjs",
+      "harvestGate.test.mjs",
+      "eventWiring.test.mjs",
+      "survival.test.mjs"
+    ],
+    "input-compatibility": [
+      "inputCompatibility.test.mjs"
+    ],
+    "input-investigation": [
+      "inputCompatibility.test.mjs",
+      "inputProbe.test.mjs",
+      "redstoneAdapters.test.mjs",
+      "powerBudget.test.mjs",
+      "powerPropagation.test.mjs",
+      "staleMetadata.test.mjs"
+    ],
+    "native-input": [
+      "redstoneAdapters.test.mjs",
+      "supportConnections.test.mjs",
+      "eventWiring.test.mjs",
+      "inputProbe.test.mjs",
+      "inputCompatibility.test.mjs",
+      "powerBudget.test.mjs",
+      "powerPropagation.test.mjs",
+      "staleMetadata.test.mjs"
+    ]
+  },
+  "support_files": {
+    "run.mjs": "Full entry point; starts each feature runner in its own process.",
+    "runtimeFixture.mjs": "Shared lazy Minecraft API and world fixtures.",
+    "mutation-check.mjs": "Separate deliberate mutation experiment; not a regression runner.",
+    "stress.mjs": "Separate stress benchmark; not a regression runner."
+  }
+}

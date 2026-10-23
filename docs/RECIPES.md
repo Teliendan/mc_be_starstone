@@ -11,6 +11,7 @@ there is no craftable Dust shortcut.
 | 1 `starstone:inner_corner_item` | `C.` / `.C` | `C` Cable | Crafting table |
 | 1 `starstone:compressed_dust` | `.S.` / `SCS` / `.S.` | `S` Dust, `C` copper ingot | Crafting table |
 | 1 Crystal | 1 Compressed Dust + fuel | | Furnace |
+| 1 Dust | 1 Silk-Touched Starstone Ore + fuel | | Furnace or blast furnace |
 | 4 `starstone:bridge` | `.C.` / `CIC` / `.C.` | `C` Cable, `I` iron ingot | Crafting table |
 | 2 `starstone:conduit` | `.D.` / `CSC` / `.D.` | `D` Dust, `C` copper ingot, `S` chiseled stone bricks | Crafting table |
 | 1 `starstone:generator` | `CCC` / `SGS` / `CCC` | `C` copper ingot, `S` Crystal, `G` gold ingot | Crafting table |

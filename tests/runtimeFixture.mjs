@@ -77,6 +77,7 @@ export function fixture() {
         return {
             type: { id }, typeId: id, isValid: true, isAir: id === 'minecraft:air', isLiquid: false,
             dimension: dim, location: { x,y,z }, permutation: permutation(id, states), writes: 0,
+            getRedstonePower() { return this.redstonePower; },
             setPermutation(perm) { this.permutation = perm; this.writes++; },
             setType(typeId) { store.set(`${x},${y},${z}`, make(typeId,x,y,z,{})); }
         };

@@ -1,30 +1,32 @@
 # Script performance
 
-2026-10-11, Bedrock 1.26.52 / server 2.8.0. Offline evidence; engine performance
-and new scheduling still require in-game acceptance.
+2026-10-21, Bedrock1.26.52/server2.8.0. Offline evidence; engine profiling and
+native timing remain pending. The earlier support/idle optimization remains in
+place; implementation commit: `Reduce support polling and idle electrical script work`.
 
-The visual queue schedules one deferred flush on dirty work, coalesces events,
-and schedules another pass if work arrives during flushing. No idle per-tick
-flush timer remains. Native edit/piston hooks still mark affected positions.
+The visual queue schedules a deferred flush only on dirty work and coalesces
+edits. Native edit/piston hooks still mark affected positions. No idle per-tick
+flush timer exists.
 
-Inputs retain four-tick six-neighbor binary sensing and durable source updates.
-Native onRedstoneUpdate observes receiver power, which is not established as
-equivalent to the previous max of six neighboring getRedstonePower values.
-Do not silently alter six-face semantics, feedback or pulse response. No new
-redstone_consumer or format change was introduced. Timer starts on registration
-of the first input and stops after the last stale input is removed; unloaded
-entries remain for recovery.
+Owner-approved native input replaces the four-tick six-neighbor signal poll.
+Stable native callbacks commit binary receiver changes through the existing
+durable source owner and loaded-network fallback. Each edge may refresh local
+contacts; analog positive-level changes do not repeat binary work. Signal intake
+does not wait for a recovery timer.
 
-Static contacts no longer rebuild on every poll. Edit queues and binary power
-edges refresh them, with a once-per-25-loaded-polls cosmetic fallback for command
-edits and neighbors changing under constant aggregate power. Stable-off polling
-averages 7.32 direct block reads instead of 15 (including the fallback, excluding
-edit/power-edge work). This is a code bound, not a profiler/FPS result.
+Receiver recovery and cosmetic refresh run from known registered positions:
+one deferred initial check, then a100-tick interval, at most32 positions per
+deferred callback. Pending keys coalesce; no broad world volume is scanned.
+Steady source checking reads one native receiver value rather than six neighbor
+values. Undefined/unavailable reads retain state. The timer starts with the first
+tracked input and stops after the last stale entry is removed. Unloaded entries
+are retained. This is a code bound, not a profiler/FPS result.
 
-Tests: redstoneAdapters.test.mjs covers six mounted faces, source transitions,
-unknown support, timer lifecycle, read counts and slow cosmetic recovery;
-dirtyQueue.test.mjs covers coalescing, idle behavior and reentrant dirty work.
-Full event/persistence/network suites remain required. Workspace progress and
-native parity acceptance cases: docs/script-performance-progress.md at root.
+The power planner/write queue retains its32-node/16-write budgets and newer-state
+coalescing. No unbounded pulse queue or replay/stretching service is introduced.
+Actual short-pulse delivery in large networks remains a native acceptance check.
 
-Implementation commit: `Reduce support polling and idle electrical script work`.
+Tests: `redstoneAdapters.test.mjs`, real `eventWiring.test.mjs`, support/contacts,
+power, persistence and stale-metadata suites. Full verification runs42 feature
+runners. The optional script-only monitor observes production states and XP;
+it has no block definitions and runs its bounded timer only during a command.

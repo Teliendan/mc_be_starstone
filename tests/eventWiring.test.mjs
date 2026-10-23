@@ -119,4 +119,27 @@ await tick();
 assert.equal(harvestWorld.dim.getBlock(harvestSource.location).typeId,'minecraft:air');
 assert.equal(harvestLamp.permutation.getState('starstone:powered'),false,'native hand break must split powered network');
 assert.ok(!saved().some(p => p.x === 0 && p.y === 0 && p.z === 0),'native hand break must delete saved hint');
-console.log('event wiring: real main startup, attachments, device-last placement, source toggles, support breaks and commands passed');
+// The real entry point must connect eligible native ore breaks to XP placement.
+const xpPlacements=[];
+mc.world.gameRules={doTileDrops:true};
+mc.world.structureManager={place:(...args)=>xpPlacements.push(args)};
+const ore=harvestWorld.put('starstone:ore',5,0,0);
+const orePermutation=ore.permutation;
+harvestWorld.store.delete('5,0,0');
+fire('playerBreakBlock',{block:harvestWorld.dim.getBlock(ore.location),dimension:harvestWorld.dim,
+    brokenBlockPermutation:orePermutation,player:nativeBreak.player,
+    itemStackBeforeBreak:{typeId:'minecraft:iron_pickaxe',getComponent:()=>undefined}});
+assert.equal(xpPlacements.length,1,'main registers exactly one ore XP owner');
+assert.match(xpPlacements[0][0],/^starstone:ore_xp_[1-5]$/);
+assert.deepEqual(xpPlacements[0][3],{includeBlocks:false,includeEntities:true});
+const input=harvestWorld.put('starstone:redstone_input',10,0,0);input.redstonePower=0;
+const output=harvestWorld.put('starstone:redstone_output',11,0,0);
+harvestWorld.put('minecraft:stone',10,-1,0);harvestWorld.put('minecraft:stone',11,-1,0);
+fire('playerPlaceBlock',{block:input});await tick();
+const nativeInput=definitions.get('starstone:surface').onRedstoneUpdate;
+assert.equal(typeof nativeInput,'function','real surface registration includes stable native hook');
+input.redstonePower=15;nativeInput({block:input,powerLevel:15,previousPowerLevel:0});await tick();
+assert.equal(output.permutation.getState('starstone:powered'),true,'native hook powers discovered output');
+input.redstonePower=0;nativeInput({block:input,powerLevel:0,previousPowerLevel:15});await tick();
+assert.equal(output.permutation.getState('starstone:powered'),false,'native zero reaches output');
+console.log('event wiring: real startup, placement, toggles, support, commands, ore XP and native input on/off passed');

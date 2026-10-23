@@ -18,6 +18,12 @@ Starstone Ore drops 2–4 Dust when mined with an iron, diamond, or netherite
 pickaxe. Stone pickaxes are not sufficient. Silk Touch on a valid pickaxe drops
 the ore block. Fortune I, II, and III yield 3–5, 4–6, and 5–7 Dust.
 
+Eligible non-Silk player mining also releases1–5 XP through valued native orbs;
+see [ORE_EXPERIENCE.md](ORE_EXPERIENCE.md) for gates and pending native acceptance.
+Collected ore smelts to one Dust in a furnace or blast furnace. Ore underneath
+a note block selects the bass drum (`note.bd`); actual sound/cooking still need
+an in-game check. No generation or continuous level3-light setting changes.
+
 Native loot now owns mining and explosion drops. Its exclusive branches use
 positive enchantment ranges and 26.50 condition negation, avoiding the old
 in-game failure of matching a missing enchantment as level zero. Every owning

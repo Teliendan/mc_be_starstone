@@ -10,7 +10,7 @@ import { descriptorForBlock, cableDescriptor } from "./electricalBlocks.js";
 import { discoverAllLanes, captureRemovedNetworks, removeAndSplitNetwork } from "./networkController.js";
 import { CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID, KIND_BY_ID } from "./constants.js";
 import { placementIndex } from "./persistence.js";
-import { trackInput, refreshAdapterVisuals } from "./redstoneAdapters.js";
+import { trackInput, refreshAdapterVisuals, reactToRedstoneUpdate } from "./redstoneAdapters.js";
 import { queueMutation } from "./mutationController.js";
 import { pistonSupport } from "./pistonController.js";
 
@@ -267,6 +267,7 @@ export function registerCableComponent() {
                 }
             },
             onPlace({ block }) { schedulePlaced(block); },
+            onRedstoneUpdate: reactToRedstoneUpdate,
             onPlayerBreak({ block }) { scheduleAffected(block); }
         };
         init.blockComponentRegistry.registerCustomComponent("starstone:cable", surface);

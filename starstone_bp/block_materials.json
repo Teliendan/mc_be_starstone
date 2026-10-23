@@ -100,6 +100,11 @@
       "profile": "redstone_ore",
       "harvest": "Completed wrong-tool player breaks are removed without loot; iron/diamond/netherite gate retained. Native loot owns approved custom 2-4 Dust plus capped Fortune, Silk Touch and blast decay.",
       "property_checks": {
+        "minecraft:instrument_sound": {
+          "counterpart": "minecraft:redstone_ore",
+          "expected": { "up": "note.bd" },
+          "source": "https://wiki.ronlab.site/content/minecraftwiki_en_all_maxi_2025-11/Redstone_Ore; https://learn.microsoft.com/en-us/minecraft/creator/reference/content/blockreference/examples/blockcomponents/minecraftblock_instrument_sound"
+        },
         "RP:sound": {
           "counterpart": "minecraft:redstone_ore",
           "expected": "stone",

@@ -1,5 +1,22 @@
 # Verification coverage
 
+Feature selections are registered in `tests/suites.json`; list them with
+`mods suites starstone`. Group18 changes use `--suite ore-parity` and
+`--suite input-investigation`. The existing full runner still executes every
+`*.test.mjs` in separate processes. Ore XP tests independently decode committed
+native NBT and exercise event eligibility; the real-main event suite checks
+single award wiring. The script-only monitor checks recording/stop paths and
+absence of block overrides, not native receiver semantics or orb pickup/Mending.
+`inputCompatibility.test.mjs` independently exercises discrepancy interpretation,
+incomplete reads, observed source/conductor changes and refusal to infer equivalence from
+silence. It uses synthetic observations and is registered in input-investigation.
+`--suite native-input` selects native callback, support, real-main wiring,
+monitor and affected power/metadata runners. Full verification has42 runners.
+Native tests cover dispatched short-pulse phases, analog and multiple sources,
+failure retry, unknown/unloaded reads and32-position recovery batches. No beta
+dependency, firstUpdate or experimental neighbor callback is used. The script-
+only monitor's no-item/block/entity-definition warning is expected and informational.
+
 The shared verifier is `.claude/skills/bedrock-lookup/scripts/verify_addon.py`.
 It remains generic: no Starstone block IDs or gameplay rules are embedded in it.
 The original positional BP/RP invocation still works. Node.js is now required

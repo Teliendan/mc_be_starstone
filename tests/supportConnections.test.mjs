@@ -3,7 +3,7 @@ import { fixture, drain } from './runtimeFixture.mjs';
 import { FACE_LIST, supportOffset, worldOffset } from '../starstone_bp/scripts/surfaceFrame.js';
 import { supportMountAllowed, SUPPORT_SHAPE } from '../starstone_bp/scripts/supportPolicy.js';
 const { isSupportValid } = await import('../starstone_bp/scripts/support.js');
-const { readAdjacentRedstone, pollInputs, trackInput } = await import('../starstone_bp/scripts/redstoneAdapters.js');
+const { reactToRedstoneUpdate } = await import('../starstone_bp/scripts/redstoneAdapters.js');
 const { discoverAndRegisterNetwork } = await import('../starstone_bp/scripts/networkController.js');
 const { refreshCable } = await import('../starstone_bp/scripts/cableComponent.js');
 const runtime = (await import('../starstone_bp/scripts/networkRuntime.js')).default;
@@ -49,19 +49,12 @@ for (const face of FACE_LIST) {
     const tangentPending = discoverAndRegisterNetwork(input); await drain();
     assert.ok((await tangentPending).nodes.has(`${f.dim.id}|${tx}|${ty}|${tz}#main`),`${face} tangent source contact`);
 
-    // An unpowered support does not veto a powered touching redstone device.
-    const support = f.dim.getBlock({x:sx,y:sy,z:sz}); support.getRedstonePower = () => 0;
-    const neighbor = f.put('minecraft:redstone_block',tx,ty,tz); neighbor.getRedstonePower = () => 15;
-    assert.deepEqual(readAdjacentRedstone(input),{on:true,complete:true},`${face} adjacent drive`);
-    trackInput(input); pollInputs(); await drain();
+    // Native receiver delivery is independent of the graph contacts above.
+    input.redstonePower=15;
+    reactToRedstoneUpdate({block:input,powerLevel:15,previousPowerLevel:0});await drain();
     assert.equal(input.permutation.getState('starstone:powered'),true,`${face} input transition`);
-    neighbor.getRedstonePower = () => 0;
-    pollInputs(); await drain();
-    assert.equal(input.permutation.getState('starstone:powered'),false,`${face} turns off only after full sample`);
-    f.unloaded.add(`${tx},${ty},${tz}`);
-    assert.deepEqual(readAdjacentRedstone(input),{on:false,complete:false});
-    support.getRedstonePower = () => 15;
-    assert.equal(readAdjacentRedstone(input).on,true,`${face} loaded support can drive despite unavailable side`);
-    f.unloaded.clear();
+    input.redstonePower=0;
+    reactToRedstoneUpdate({block:input,powerLevel:0,previousPowerLevel:15});await drain();
+    assert.equal(input.permutation.getState('starstone:powered'),false,`${face} native off`);
 }
-console.log('support and contacts: all six faces, full Starstone supports, thin rejection, graph back/tangent contact and adjacent redstone passed');
+console.log('support and contacts: six faces, full supports, thin rejection, graph back/tangent contacts and native redstone passed');

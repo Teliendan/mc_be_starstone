@@ -2526,6 +2526,119 @@
           }
         }
       }
+    },
+    "starstone_input_probe_bp": {
+      "kind": "behavior",
+      "entries": {
+        "pack.name": {
+          "source": "Starstone — Native parity probe",
+          "context": {
+            "meaning": "Optional developer diagnostics for production native Starstone inputs and XP orbs. Observes input without overriding blocks; use a separate test world.",
+            "location": "Pack selection screen",
+            "trigger": "Viewing or activating the optional development pack",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Standalone title",
+            "constraints": "Preserve Starstone brand. Explain separate test world in the description."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Starstone — Test nativního chování",
+              "based_on": "184ae0f94729f56c79b449b3dd8aec56e8fc857d70ccc85d45084870dc69b642",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Starstone — Prueba de comportamiento nativo",
+              "based_on": "184ae0f94729f56c79b449b3dd8aec56e8fc857d70ccc85d45084870dc69b642",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Starstone — Prueba de comportamiento nativo",
+              "based_on": "184ae0f94729f56c79b449b3dd8aec56e8fc857d70ccc85d45084870dc69b642",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Starstone — Teste de comportamento nativo",
+              "based_on": "184ae0f94729f56c79b449b3dd8aec56e8fc857d70ccc85d45084870dc69b642",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Starstone — Teste de comportamento nativo",
+              "based_on": "184ae0f94729f56c79b449b3dd8aec56e8fc857d70ccc85d45084870dc69b642",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Starstone — Test für natives Verhalten",
+              "based_on": "184ae0f94729f56c79b449b3dd8aec56e8fc857d70ccc85d45084870dc69b642",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Starstone — Test du comportement natif",
+              "based_on": "184ae0f94729f56c79b449b3dd8aec56e8fc857d70ccc85d45084870dc69b642",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Starstone — Test zachowania natywnego",
+              "based_on": "184ae0f94729f56c79b449b3dd8aec56e8fc857d70ccc85d45084870dc69b642",
+              "status": "ai-draft"
+            }
+          }
+        },
+        "pack.description": {
+          "source": "Development diagnostics for Starstone inputs and XP orbs. Use in a separate test world.",
+          "context": {
+            "meaning": "Optional developer diagnostics for production native Starstone inputs and XP orbs. Observes input without overriding blocks; use a separate test world.",
+            "location": "Pack selection screen",
+            "trigger": "Viewing or activating the optional development pack",
+            "tone": "Clear Minecraft UI",
+            "grammar": "Complete description",
+            "constraints": "Preserve Starstone brand. Explain separate test world in the description."
+          },
+          "placeholders": [],
+          "translations": {
+            "cs_CZ": {
+              "text": "Vývojová diagnostika vstupů Starstone a koulí zkušeností. Používejte v samostatném testovacím světě.",
+              "based_on": "e61ba5edeb8cd4753f89fa06588dabf920eef2fb5f491e7f41a513e55aa3a62e",
+              "status": "ai-draft"
+            },
+            "es_ES": {
+              "text": "Diagnóstico de desarrollo para entradas Starstone y orbes de experiencia. Úsalo en un mundo de pruebas independiente.",
+              "based_on": "e61ba5edeb8cd4753f89fa06588dabf920eef2fb5f491e7f41a513e55aa3a62e",
+              "status": "ai-draft"
+            },
+            "es_MX": {
+              "text": "Diagnóstico de desarrollo para entradas Starstone y orbes de experiencia. Úsalo en un mundo de pruebas independiente.",
+              "based_on": "e61ba5edeb8cd4753f89fa06588dabf920eef2fb5f491e7f41a513e55aa3a62e",
+              "status": "ai-draft"
+            },
+            "pt_PT": {
+              "text": "Diagnóstico de desenvolvimento para entradas Starstone e orbes de experiência. Use num mundo de testes separado.",
+              "based_on": "e61ba5edeb8cd4753f89fa06588dabf920eef2fb5f491e7f41a513e55aa3a62e",
+              "status": "ai-draft"
+            },
+            "pt_BR": {
+              "text": "Diagnóstico de desenvolvimento para entradas Starstone e orbes de experiência. Use em um mundo de testes separado.",
+              "based_on": "e61ba5edeb8cd4753f89fa06588dabf920eef2fb5f491e7f41a513e55aa3a62e",
+              "status": "ai-draft"
+            },
+            "de_DE": {
+              "text": "Entwicklungsdiagnose für Starstone-Eingänge und Erfahrungskugeln. In einer separaten Testwelt verwenden.",
+              "based_on": "e61ba5edeb8cd4753f89fa06588dabf920eef2fb5f491e7f41a513e55aa3a62e",
+              "status": "ai-draft"
+            },
+            "fr_FR": {
+              "text": "Diagnostic de développement des entrées Starstone et des orbes d’expérience. À utiliser dans un monde de test séparé.",
+              "based_on": "e61ba5edeb8cd4753f89fa06588dabf920eef2fb5f491e7f41a513e55aa3a62e",
+              "status": "ai-draft"
+            },
+            "pl_PL": {
+              "text": "Diagnostyka rozwojowa wejść Starstone i kul doświadczenia. Używaj w osobnym świecie testowym.",
+              "based_on": "e61ba5edeb8cd4753f89fa06588dabf920eef2fb5f491e7f41a513e55aa3a62e",
+              "status": "ai-draft"
+            }
+          }
+        }
+      }
     }
   },
   "glossary": {

@@ -43,3 +43,8 @@ checks the whole conduction object across inherited permutation states.
 Check ordinary native redstone through each conduit orientation, alongside
 Starstone signals, break/step/place sounds and opaque lighting after reload.
 No design question remains; actual native signal propagation needs game acceptance.
+
+Group18 follow-up2026-10-21: Ore's native note-block instrument now specifies
+`up:note.bd` (bass drum), checked in the property ledger against redstone ore.
+Its existing format1.26.50 supports the component, released stable in26.40.
+Native audible selection remains an acceptance check after reload.

@@ -10,32 +10,34 @@ import { anySourceOn } from "./networkController.js";
 import { applyPower } from "./powerPropagation.js";
 import { sourceChanged, subscribeNetworkDiscovery } from "./networkEvents.js";
 
-export const INPUT_POLL_TICKS = 4;
-const VISUAL_RECHECK_POLLS = 25; // 5 s fallback for command edits / stable powered neighbors
-export const INPUT_NEIGHBOR_OFFSETS = Object.freeze([
-    [1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]
-]);
+export const INPUT_RECHECK_TICKS = 100; // Recovery/cosmetics; native events own signal changes.
+export const INPUT_RECHECK_BATCH = 32;
 const inputs = new Map();
+const rechecks = new Set();
 let registered = false, lastPolled = 0, transitions = 0;
 let inputTimer;
+let recheckScheduled = false;
 
 function syncInputTimer() {
-    if (registered && inputs.size && inputTimer === undefined) inputTimer = system.runInterval(pollInputs, INPUT_POLL_TICKS);
+    if (registered && inputs.size && inputTimer === undefined) inputTimer = system.runInterval(recheckInputs, INPUT_RECHECK_TICKS);
     else if (!inputs.size && inputTimer !== undefined) { system.clearRun(inputTimer); inputTimer = undefined; }
 }
 
 export function trackInput(block) {
     if (!block?.isValid || block.typeId !== REDSTONE_INPUT_ID) return;
     const key = blockKey(block.dimension, block.location);
-    if (!inputs.has(key)) inputs.set(key, {
-        dimension: block.dimension, location: { ...block.location },
-        last: Boolean(block.permutation.getState(STATE_POWERED)), visualPolls: 0
-    });
+    if (!inputs.has(key)) {
+        inputs.set(key, { dimension: block.dimension, location: { ...block.location }, last: undefined });
+        rechecks.add(key);
+        scheduleRechecks();
+    }
     syncInputTimer();
+    return inputs.get(key);
 }
 
 export function adapterStats() {
-    return { registeredInputs: inputs.size, lastPolled, transitions, interval: INPUT_POLL_TICKS };
+    return { mode: "native", registeredInputs: inputs.size, lastPolled, transitions,
+        interval: INPUT_RECHECK_TICKS, recheckBudget: INPUT_RECHECK_BATCH, queuedRechecks: rechecks.size };
 }
 
 // The blue contacts follow the same coplanar network edges as cable. Red
@@ -106,74 +108,81 @@ function observeSources(network, dimension) {
     }
 }
 
-// A redstone input is a six-face receiver. The supporting block is one of
-// these neighbors; another touching dust/device may also drive the adapter.
-// Every read checks availability first. If no loaded neighbor drives it but
-// one neighbor is unavailable, retain the previous state until a full sample.
-export function readAdjacentRedstone(block) {
-    let complete = true;
-    const { dimension, location } = block;
-    for (const [dx,dy,dz] of INPUT_NEIGHBOR_OFFSETS) {
-        const position = { x:location.x+dx, y:location.y+dy, z:location.z+dz };
-        try {
-            if (!dimension.isChunkLoaded(position)) { complete = false; continue; }
-            const neighbor = dimension.getBlock(position);
-            if (!neighbor?.isValid) { complete = false; continue; }
-            if ((neighbor.getRedstonePower?.() ?? 0) > 0) return { on:true, complete };
-        } catch { complete = false; }
+function commitInput(block, input, on, visualsReady = false) {
+    if (on === input.last && on === Boolean(block.permutation.getState(STATE_POWERED))) return;
+    if (!visualsReady) refreshAdapterVisuals(block);
+    if (Boolean(block.permutation.getState(STATE_POWERED)) !== on) {
+        block.setPermutation(block.permutation.withState(STATE_POWERED, on));
     }
-    return { on:false, complete };
+    const { dimension, location } = block;
+    // Preserve the existing durable source owner and loaded-network fallback.
+    const committed = sourceChanged(dimension, location, on);
+    const key = blockKey(dimension, location);
+    const network = runtime.networkOf(runtime.networkIdOf(`${key}#main`));
+    if (!committed || isCompleteNetwork(network, dimension)) {
+        if (network) {
+            const powered = anySourceOn(network, dimension);
+            if (powered !== network.powered) {
+                network.powered = powered;
+                applyPower(network, dimension);
+            }
+        }
+    }
+    input.last = on;
+    transitions++;
 }
 
-export function pollInputs() {
+// Called by the existing surface component, only on the native input consumer.
+// Compare against committed/live state, not previousPowerLevel (previous tick).
+export function reactToRedstoneUpdate(event) {
+    const block = event.block;
+    const input = trackInput(block);
+    if (!input) return;
+    try { commitInput(block, input, event.powerLevel > 0); }
+    catch (error) { console.warn(`[Starstone] Native input update deferred: ${error.message}`); }
+}
+
+function scheduleRechecks() {
+    if (recheckScheduled || !rechecks.size) return;
+    recheckScheduled = true;
+    try { system.run(processRechecks); }
+    catch (error) { recheckScheduled = false; throw error; }
+}
+
+function processRechecks() {
     lastPolled = 0;
-    for (const [key, input] of inputs) {
+    let visited = 0;
+    for (const key of rechecks) {
+        if (visited++ >= INPUT_RECHECK_BATCH) break;
+        rechecks.delete(key);
+        const input = inputs.get(key);
+        if (!input) continue;
         const { dimension, location } = input;
         try {
             if (!dimension.isChunkLoaded(location)) continue;
             const block = dimension.getBlock(location);
             if (!block?.isValid) continue;
             if (block.typeId !== REDSTONE_INPUT_ID) { inputs.delete(key); continue; }
-            if (++input.visualPolls >= VISUAL_RECHECK_POLLS) {
-                refreshAdapterVisuals(block);
-                input.visualPolls = 0;
-            }
-            const sample = readAdjacentRedstone(block);
-            if (!sample.on && !sample.complete) continue;
-            lastPolled++;
-            const on = sample.on;
-            if (on === input.last && on === Boolean(block.permutation.getState(STATE_POWERED))) continue;
-            // Placement/break/piston dirty queues maintain static contacts.
-            // Only powered nonstandard contacts need a refresh on a power edge.
             refreshAdapterVisuals(block);
-            input.visualPolls = 0;
-            if (Boolean(block.permutation.getState(STATE_POWERED)) !== on) {
-                block.setPermutation(block.permutation.withState(STATE_POWERED, on));
-            }
-            // The durable controller commits source metadata before applying
-            // consumer visuals. Without it, retain the loaded-network path.
-            const committed = sourceChanged(dimension, location, on);
-            const network = runtime.networkOf(runtime.networkIdOf(`${key}#main`));
-            // Saved metadata decides only across unloaded chunks; a fully
-            // loaded network follows its own sources immediately.
-            if (!committed || isCompleteNetwork(network, dimension)) {
-                if (network) {
-                    const powered = anySourceOn(network, dimension);
-                    if (powered !== network.powered) {
-                        network.powered = powered;
-                        applyPower(network, dimension);
-                    }
-                }
-            }
-            input.last = on;
-            transitions++;
+            // Recovery uses receiver power too. Undefined does not establish off.
+            const power = block.getRedstonePower();
+            if (power === undefined) continue;
+            lastPolled++;
+            commitInput(block, input, power > 0, true);
         } catch (error) {
             // Preserve the last committed input value so a transient storage
             // or world-access failure retries instead of silently losing power.
-            console.warn(`[Starstone] Input poll deferred: ${error.message}`);
+            console.warn(`[Starstone] Input recovery deferred: ${error.message}`);
         }
     }
+    recheckScheduled = false;
     syncInputTimer();
+    scheduleRechecks();
+}
+
+export function recheckInputs() {
+    for (const key of inputs.keys()) rechecks.add(key);
+    scheduleRechecks();
 }
 
 export function registerRedstoneAdapters() {

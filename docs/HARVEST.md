@@ -68,6 +68,11 @@ native behavior.
 
 ## Evidence and acceptance
 
+Group18 adds a separate eligible native-player-break XP owner, preserving the
+existing single native item-drop owner. The exact1–5 native-orb templates,
+Silk/tool/mode/gamerule gates and native acceptance are documented in
+[ORE_EXPERIENCE.md](ORE_EXPERIENCE.md). Item-loot tests alone do not verify XP.
+
 - Local API declarations: `C:/mcmods/reference/server-2.8.0.d.ts`,
   `PlayerBreakBlockBeforeEvent.cancel/itemStack`, `Block.setType`,
   `BlockPermutation.getAllStates`, `ItemStack.clone/hasTag`.

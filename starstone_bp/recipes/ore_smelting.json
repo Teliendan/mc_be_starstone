@@ -1,0 +1,9 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_furnace": {
+    "description": { "identifier": "starstone:ore_smelting" },
+    "tags": ["furnace", "blast_furnace"],
+    "input": "starstone:ore",
+    "output": "starstone:dust"
+  }
+}

@@ -22,6 +22,7 @@
               "seconds_to_destroy": 3
             },
             "minecraft:loot": "loot_tables/blocks/ore.json",
+            "minecraft:instrument_sound": { "up": "note.bd" },
             "minecraft:geometry": "minecraft:geometry.full_block",
             "minecraft:redstone_conductivity": { "redstone_conductor": true },
             "minecraft:material_instances": {

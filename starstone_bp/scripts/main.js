@@ -13,6 +13,7 @@ import { registerMutationController } from "./mutationController.js";
 import { registerChunkController } from "./chunkController.js";
 import { registerRedstoneAdapters } from "./redstoneAdapters.js";
 import { registerHarvestGate } from "./harvestGate.js";
+import { registerOreExperience } from "./oreExperience.js";
 import { registerPistonController } from "./pistonController.js";
 
 const TAG = "[Starstone]";
@@ -95,6 +96,7 @@ registerHarvestGate(({ dimension, location, typeId, block }) => {
     handleElectricalBreak({ dimension, block: block ?? { location }, brokenBlockPermutation: { type: { id: typeId } } });
     if (block) scheduleAffected(block);
 });
+registerOreExperience();
 
 registerCableComponent();
 
