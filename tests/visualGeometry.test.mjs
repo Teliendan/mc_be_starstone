@@ -80,8 +80,9 @@ for (const lane of [laneNs, laneEw]) {
   for (const cube of lane.cubes) {
     assert.equal(Object.values(cube.uv).some((face) => face.material_instance === lane.name), true,
       `${lane.name} cube keeps its independently powered material`);
-    assert.deepEqual(cube.uv.up.uv,[19,14],`${lane.name} samples conductor pixels rather than the old whole-wire decal`);
-    assert.deepEqual(cube.uv.up.uv_size,[5,4],`${lane.name} has a narrow conductor UV`);
+    const length = Math.round(Math.max(cube.size[0], cube.size[2]));
+    assert.deepEqual(cube.uv.up.uv,[0,length === 6 ? 0 : 2],`${lane.name} samples conductor pixels rather than the old whole-wire decal`);
+    assert.deepEqual(cube.uv.up.uv_size,[length,2],`${lane.name} has a narrow conductor UV, one texel per unit`);
   }
 }
 
@@ -101,7 +102,7 @@ assert.deepEqual(bridge.description.states['starstone:powered_ns'], [false, true
 assert.deepEqual(bridge.description.states['starstone:powered_ew'], [false, true]);
 for (const materials of [bridge.components, ...bridge.permutations.map((entry) => entry.components)]
   .map((components) => components['minecraft:material_instances']).filter(Boolean)) {
-  assert.equal(materials.body.texture, 'starstone:casing');
+  assert.equal(materials.body.texture, 'starstone:bridge');
   assert.ok(materials.lane_ns && materials.lane_ew, 'every bridge state preserves both lane materials');
 }
 for (const [ns, ew, nsTexture, ewTexture] of [

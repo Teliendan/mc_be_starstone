@@ -68,7 +68,7 @@
             },
             "minecraft:material_instances": {
                 "body": {
-                    "texture": "starstone:casing",
+                    "texture": "starstone:bridge",
                     "render_method": "alpha_test",
                     "face_dimming": false,
                     "ambient_occlusion": false
@@ -86,7 +86,7 @@
                     "ambient_occlusion": false
                 },
                 "*": {
-                    "texture": "starstone:casing",
+                    "texture": "starstone:bridge",
                     "render_method": "alpha_test",
                     "face_dimming": false,
                     "ambient_occlusion": false
@@ -176,7 +176,7 @@
                 "components": {
                     "minecraft:material_instances": {
                         "body": {
-                            "texture": "starstone:casing",
+                            "texture": "starstone:bridge",
                             "render_method": "alpha_test",
                             "face_dimming": false,
                             "ambient_occlusion": false
@@ -194,7 +194,7 @@
                             "ambient_occlusion": false
                         },
                         "*": {
-                            "texture": "starstone:casing",
+                            "texture": "starstone:bridge",
                             "render_method": "alpha_test",
                             "face_dimming": false,
                             "ambient_occlusion": false
@@ -207,7 +207,7 @@
                 "components": {
                     "minecraft:material_instances": {
                         "body": {
-                            "texture": "starstone:casing",
+                            "texture": "starstone:bridge",
                             "render_method": "alpha_test",
                             "face_dimming": false,
                             "ambient_occlusion": false
@@ -225,7 +225,7 @@
                             "ambient_occlusion": false
                         },
                         "*": {
-                            "texture": "starstone:casing",
+                            "texture": "starstone:bridge",
                             "render_method": "alpha_test",
                             "face_dimming": false,
                             "ambient_occlusion": false
@@ -238,7 +238,7 @@
                 "components": {
                     "minecraft:material_instances": {
                         "body": {
-                            "texture": "starstone:casing",
+                            "texture": "starstone:bridge",
                             "render_method": "alpha_test",
                             "face_dimming": false,
                             "ambient_occlusion": false
@@ -256,7 +256,7 @@
                             "ambient_occlusion": false
                         },
                         "*": {
-                            "texture": "starstone:casing",
+                            "texture": "starstone:bridge",
                             "render_method": "alpha_test",
                             "face_dimming": false,
                             "ambient_occlusion": false
@@ -269,7 +269,7 @@
                 "components": {
                     "minecraft:material_instances": {
                         "body": {
-                            "texture": "starstone:casing",
+                            "texture": "starstone:bridge",
                             "render_method": "alpha_test",
                             "face_dimming": false,
                             "ambient_occlusion": false
@@ -287,7 +287,7 @@
                             "ambient_occlusion": false
                         },
                         "*": {
-                            "texture": "starstone:casing",
+                            "texture": "starstone:bridge",
                             "render_method": "alpha_test",
                             "face_dimming": false,
                             "ambient_occlusion": false

@@ -4,8 +4,8 @@
     {
       "description": {
         "identifier": "geometry.starstone_adapter",
-        "texture_width": 32,
-        "texture_height": 32,
+        "texture_width": 16,
+        "texture_height": 16,
         "visible_bounds_width": 2,
         "visible_bounds_height": 2,
         "visible_bounds_offset": [
@@ -36,70 +36,70 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "center",
                   "uv": [
-                    10,
-                    10
+                    5,
+                    5
                   ],
                   "uv_size": [
-                    12,
-                    12
-                  ],
-                  "material_instance": "center"
+                    6,
+                    6
+                  ]
                 },
                 "down": {
+                  "material_instance": "center",
                   "uv": [
-                    10,
-                    10
+                    5,
+                    5
                   ],
                   "uv_size": [
-                    12,
-                    12
-                  ],
-                  "material_instance": "center"
+                    6,
+                    6
+                  ]
                 },
                 "north": {
+                  "material_instance": "center",
                   "uv": [
-                    10,
-                    10
+                    5,
+                    5
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "center"
+                    6,
+                    1
+                  ]
                 },
                 "east": {
+                  "material_instance": "center",
                   "uv": [
-                    10,
-                    10
+                    5,
+                    5
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "center"
+                    6,
+                    1
+                  ]
                 },
                 "south": {
+                  "material_instance": "center",
                   "uv": [
-                    10,
-                    10
+                    5,
+                    5
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "center"
+                    6,
+                    1
+                  ]
                 },
                 "west": {
+                  "material_instance": "center",
                   "uv": [
-                    10,
-                    10
+                    5,
+                    5
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "center"
+                    6,
+                    1
+                  ]
                 }
               }
             }
@@ -126,72 +126,72 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    4
+                    2
                   ],
-                  "uv_rotation": 90,
-                  "material_instance": "blue"
+                  "uv_rotation": 90
                 },
                 "down": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    4
+                    2
                   ],
-                  "uv_rotation": 90,
-                  "material_instance": "blue"
+                  "uv_rotation": 90
                 },
                 "north": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    2,
+                    1
+                  ]
                 },
                 "east": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    1
+                  ]
                 },
                 "south": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    2,
+                    1
+                  ]
                 },
                 "west": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    1
+                  ]
                 }
               }
             }
@@ -218,70 +218,70 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    4
-                  ],
-                  "material_instance": "blue"
+                    2
+                  ]
                 },
                 "down": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    4
-                  ],
-                  "material_instance": "blue"
+                    2
+                  ]
                 },
                 "north": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    1
+                  ]
                 },
                 "east": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    2,
+                    1
+                  ]
                 },
                 "south": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    1
+                  ]
                 },
                 "west": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    2,
+                    1
+                  ]
                 }
               }
             }
@@ -308,72 +308,72 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    4
+                    2
                   ],
-                  "uv_rotation": 90,
-                  "material_instance": "blue"
+                  "uv_rotation": 90
                 },
                 "down": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    4
+                    2
                   ],
-                  "uv_rotation": 90,
-                  "material_instance": "blue"
+                  "uv_rotation": 90
                 },
                 "north": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    2,
+                    1
+                  ]
                 },
                 "east": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    1
+                  ]
                 },
                 "south": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    2,
+                    1
+                  ]
                 },
                 "west": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    1
+                  ]
                 }
               }
             }
@@ -400,70 +400,70 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    4
-                  ],
-                  "material_instance": "blue"
+                    2
+                  ]
                 },
                 "down": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    4
-                  ],
-                  "material_instance": "blue"
+                    2
+                  ]
                 },
                 "north": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    1
+                  ]
                 },
                 "east": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    2,
+                    1
+                  ]
                 },
                 "south": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    2
                   ],
                   "uv_size": [
                     5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    1
+                  ]
                 },
                 "west": {
+                  "material_instance": "blue",
                   "uv": [
-                    19,
-                    14
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    5,
-                    2
-                  ],
-                  "material_instance": "blue"
+                    2,
+                    1
+                  ]
                 }
               }
             }
@@ -490,70 +490,72 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
-                    1
+                    5,
+                    2
                   ],
-                  "material_instance": "red"
+                  "uv_rotation": 90
                 },
                 "down": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
-                    1
+                    5,
+                    2
                   ],
-                  "material_instance": "red"
+                  "uv_rotation": 90
                 },
                 "north": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    1,
+                    2,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "east": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
+                    5,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "south": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    1,
+                    2,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "west": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
+                    5,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 }
               }
             }
@@ -580,70 +582,70 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
-                    1
-                  ],
-                  "material_instance": "red"
+                    5,
+                    2
+                  ]
                 },
                 "down": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
-                    1
-                  ],
-                  "material_instance": "red"
+                    5,
+                    2
+                  ]
                 },
                 "north": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
+                    5,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "east": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    1,
+                    2,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "south": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
+                    5,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "west": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    1,
+                    2,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 }
               }
             }
@@ -670,70 +672,72 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
-                    1
+                    5,
+                    2
                   ],
-                  "material_instance": "red"
+                  "uv_rotation": 90
                 },
                 "down": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
-                    1
+                    5,
+                    2
                   ],
-                  "material_instance": "red"
+                  "uv_rotation": 90
                 },
                 "north": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    1,
+                    2,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "east": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
+                    5,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "south": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    1,
+                    2,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "west": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
+                    5,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 }
               }
             }
@@ -760,70 +764,70 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
-                    1
-                  ],
-                  "material_instance": "red"
+                    5,
+                    2
+                  ]
                 },
                 "down": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
-                    1
-                  ],
-                  "material_instance": "red"
+                    5,
+                    2
+                  ]
                 },
                 "north": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
+                    5,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "east": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    1,
+                    2,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "south": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    2
                   ],
                   "uv_size": [
-                    1,
+                    5,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 },
                 "west": {
+                  "material_instance": "red",
                   "uv": [
-                    18,
-                    15
+                    0,
+                    0
                   ],
                   "uv_size": [
-                    1,
+                    2,
                     1
-                  ],
-                  "material_instance": "red"
+                  ]
                 }
               }
             }

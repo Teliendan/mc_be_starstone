@@ -12,7 +12,10 @@ bend and is visible whenever both faces are. Otherwise the arm needs its bit.
 Model X mirrors world X, as for the ordinary cable (see cableVisual tests).
 """
 import json
+import sys
 from pathlib import Path
+
+from make_block_models import assign_uvs
 
 BP = Path(__file__).resolve().parents[1] / 'starstone_bp'
 RP = Path(__file__).resolve().parents[1] / 'starstone_rp'
@@ -27,9 +30,8 @@ ARM_BIT = {
     'east': {'up':5,'down':0,'north':7,'south':3},
     'west': {'up':4,'down':1,'north':2,'south':6},
 }
-# Model face names whose normal lies on each axis, and the axis their U runs on.
+# Model face names whose normal lies on each axis.
 AXIS_FACES = {0: ('east','west'), 1: ('up','down'), 2: ('north','south')}
-U_AXIS = {0: 2, 1: 0, 2: 0}
 
 def axis_of(vector):
     return next(i for i,v in enumerate(vector) if v)
@@ -42,7 +44,7 @@ def perpendicular(a, b):
 
 def write(path, value):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(value, indent=2) + '\n', encoding='utf-8')
+    path.write_text(json.dumps(value, indent=2) + '\n', encoding='utf-8', newline='\n')
 
 def cube(lo, hi, uv):
     """Axis-aligned cube from cell-centered world bounds (-8..8 on every axis)."""
@@ -57,21 +59,14 @@ def shell(face):
     ends = sorted((-8*sign + .02*sign, -8*sign + .14*sign))
     return axis, ends
 
-def uvs(surface_axis, surface, sides, rotation=0):
+def uvs(surface_axis, surface, sides):
     """Surface faces get `surface`; the four thin sides get `sides`."""
-    result = {}
-    for axis, names in AXIS_FACES.items():
-        for name in names:
-            entry = dict(surface if axis == surface_axis else sides)
-            if axis == surface_axis and rotation:
-                entry['uv_rotation'] = rotation
-            result[name] = entry
-    return result
+    return {name: dict(surface if axis == surface_axis else sides)
+            for axis, names in AXIS_FACES.items() for name in names}
 
-HUB_TOP = {'uv': [13,13], 'uv_size': [6,6], 'material_instance': 'hub'}
-HUB_SIDE = {'uv': [19,14], 'uv_size': [5,2], 'material_instance': 'hub'}
-ARM_TOP = {'uv': [19,14], 'uv_size': [5,4]}
-ARM_SIDE = {'uv': [19,14], 'uv_size': [5,2]}
+# Placeholders: assign_uvs() maps every face onto its 16x16 texture window when the model is written.
+HUB_TOP = HUB_SIDE = {'material_instance': 'hub'}
+ARM_TOP = ARM_SIDE = {}
 
 def center(face):
     axis, ends = shell(face)
@@ -86,8 +81,7 @@ def arm(face, toward):
     lo, hi = [-1.0]*3, [1.0]*3
     lo[axis], hi[axis] = ends
     lo[along], hi[along] = (2.0, 8.14) if direction[along] > 0 else (-8.14, -2.0)
-    rotation = 0 if U_AXIS[axis] == along else 90
-    return cube(lo, hi, uvs(axis, ARM_TOP, ARM_SIDE, rotation))
+    return cube(lo, hi, uvs(axis, ARM_TOP, ARM_SIDE))
 
 def any_of(state, values):
     return '(' + ' || '.join(f"query.block_state('{state}') == {v}" for v in values) + ')'
@@ -117,11 +111,13 @@ for face in FACE_NAMES:
                             f'{arm_bit(ARM_BIT[face][toward])})')
 
 write(RP/'models/blocks/starstone_inner_corner.geo.json',
-      {'format_version':'1.21.0','minecraft:geometry':[{
+      {'format_version':'1.21.0','minecraft:geometry':[assign_uvs({
           'description':{'identifier':'geometry.starstone_inner_corner',
-              'texture_width':32,'texture_height':32,'visible_bounds_width':2,
+              'texture_width':16,'texture_height':16,'visible_bounds_width':2,
               'visible_bounds_height':2,'visible_bounds_offset':[0,.5,0]},
-          'bones':bones}]})
+          'bones':bones})]})
+if '--model-only' in sys.argv:
+    sys.exit(0)  # the block, item, loot and recipe below predate later hand fixes; see docs/INNER-CORNER.md
 
 def material(state):
     base = {'render_method':'alpha_test','face_dimming':False,'ambient_occlusion':False}

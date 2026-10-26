@@ -67,8 +67,8 @@ for (const [on,off] of [['starstone_generator.png','starstone_generator_off.png'
     ['starstone_conduit_end.png','starstone_conduit_end_off.png']]) {
     const onBytes=fs.readFileSync(`${rp}/textures/blocks/${on}`);
     const offBytes=fs.readFileSync(`${rp}/textures/blocks/${off}`);
-    assert.equal(offBytes.readUInt32BE(16),32);
-    assert.equal(offBytes.readUInt32BE(20),32);
+    assert.equal(offBytes.readUInt32BE(16),16);
+    assert.equal(offBytes.readUInt32BE(20),16);
     assert.equal(onBytes.equals(offBytes),false,`${off} must be visibly distinct from powered texture`);
 }
 console.log('pack contracts: assets, geometry bindings, all cable masks/power visuals, item name, loot and pack dependency passed');

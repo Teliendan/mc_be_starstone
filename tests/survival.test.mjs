@@ -72,7 +72,7 @@ assert.deepEqual(blocks['starstone:ore'], { sound: 'stone' });
 const terrain = readJson(rp, 'textures', 'terrain_texture.json');
 assert.equal(terrain.texture_data['starstone:ore'].textures, 'textures/blocks/starstone_ore');
 const items = readJson(rp, 'textures', 'item_texture.json');
-for (const key of ['starstone_dust', 'starstone_crystal', 'starstone_compressed_dust', 'starstone_ore']) {
+for (const key of ['starstone_dust', 'starstone_crystal', 'starstone_compressed_dust']) {
   assert.equal(typeof items.texture_data[key]?.textures, 'string');
 }
 const lang = fs.readFileSync(path.join(rp, 'texts', 'en_US.lang'), 'utf8');

@@ -5,6 +5,27 @@ Powered surfaces may reach cyan-white; unpowered surfaces remain dark blue.
 Cables, bridges, lamps and adapters mount on full support faces. Generator, ore
 and conduit are full cubes.
 
+## Resolution, palette and generators (16x16 redo, 2026-10-26)
+
+All art is 16x16 at 1 texel = 1 model unit, made by deterministic generators; edit
+the script and re-run, never the PNG. The earlier 32x32 art (cut from AI-painted
+atlases, sampled at twice vanilla density) is in git history before this redo.
+
+| Script (`tools/`) | Makes |
+|---|---|
+| `starstone_art.py` | Shared ramps (METAL navy/gunmetal, STONE dark purple-grey, CRYSTAL, ENERGY_OFF, ENERGY_ON, RED_OFF, RED_ON) and pixel helpers |
+| `make_block_art.py` | Every block texture; `LAYOUT` names the texture windows the models sample |
+| `make_block_models.py` | Face UVs of every block model (`assign_uvs`), also used by `build_inner_corner.py --model-only` |
+| `make_item_art.py` | Item icons and both 256x256 pack icons (16x16 art scaled 16x) |
+
+Rules the art follows: light from the top on full cubes; parts that turn with
+their support face (cable arms and hubs, adapter arms) are shaded symmetrically
+and their strips are palindromes, so every arm meets its neighbour with a clamp
+pair at the cell edge. Custom geometry renders model X mirrored, so the machine
+frame shared by Generator (vanilla full block) and Conduit (custom cube) is
+symmetric left-right, and the adapter emblems are drawn mirrored in the texture.
+Review state per asset: `docs/GRAPHICS_TASKS.md`.
+
 ## Cables and edge joins
 
 `geometry.starstone_cable` uses a permanent `center` bone and four optional
@@ -25,8 +46,7 @@ four walls. Placement selects supported faces with adjacent cables plus the
 clicked face. When no adjacent cable identifies a face, it selects every
 supported face. Every selected face must retain full support. Its item is
 crafted from two Cables and placed into an empty cell.
-Its item has a separate bent-cable sprite derived from
-`mods/starstone/art_source/inner_corner_item_generated.png`.
+Its item has a separate bent-cable icon from `tools/make_item_art.py`.
 
 Cable mask and face transformation tests cover all 16 masks and all six mounting
 faces. The user's remaining one-direction visual inversion could not be
@@ -43,7 +63,8 @@ north-south and east-west lanes extending to opposite cell edges. The two lanes
 are electrically isolated and separately mapped to on/off cable materials by
 `starstone:powered_ns` and `starstone:powered_ew`. The center casing covers the
 crossing without floating duplicate wires. Its body uses the registered
-`starstone:bridge` texture.
+`starstone:bridge` texture: a raised plate with dark ports where the east-west
+lane passes underneath.
 
 `geometry.starstone_adapter` is a grounded center box. It has independently
 masked blue Starstone arms and red redstone contact arms; unused arms disappear.
@@ -63,18 +84,16 @@ Ore emits light level 3.
 
 ## Pack artwork and rebuilding
 
-Both development packs have a 256x256 `pack_icon.png` showing a crystal and
-four circuit traces. The generated source is
-`mods/starstone/art_source/starstone_pack_emblem_generated.png`; the compacted
-Dust source is `mods/starstone/art_source/compressed_dust_generated.png`.
-Existing block/item atlases remain in the same art source folder.
+Both development packs have the same 256x256 `pack_icon.png`, drawn at 16x16 by
+`tools/make_item_art.py` and scaled up 16x without smoothing.
 
-From `C:\mcmods`, rebuild derived PNGs with:
+From `C:\mcmods`, rebuild everything with:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File mods/starstone/tools/build_graphics.ps1
+python -B mods/starstone/tools/make_block_art.py
+python -B mods/starstone/tools/make_block_models.py
+python -B mods/starstone/tools/build_inner_corner.py --model-only
+python -B mods/starstone/tools/make_item_art.py
 ```
 
-The builder extracts the established atlas sprites and then exports the
-Compressed Dust icon, dark power-state textures and both pack icons. It leaves
-the model JSON and block behavior JSON unchanged.
+The generators change only PNGs and model UVs, never block behaviour JSON.

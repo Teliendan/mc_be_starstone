@@ -18,9 +18,9 @@ redstone input/output adapters.
 - `docs/TEST-WORLD.md` - the in-game test procedure; `docs/VERIFICATION.md`, `docs/STRESS.md` -
   offline coverage and measurements.
 - `tests/` - Node suites (`node tests/run.mjs`), with a `@minecraft/server` shim in `tests/shims/`.
-- `art_source/` - generated source atlases and their exact prompts (`PROMPTS.md`).
-- `tools/build_graphics.ps1` cuts Minecraft-sized PNGs from the atlases and runs the `make_*.py`
-  texture scripts; `tools/build_inner_corner.py` regenerates the Inner Corner block + model;
+- `tools/make_block_art.py`, `tools/make_item_art.py` and `tools/make_block_models.py` generate
+  every 16x16 texture, icon, pack icon and model UV from the palette in `tools/starstone_art.py`
+  (`docs/GRAPHICS.md`); `tools/build_inner_corner.py --model-only` regenerates the Inner Corner model;
   `tools/generate-cable-permutations.mjs` regenerates the cable permutations
   (`generated/cable-permutations.json`); `tools/validate-json.ps1` is a JSON-only syntax check.
 

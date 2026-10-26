@@ -37,10 +37,10 @@ cables do (floor -> inner corner -> wall -> over the wall top). The arm toward
 the edge must be external. Live graph, saved segments (including diagonal
 chunk-border ports), cable masks, corner arms, growth and placement all use it.
 
-Arm strips sample `starstone:cable_arm_off/on` (made by `make_arm_textures.py`
-from the cable textures with the transparent fourth strip row mirrored from
-the first). Adapter red arms use `starstone:redstone_arm_off/on`, lit by the
-adapter's redstone state.
+Arm strips sample the 6x2 conductor window of `starstone:cable_arm_off/on`, hubs the 4x4
+window of `starstone:cable_hub_off/on` (16x16 textures from `tools/make_block_art.py`, UVs from
+`tools/make_block_models.py`, see `docs/GRAPHICS.md`). Adapter red arms use
+`starstone:redstone_arm_off/on`, lit by the adapter's redstone state.
 
 Placement: contacted supported faces + clicked face; if that is not a bend, all
 supported faces. `onPlace` keeps the pre-place choice while still supported.
@@ -51,11 +51,15 @@ Built from world-space boxes with model X = -world X. The test compares every
 center/arm against the cable's cube rotated by that face's cable rotation, so
 the corner inherits whatever the cable does in game.
 
+The builder's block, item, loot and recipe output predates later hand fixes to
+`starstone_bp/blocks/inner_corner.json` (destroy time, explosion resistance, flammability,
+light dampening): run it without `--model-only` only after porting those into it.
+
 ## Still to confirm in game
 
 Wall-wall and wall-floor bend sides, stacked vertical arms, arm strip direction on
 walls, growth when a cable is placed on a bare supported face.
 
 Run from `C:\mcmods`:
-`python -B mods/starstone/tools/build_inner_corner.py` (regenerates block + model), then
+`python -B mods/starstone/tools/build_inner_corner.py --model-only` (regenerates the model), then
 `python -B .claude/skills/bedrock-lookup/scripts/verify_addon.py mods/starstone/starstone_bp mods/starstone/starstone_rp --regression-tests mods/starstone/tests/run.mjs`.

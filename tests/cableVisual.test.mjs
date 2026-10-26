@@ -31,14 +31,14 @@ for(const [name,{axis,inner,outer,sideAxis}] of Object.entries(armBounds)) {
     assert.deepEqual([part.origin[1],part.size[1]],[0.02,0.12],`${name} shares center surface height`);
     for(const face of ['up','down']) {
         const uv=part.uv[face];
-        assert.deepEqual(uv.uv,[19,14]);
-        assert.deepEqual(uv.uv_size,[5,4],`${name} samples only the conductor strip, not another hub`);
+        assert.deepEqual(uv.uv,[0,0]);
+        assert.deepEqual(uv.uv_size,[6,2],`${name} samples only the conductor strip, one texel per unit`);
         assert.equal(uv.uv_rotation || 0,name==='arm_n'||name==='arm_s' ? 90 : 0);
     }
 }
 for(const face of ['up','down']) {
-    assert.deepEqual(center.uv[face].uv,[13,13],`isolated center uses hub pixels on ${face}`);
-    assert.deepEqual(center.uv[face].uv_size,[6,6]);
+    assert.deepEqual(center.uv[face].uv,[6,6],`isolated center uses hub pixels on ${face}`);
+    assert.deepEqual(center.uv[face].uv_size,[4,4]);
 }
 for (const uv of Object.values(center.uv)) assert.equal(uv.material_instance,'hub','center has its own symmetric material');
 assert.equal(block.components['minecraft:material_instances'].hub.texture,'starstone:cable_hub_off');

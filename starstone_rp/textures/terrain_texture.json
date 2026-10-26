@@ -2,12 +2,6 @@
     "resource_pack_name": "starstone_rp",
     "texture_name": "atlas.terrain",
     "texture_data": {
-        "starstone:cable_off": {
-            "textures": "textures/blocks/starstone_cable_off"
-        },
-        "starstone:cable_on": {
-            "textures": "textures/blocks/starstone_cable_on"
-        },
         "starstone:cable_hub_off": {
             "textures": "textures/blocks/starstone_cable_hub_off"
         },

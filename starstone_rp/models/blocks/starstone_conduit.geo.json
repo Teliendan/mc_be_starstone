@@ -4,8 +4,8 @@
     {
       "description": {
         "identifier": "geometry.starstone_conduit",
-        "texture_width": 32,
-        "texture_height": 32,
+        "texture_width": 16,
+        "texture_height": 16,
         "visible_bounds_width": 2,
         "visible_bounds_height": 2,
         "visible_bounds_offset": [
@@ -36,70 +36,70 @@
               ],
               "uv": {
                 "up": {
+                  "material_instance": "up",
                   "uv": [
                     0,
                     0
                   ],
                   "uv_size": [
-                    32,
-                    32
-                  ],
-                  "material_instance": "up"
+                    16,
+                    16
+                  ]
                 },
                 "down": {
+                  "material_instance": "down",
                   "uv": [
                     0,
                     0
                   ],
                   "uv_size": [
-                    32,
-                    32
-                  ],
-                  "material_instance": "down"
+                    16,
+                    16
+                  ]
                 },
                 "north": {
+                  "material_instance": "north",
                   "uv": [
                     0,
                     0
                   ],
                   "uv_size": [
-                    32,
-                    32
-                  ],
-                  "material_instance": "north"
+                    16,
+                    16
+                  ]
                 },
                 "east": {
+                  "material_instance": "east",
                   "uv": [
                     0,
                     0
                   ],
                   "uv_size": [
-                    32,
-                    32
-                  ],
-                  "material_instance": "east"
+                    16,
+                    16
+                  ]
                 },
                 "south": {
+                  "material_instance": "south",
                   "uv": [
                     0,
                     0
                   ],
                   "uv_size": [
-                    32,
-                    32
-                  ],
-                  "material_instance": "south"
+                    16,
+                    16
+                  ]
                 },
                 "west": {
+                  "material_instance": "west",
                   "uv": [
                     0,
                     0
                   ],
                   "uv_size": [
-                    32,
-                    32
-                  ],
-                  "material_instance": "west"
+                    16,
+                    16
+                  ]
                 }
               }
             }

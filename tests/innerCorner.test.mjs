@@ -123,13 +123,13 @@ const uAxis={0:2,1:0,2:0};
 for (const face of FACE_LIST) {
     const axis=faceNormal(face).findIndex(v=>v);
     for (const name of surfaceNames[axis]) {
-        assert.deepEqual(cubeOf(cornerGeo,`center_${face}`).uv[name],{uv:[13,13],uv_size:[6,6],material_instance:'hub'},`${face} hub pixels`);
+        assert.deepEqual(cubeOf(cornerGeo,`center_${face}`).uv[name],{uv:[6,6],uv_size:[4,4],material_instance:'hub'},`${face} hub pixels`);
     }
     for (const toward of tangentFaces(face)) {
         const along=faceNormal(toward).findIndex(v=>v);
         for (const name of surfaceNames[axis]) {
             const uv=cubeOf(cornerGeo,`arm_${face}_${toward}`).uv[name];
-            assert.deepEqual([uv.uv,uv.uv_size],[[19,14],[5,4]],`${face} ${toward} samples the conductor strip`);
+            assert.deepEqual([uv.uv,uv.uv_size],[[0,0],[6,2]],`${face} ${toward} samples the conductor strip`);
             assert.equal(uv.uv_rotation||0,uAxis[axis]===along?0:90,`${face} ${toward} strip runs along the arm`);
         }
     }
