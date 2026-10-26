@@ -12,4 +12,5 @@ After the 16x16 art redo (commit `7aa74ca`). Owner: "The graphics as such is OK.
 
 Regression: `tests/sideContacts.test.mjs` covers each report in the live graph and saved
 segments (including a bridge across a chunk border); every case failed before the fix.
-A conduit side still never connects. Not yet checked in game.
+A conduit side still never connects. Fixes in commit `f7e6283`; owner re-tested in game the
+same day: "Fixed, I like it."
