@@ -1,0 +1,90 @@
+[
+  {
+    "id": "starstone:cable_item/icon",
+    "featureId": "starstone:cable_item",
+    "source": "starstone_rp/textures/items/starstone_cable.png",
+    "kind": "item",
+    "alt": "Surface Cable"
+  },
+  {
+    "id": "starstone:compressed_dust/icon",
+    "featureId": "starstone:compressed_dust",
+    "source": "starstone_rp/textures/items/starstone_compressed_dust.png",
+    "kind": "item",
+    "alt": "Compressed Starstone Dust"
+  },
+  {
+    "id": "starstone:crystal/icon",
+    "featureId": "starstone:crystal",
+    "source": "starstone_rp/textures/items/starstone_crystal.png",
+    "kind": "item",
+    "alt": "Starstone Crystal"
+  },
+  {
+    "id": "starstone:dust/icon",
+    "featureId": "starstone:dust",
+    "source": "starstone_rp/textures/items/starstone_dust.png",
+    "kind": "item",
+    "alt": "Starstone Dust"
+  },
+  {
+    "id": "starstone:inner_corner_item/icon",
+    "featureId": "starstone:inner_corner_item",
+    "source": "starstone_rp/textures/items/starstone_inner_corner.png",
+    "kind": "item",
+    "alt": "Inner Corner"
+  },
+  {
+    "id": "starstone:bridge/icon",
+    "featureId": "starstone:bridge",
+    "source": "starstone_rp/textures/blocks/starstone_casing.png",
+    "kind": "texture",
+    "alt": "Isolated Bridge"
+  },
+  {
+    "id": "starstone:conduit/icon",
+    "featureId": "starstone:conduit",
+    "source": "starstone_rp/textures/blocks/starstone_casing.png",
+    "kind": "texture",
+    "alt": "Starstone Conduit"
+  },
+  {
+    "id": "starstone:generator/icon",
+    "featureId": "starstone:generator",
+    "source": "starstone_rp/textures/blocks/starstone_generator_off.png",
+    "kind": "texture",
+    "alt": "Starstone Generator"
+  },
+  {
+    "id": "starstone:lamp/icon",
+    "featureId": "starstone:lamp",
+    "source": "starstone_rp/textures/blocks/starstone_lamp_off.png",
+    "kind": "texture",
+    "alt": "Starstone Lamp",
+    "render": {
+      "adapter": "surface-device",
+      "blockId": "starstone:lamp"
+    }
+  },
+  {
+    "id": "starstone:ore/icon",
+    "featureId": "starstone:ore",
+    "source": "starstone_rp/textures/blocks/starstone_ore.png",
+    "kind": "texture",
+    "alt": "Starstone Ore"
+  },
+  {
+    "id": "starstone:redstone_input/icon",
+    "featureId": "starstone:redstone_input",
+    "source": "starstone_rp/textures/items/starstone_redstone_input.png",
+    "kind": "item",
+    "alt": "Redstone Input"
+  },
+  {
+    "id": "starstone:redstone_output/icon",
+    "featureId": "starstone:redstone_output",
+    "source": "starstone_rp/textures/items/starstone_redstone_output.png",
+    "kind": "item",
+    "alt": "Redstone Output"
+  }
+]

@@ -136,8 +136,9 @@ const input=harvestWorld.put('starstone:redstone_input',10,0,0);input.redstonePo
 const output=harvestWorld.put('starstone:redstone_output',11,0,0);
 harvestWorld.put('minecraft:stone',10,-1,0);harvestWorld.put('minecraft:stone',11,-1,0);
 fire('playerPlaceBlock',{block:input});await tick();
-const nativeInput=definitions.get('starstone:surface').onRedstoneUpdate;
-assert.equal(typeof nativeInput,'function','real surface registration includes stable native hook');
+const nativeInput=definitions.get('starstone:input_surface').onRedstoneUpdate;
+assert.equal(typeof nativeInput,'function','input registration includes stable native hook');
+for(const id of ['cable','bridge','surface'])assert.equal(definitions.get(`starstone:${id}`).onRedstoneUpdate,undefined,`${id} has no consumer, so no native hook`);
 input.redstonePower=15;nativeInput({block:input,powerLevel:15,previousPowerLevel:0});await tick();
 assert.equal(output.permutation.getState('starstone:powered'),true,'native hook powers discovered output');
 input.redstonePower=0;nativeInput({block:input,powerLevel:0,previousPowerLevel:15});await tick();

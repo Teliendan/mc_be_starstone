@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.120",
+  "minecraft:item": {
+    "description": {
+      "identifier": "starstone:redstone_input",
+      "menu_category": { "category": "items" }
+    },
+    "components": {
+      "minecraft:icon": "starstone_redstone_input",
+      "minecraft:display_name": { "value": "tile.starstone:redstone_input.name" },
+      "minecraft:block_placer": {
+        "block": "starstone:redstone_input",
+        "replace_block_item": true
+      }
+    }
+  }
+}

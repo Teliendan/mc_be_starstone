@@ -267,12 +267,14 @@ export function registerCableComponent() {
                 }
             },
             onPlace({ block }) { schedulePlaced(block); },
-            onRedstoneUpdate: reactToRedstoneUpdate,
             onPlayerBreak({ block }) { scheduleAffected(block); }
         };
         init.blockComponentRegistry.registerCustomComponent("starstone:cable", surface);
         init.blockComponentRegistry.registerCustomComponent("starstone:bridge", surface);
         init.blockComponentRegistry.registerCustomComponent("starstone:surface", surface);
+        // onRedstoneUpdate needs minecraft:redstone_consumer, which only the input block has.
+        init.blockComponentRegistry.registerCustomComponent("starstone:input_surface",
+            { ...surface, onRedstoneUpdate: reactToRedstoneUpdate });
         init.blockComponentRegistry.registerCustomComponent("starstone:inner_corner", {
             beforeOnPlayerPlace(event) {
                 try {

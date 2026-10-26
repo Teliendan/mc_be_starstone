@@ -1,0 +1,454 @@
+[
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/blocks/cable.json",
+        "sha256": "5d61b8153ad99398d297bfb954ec10e6291aeab95793822c54da3a5f98c3f992"
+      },
+      {
+        "path": "starstone_bp/items/cable_item.json",
+        "sha256": "8f324d137f78b76acbaabccf66959a3084c8891598fa5a6e946e5e1fbdaef4d4"
+      }
+    ],
+    "featureId": "starstone:cable_item",
+    "id": "starstone:cable_item/use",
+    "text": "Place against any of the six faces of a full supporting block. Cables join across the same surface and around its outside edges. Removing the support drops the cable."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/items/compressed_dust.json",
+        "sha256": "fc4cd7f77f90c86832c378683e00a2870f72ee33e5af681b5797dfadd5aa38a9"
+      }
+    ],
+    "featureId": "starstone:compressed_dust",
+    "id": "starstone:compressed_dust/use",
+    "text": "Smelt with fuel to make a Starstone Crystal."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/items/crystal.json",
+        "sha256": "a86b00f6de18a5030a9029379c8aa503b66f773bc94b144a95f2f830db9d9ec6"
+      }
+    ],
+    "featureId": "starstone:crystal",
+    "id": "starstone:crystal/use",
+    "text": "Use as a material for generators and other Starstone devices."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/items/dust.json",
+        "sha256": "55bdde76704e08886023180508a4d4aff20aab6d406ecdd3d3aff3f2ec607bc0"
+      }
+    ],
+    "featureId": "starstone:dust",
+    "id": "starstone:dust/use",
+    "text": "Use as a material for cables and compressed dust."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/blocks/inner_corner.json",
+        "sha256": "aa8d9a23f7e02d110765557a630365f3cb70cbbac5dedb9305b55345ac016283"
+      },
+      {
+        "path": "starstone_bp/items/inner_corner_item.json",
+        "sha256": "e5a162c15b897b8c47258763f607e8f9f85fd57ebf07e414b823046f5a3133dd"
+      }
+    ],
+    "featureId": "starstone:inner_corner_item",
+    "id": "starstone:inner_corner_item/use",
+    "text": "Place in an empty inside corner with two perpendicular full supporting faces to join both cable runs."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/blocks/bridge.json",
+        "sha256": "5fccc612e60d51a53089e53d1444c8369e90853b09fee6a6d63e331f0f84e592"
+      }
+    ],
+    "featureId": "starstone:bridge",
+    "id": "starstone:bridge/use",
+    "text": "Place on a supporting face to cross two cable runs. Its two lanes stay separate; powering one lane does not power the other."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/blocks/conduit.json",
+        "sha256": "d33987c8d1467f5fa9fc5db0b63adc2a0a08d5287e9c20b1c791173fab0c6354"
+      }
+    ],
+    "featureId": "starstone:conduit",
+    "id": "starstone:conduit/use",
+    "text": "Place to set the conducting axis from the clicked face. It connects only its opposite ends. Break and replace it to change the axis. It can provide a back connection to a correctly aligned surface device."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/blocks/generator.json",
+        "sha256": "5644959745353d929ccabb6f91670978614836bf42e8604f97e1c249116957ab"
+      }
+    ],
+    "featureId": "starstone:generator",
+    "id": "starstone:generator/use",
+    "text": "A newly placed generator starts on. Use it to switch on or off. Any enabled source powers the connected network."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/blocks/lamp.json",
+        "sha256": "4d353057e1adfaebabb3fba6901990e0bd191648da1cbf88c146bc268f2619a5"
+      }
+    ],
+    "featureId": "starstone:lamp",
+    "id": "starstone:lamp/use",
+    "text": "Mount this thin lamp panel on a supporting face and connect it to Starstone power. It emits light level {{starstone:lamp/powered-light}} when powered. For a first circuit, mount it directly on an enabled Starstone Generator."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/blocks/ore.json",
+        "sha256": "df2090e9cd74f58de876726558908d60d0cda04ce5c147ce00a6a4ee4f2bd704"
+      },
+      {
+        "path": "starstone_bp/structures/starstone/ore_xp_1.mcstructure",
+        "sha256": "f2539fd784db6593b4b9f1b8669596f797e597b1f5198486d950d732acd6c61e"
+      },
+      {
+        "path": "starstone_bp/structures/starstone/ore_xp_2.mcstructure",
+        "sha256": "f1ec78ddc1fa4762751c15ef7c505a40c19f55839c54ff22e2ecca5ee0dfbcf9"
+      },
+      {
+        "path": "starstone_bp/structures/starstone/ore_xp_3.mcstructure",
+        "sha256": "42b94ac8005c11b3bb1176e6faa250b0c635917f1982f411f2e9829d90822c8e"
+      },
+      {
+        "path": "starstone_bp/structures/starstone/ore_xp_4.mcstructure",
+        "sha256": "8fb82c789f924187b9d195de72138d0e988ad56498e2fa27d2531a3c5701ad6a"
+      },
+      {
+        "path": "starstone_bp/structures/starstone/ore_xp_5.mcstructure",
+        "sha256": "9f1bc28af825b3558702c596278af396de909d49ea4a41fdbffcb624374b7b8a"
+      }
+    ],
+    "featureId": "starstone:ore",
+    "id": "starstone:ore/use",
+    "text": "Collect ore drops with an iron, diamond or netherite pickaxe. Silk Touch collects the block; Fortune improves dust drops. Smelt collected ore to recover dust."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/blocks/redstone_input.json",
+        "sha256": "66ad03bb052e49d8aed69805dbfae0342eeda70ef41a885e8207c7f8516f536e"
+      },
+      {
+        "path": "starstone_bp/items/redstone_input.json",
+        "sha256": "cd7cbe63f9791bc4e56a1626a744389ec99d69eaac80c3ded83d4129af4d7560"
+      }
+    ],
+    "featureId": "starstone:redstone_input",
+    "id": "starstone:redstone_input/use",
+    "text": "Mount on a supporting face. Any incoming redstone power switches the connected Starstone network on; it does not carry a varying signal strength."
+  },
+  {
+    "evidence": [
+      {
+        "path": "docs/SURVIVAL.md",
+        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+      },
+      {
+        "path": "docs/VANILLA_PARITY.md",
+        "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+      },
+      {
+        "path": "starstone_bp/blocks/redstone_output.json",
+        "sha256": "825559dcc4f34fbba3088821777635d8e813abb547d4603e88ff7e14f3fe4d9c"
+      },
+      {
+        "path": "starstone_bp/items/redstone_output.json",
+        "sha256": "ca328b9345b045619b20de340349cffff11c0f51beb9e618d85872499381146d"
+      }
+    ],
+    "featureId": "starstone:redstone_output",
+    "id": "starstone:redstone_output/use",
+    "text": "Mount on a supporting face. When supplied with Starstone power it emits a redstone signal to touching sides and powers its support strongly."
+  },
+  {
+    "evidence": [
+      {
+        "path": "starstone_bp/scripts/blockKeys.js",
+        "sha256": "5672234b4d819bad361b0099a0855c1279edb7bb813381d6c82d6db7a8db20f5"
+      },
+      {
+        "path": "starstone_bp/scripts/cableComponent.js",
+        "sha256": "fb61a3058330a9bb160b2cabdc5ffad7e9fad35073f5de39e32395aa537cff83"
+      },
+      {
+        "path": "starstone_bp/scripts/cableTopology.js",
+        "sha256": "7557db9b47ff31d65eb97725771ac4818a20f24836917211b978516b26edfba8"
+      },
+      {
+        "path": "starstone_bp/scripts/chunkController.js",
+        "sha256": "1927303e41be0d22821ec22255d9e10a3793ce399b3b85ec82b49f7639413e36"
+      },
+      {
+        "path": "starstone_bp/scripts/chunkIndex.js",
+        "sha256": "e93ecf709384992c0b375dc47f58ddefe504526d0ac892b25a3c768c149599e1"
+      },
+      {
+        "path": "starstone_bp/scripts/constants.js",
+        "sha256": "c1d5f1060382eade01bf0c2ba66c4fc45797a22d975922f36937a4553e6baac2"
+      },
+      {
+        "path": "starstone_bp/scripts/cornerTopology.js",
+        "sha256": "e85fe4bc45341f402b5ee7948cea31fb220595a1b10807ed8d25cb50e2dca8a0"
+      },
+      {
+        "path": "starstone_bp/scripts/diagnostics.js",
+        "sha256": "1c0adccc91fcd474f6529a844aee04eab7df78523e7ed71e5a995d7edf4eeffb"
+      },
+      {
+        "path": "starstone_bp/scripts/electricalBlocks.js",
+        "sha256": "4da01ee6f22bffffa787849120cb1c878edcda4e2df3778a3a6e5562a83e29bb"
+      },
+      {
+        "path": "starstone_bp/scripts/generatorComponent.js",
+        "sha256": "2b772cc429fc795634b889a4063d74088e0922e5dc0825a19b4e33f9438f7811"
+      },
+      {
+        "path": "starstone_bp/scripts/harvestGate.js",
+        "sha256": "e296f5b858d3f797ed726667ccb0c326fb201981e2f7f32f77535cefe69f840c"
+      },
+      {
+        "path": "starstone_bp/scripts/harvestWear.js",
+        "sha256": "fbbb68eee28fd621380d58c3ee9407a7a980547f437c0cdf120b8b3e03221719"
+      },
+      {
+        "path": "starstone_bp/scripts/innerCorner.js",
+        "sha256": "dc31e00875ee718dab4d23dd07183d03ee6c502725892b4e746a9c3be9b6f10f"
+      },
+      {
+        "path": "starstone_bp/scripts/main.js",
+        "sha256": "65c8ef7d087769de7440f85b8758abe7966b0bb987ee24089b868773bf446dff"
+      },
+      {
+        "path": "starstone_bp/scripts/messages.js",
+        "sha256": "662df13b3a05d916ad035fae2c45fe8b6d6d2a2967b283fb9d50c01e0704926b"
+      },
+      {
+        "path": "starstone_bp/scripts/mutationController.js",
+        "sha256": "59650028ab99e9b8c0d3e02db149a0a0e58de325460fffdd427e1d8f97ce7ba0"
+      },
+      {
+        "path": "starstone_bp/scripts/networkController.js",
+        "sha256": "fadacefd25dc627d6c3c1cd83e3e4db5eda075a86d893c8e53c260ad422a07e7"
+      },
+      {
+        "path": "starstone_bp/scripts/networkEvents.js",
+        "sha256": "262a32dd90bdfeda80a7ca271bca3fc46414f2cf3225178d7283bdeaf0dfa282"
+      },
+      {
+        "path": "starstone_bp/scripts/networkGraph.js",
+        "sha256": "cc07fb21081a472492f40587034b405d10442ddd3fdb9323f79c0667d1ffe98d"
+      },
+      {
+        "path": "starstone_bp/scripts/networkRuntime.js",
+        "sha256": "4e09125f2f950d8bbafb435d7ddf5f2a7f144732a8d8ccec07045e201024a7e5"
+      },
+      {
+        "path": "starstone_bp/scripts/oreExperience.js",
+        "sha256": "c355056cb56c826f93e5bc555cf7187123aff524a43b2e467bbcfbfbd8cd601e"
+      },
+      {
+        "path": "starstone_bp/scripts/persistence.js",
+        "sha256": "aebe59ff80b928376fba5171b5ee213676e6b5e8a97dbd9954da949ed34ae323"
+      },
+      {
+        "path": "starstone_bp/scripts/pistonController.js",
+        "sha256": "533d41997aa385142dc34c2e0a07f8d47e5d431cd475ceb512395a63eb86f7c3"
+      },
+      {
+        "path": "starstone_bp/scripts/portDirections.js",
+        "sha256": "a47b0a874672704b6b8cdd1b85a34caa859ddc1bc83ecbf2b882e869e82e0d47"
+      },
+      {
+        "path": "starstone_bp/scripts/powerPropagation.js",
+        "sha256": "8b91f8344e079a0e4cdbcc0178262d8d605996857dfd338fbdf71c1396d7ae2a"
+      },
+      {
+        "path": "starstone_bp/scripts/redstoneAdapters.js",
+        "sha256": "a5edbb63fc980d6c8d34b80516cd88d89d555e4a641e92a241f5f8df91d83fe8"
+      },
+      {
+        "path": "starstone_bp/scripts/repair.js",
+        "sha256": "6e29ca20c79ac1082233b9bf12a48e303c4cc70d8f219b5e3e1e55e949196fa3"
+      },
+      {
+        "path": "starstone_bp/scripts/segmentGraph.js",
+        "sha256": "5083fcecbb6f4f0d3881d9fac3daa79f7fdc84324d9153e3a7239b8176b31b6f"
+      },
+      {
+        "path": "starstone_bp/scripts/support.js",
+        "sha256": "a01fc793f51ee369094cc0243b7a94932dc2eeff7e7ba05f7839b19bfa7aaf43"
+      },
+      {
+        "path": "starstone_bp/scripts/supportPolicy.js",
+        "sha256": "1a9dbc9db01d4ff0be40ff2deb68eba596f7c7dc93586d8592c2e0f01305c075"
+      },
+      {
+        "path": "starstone_bp/scripts/support_motion_service.js",
+        "sha256": "32addb6d0db9a94724f80aa8eca42d86c2fd02c502d7854f11f577d52a8a75a7"
+      },
+      {
+        "path": "starstone_bp/scripts/surfaceFrame.js",
+        "sha256": "d51bfb6556c07b4e6887d00207fa83eec72fe5fe3c567216cf1ca5de563a17ab"
+      }
+    ],
+    "featureId": "starstone:network",
+    "id": "starstone:network/recovery",
+    "text": "After changing a circuit by commands, rebuild nearby if it has not been recognized: /scriptevent starstone:rebuild_nearby. Returning to a changed chunk can take a short time to update connected devices."
+  },
+  {
+    "evidence": [
+      {
+        "path": "starstone_bp/scripts/electricalBlocks.js",
+        "sha256": "4da01ee6f22bffffa787849120cb1c878edcda4e2df3778a3a6e5562a83e29bb"
+      },
+      {
+        "path": "starstone_bp/scripts/generatorComponent.js",
+        "sha256": "2b772cc429fc795634b889a4063d74088e0922e5dc0825a19b4e33f9438f7811"
+      }
+    ],
+    "featureId": "starstone:network",
+    "id": "starstone:network/first-lamp",
+    "text": "First lamp: craft a Starstone Generator and Starstone Lamp. Place the generator on the floor, then use the lamp on one of its faces. A new generator starts on, so the lamp lights. Use the generator to switch the lamp off and on. No redstone input or cable is needed for this first setup."
+  },
+  {
+    "evidence": [
+      {
+        "path": "starstone_bp/scripts/electricalBlocks.js",
+        "sha256": "4da01ee6f22bffffa787849120cb1c878edcda4e2df3778a3a6e5562a83e29bb"
+      },
+      {
+        "path": "starstone_bp/scripts/cableTopology.js",
+        "sha256": "7557db9b47ff31d65eb97725771ac4818a20f24836917211b978516b26edfba8"
+      },
+      {
+        "path": "starstone_bp/scripts/cornerTopology.js",
+        "sha256": "e85fe4bc45341f402b5ee7948cea31fb220595a1b10807ed8d25cb50e2dca8a0"
+      }
+    ],
+    "featureId": "starstone:network",
+    "id": "starstone:network/extending",
+    "text": "To extend a circuit, mount Surface Cable directly on the generator and continue a joined run across full supporting blocks to a lamp. Neighboring surface parts must meet along the same mounting surface. Cables can wrap around an outside edge of a support; use an Inner Corner for an inside bend."
+  },
+  {
+    "evidence": [
+      {
+        "path": "starstone_bp/scripts/electricalBlocks.js",
+        "sha256": "4da01ee6f22bffffa787849120cb1c878edcda4e2df3778a3a6e5562a83e29bb"
+      },
+      {
+        "path": "starstone_bp/scripts/cableTopology.js",
+        "sha256": "7557db9b47ff31d65eb97725771ac4818a20f24836917211b978516b26edfba8"
+      },
+      {
+        "path": "starstone_bp/scripts/support.js",
+        "sha256": "a01fc793f51ee369094cc0243b7a94932dc2eeff7e7ba05f7839b19bfa7aaf43"
+      }
+    ],
+    "featureId": "starstone:network",
+    "id": "starstone:network/check-connections",
+    "text": "If a lamp stays dark, first check that a generator is on or a Redstone Input is receiving power. Follow the cable run and check that each part still has a full support and meets the next part on the same surface. A Conduit connects through its two ends, not its sides: break and replace it using the desired end face. An Isolated Bridge keeps its crossing lanes separate; continue along the powered lane instead of expecting power to turn onto the other lane."
+  }
+]

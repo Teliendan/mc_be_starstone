@@ -67,7 +67,7 @@
             "minecraft:redstone_consumer": {"min_power": 0, "propagates_power": false},
             "starstone:piston_support": {},
           "minecraft:light_dampening": 0,
-            "starstone:surface": {},
+            "starstone:input_surface": {},
             "minecraft:selection_box": {
                 "origin": [
                     -8,

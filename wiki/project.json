@@ -1,0 +1,197 @@
+{
+  "adapter": "bedrock",
+  "behaviorPacks": [
+    "starstone_bp"
+  ],
+  "coverage": [
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/blockKeys.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/cableComponent.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/cableTopology.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/chunkController.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/chunkIndex.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/constants.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/cornerTopology.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/diagnostics.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/electricalBlocks.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/generatorComponent.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/harvestGate.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/harvestWear.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/innerCorner.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/main.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/messages.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/mutationController.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/networkController.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/networkEvents.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/networkGraph.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/networkRuntime.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/oreExperience.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/persistence.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/pistonController.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/portDirections.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/powerPropagation.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/redstoneAdapters.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/repair.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/segmentGraph.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/support.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/supportPolicy.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/support_motion_service.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/surfaceFrame.js"
+    },
+    {
+      "featureId": "starstone:ore",
+      "pattern": "starstone_bp/structures/starstone/ore_xp_1.mcstructure"
+    },
+    {
+      "featureId": "starstone:ore",
+      "pattern": "starstone_bp/structures/starstone/ore_xp_2.mcstructure"
+    },
+    {
+      "featureId": "starstone:ore",
+      "pattern": "starstone_bp/structures/starstone/ore_xp_3.mcstructure"
+    },
+    {
+      "featureId": "starstone:ore",
+      "pattern": "starstone_bp/structures/starstone/ore_xp_4.mcstructure"
+    },
+    {
+      "featureId": "starstone:ore",
+      "pattern": "starstone_bp/structures/starstone/ore_xp_5.mcstructure"
+    }
+  ],
+  "id": "starstone",
+  "locale": "en_US",
+  "name": "Starstone",
+  "nativeForms": {
+    "starstone:cable": "Placed conduit",
+    "starstone:inner_corner": "Placed inner corner"
+  },
+  "resourcePacks": [
+    "starstone_rp"
+  ],
+  "ruleValues": [
+    {
+      "file": "starstone_bp/feature_rules/ore_underground.json",
+      "id": "starstone:ore/min-y",
+      "label": "Lower ore search height",
+      "pointer": "/minecraft:feature_rules/distribution/y/extent/0",
+      "unit": "Y coordinate"
+    },
+    {
+      "file": "starstone_bp/feature_rules/ore_underground.json",
+      "id": "starstone:ore/max-y",
+      "label": "Upper ore search height",
+      "pointer": "/minecraft:feature_rules/distribution/y/extent/1",
+      "unit": "Y coordinate"
+    },
+    {
+      "file": "starstone_bp/feature_rules/ore_deep.json",
+      "id": "starstone:ore/deep-y",
+      "label": "Deeper ore band",
+      "pointer": "/minecraft:feature_rules/distribution/y/extent/1",
+      "unit": "Y coordinate"
+    },
+    {
+      "file": "starstone_bp/blocks/lamp.json",
+      "id": "starstone:lamp/powered-light",
+      "label": "Powered light level",
+      "pointer": "/minecraft:block/permutations/6/components/minecraft:light_emission",
+      "unit": "light levels"
+    }
+  ],
+  "schemaVersion": 2
+}
