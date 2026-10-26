@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.120",
+  "minecraft:item": {
+    "description": {
+      "identifier": "starstone:lamp",
+      "menu_category": { "category": "items" }
+    },
+    "components": {
+      "minecraft:icon": "starstone_lamp",
+      "minecraft:display_name": { "value": "tile.starstone:lamp.name" },
+      "minecraft:block_placer": {
+        "block": "starstone:lamp",
+        "replace_block_item": true
+      }
+    }
+  }
+}

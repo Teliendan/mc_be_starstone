@@ -2,8 +2,8 @@ import { message } from "./messages.js";
 import { world, system } from "@minecraft/server";
 import { isSupportValid, isFaceSupportValid, dropAndClear, mountFace } from "./support.js";
 import { worldOffset, ARM_NAMES, supportOffset, FACE_LIST, faceNormal } from "./surfaceFrame.js";
-import { cableConnectionMask, ARM_BITS } from "./cableTopology.js";
-import { outerCornerOffset, outerWrap, innerOuterArmBits, outerContactedFaces } from "./cornerTopology.js";
+import { cableConnectionMask } from "./cableTopology.js";
+import { outerArmMask, innerOuterArmBits, outerContactedFaces } from "./cornerTopology.js";
 import { innerSupports, stateOfFaces, facesOfPair, pairFromPermutation, withFacePair,
     armsFromPermutation, withArms, innerArmBits, contactedFaces } from "./innerCorner.js";
 import { descriptorForBlock, cableDescriptor } from "./electricalBlocks.js";
@@ -21,7 +21,6 @@ for (let axis=0; axis<3; axis++) for (let other=axis+1; other<3; other++) {
         const offset=[0,0,0]; offset[axis]=a; offset[other]=b; OFFSETS.push(offset);
     }
 }
-const same = (a,b) => a.every((value,i)=>value===b[i]);
 const pending = new Map();
 const discoveries = new Map();
 let flushScheduled = false;
@@ -74,24 +73,8 @@ export function computeCableMask(block) {
             ? cableDescriptor({ mountFace: mountFace(nb), connections: 15 })
             : descriptorForBlock(nb);
     }
-    let mask = cableConnectionMask(face, neighbors);
-    const self = cableDescriptor({mountFace:face,connections:15});
-    for (const arm of ARM_NAMES) {
-        if (mask & ARM_BITS[arm]) continue;
-        const towardEdge = worldOffset(face,arm);
-        const otherFace = FACE_LIST.find(candidate => same(faceNormal(candidate),towardEdge));
-        const offset = otherFace && outerCornerOffset(face,otherFace);
-        if (!offset) continue;
-        const {x,y,z}=block.location;
-        const other = read(block.dimension,{x:x+offset[0],y:y+offset[1],z:z+offset[2]});
-        if (!other?.isValid || (other.type.id !== CABLE_ID && other.type.id !== INNER_CORNER_ID)) continue;
-        const otherMount = other.type.id === CABLE_ID ? mountFace(other) : undefined;
-        if (other.type.id === CABLE_ID && !FACE_LIST.includes(otherMount)) continue;
-        const descriptor = other.type.id === CABLE_ID
-            ? cableDescriptor({mountFace:otherMount,connections:15}) : descriptorForBlock(other);
-        if (outerWrap(self,descriptor,offset)?.toFace === otherFace) mask |= ARM_BITS[arm];
-    }
-    return mask;
+    return cableConnectionMask(face, neighbors) |
+        outerArmMask(face, diagonalReader(block.dimension, block.location));
 }
 function removeUnsupported(block) {
     const { x,y,z } = block.location;

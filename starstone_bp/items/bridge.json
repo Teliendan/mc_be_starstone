@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.120",
+  "minecraft:item": {
+    "description": {
+      "identifier": "starstone:bridge",
+      "menu_category": { "category": "items" }
+    },
+    "components": {
+      "minecraft:icon": "starstone_bridge",
+      "minecraft:display_name": { "value": "tile.starstone:bridge.name" },
+      "minecraft:block_placer": {
+        "block": "starstone:bridge",
+        "replace_block_item": true
+      }
+    }
+  }
+}

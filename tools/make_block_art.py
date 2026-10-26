@@ -285,13 +285,14 @@ def adapter(kind):
     r, b = RED_ON[2], ENERGY_ON[1]
     rd, bd = RED_ON[1], ENERGY_ON[0]
     src, src_d, dst, dst_d = (r, rd, b, bd) if kind == 'input' else (b, bd, r, rd)
-    # Model X mirrors world X (see the cableVisual tests): the arrow is drawn pointing to texture
-    # left so that, seen from above in the world, it points from the source on the left to the right.
+    # A "->": shaft in the source colour, arrowhead in the target colour. Model X mirrors world X
+    # (see the cableVisual tests), so it is drawn pointing to texture left; seen from above in the
+    # world it runs from the source on the left to the target on the right.
     plate(c, [
-        [None, dst_d, None, src],
-        [dst_d, dst, src_d, src],
-        [dst_d, dst, src_d, src],
-        [None, dst_d, None, src_d],
+        [None, dst, None, None],
+        [dst, dst, src, src],
+        [dst_d, dst, src_d, src_d],
+        [None, dst_d, None, None],
     ])
     return c
 

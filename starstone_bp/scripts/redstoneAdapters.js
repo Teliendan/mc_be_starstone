@@ -2,6 +2,7 @@ import { system } from "@minecraft/server";
 import { REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID, STATE_POWERED, STATE_CONNECTIONS } from "./constants.js";
 import { ARM_NAMES, worldOffset } from "./surfaceFrame.js";
 import { cableConnectionMask } from "./cableTopology.js";
+import { outerArmMask } from "./cornerTopology.js";
 import { descriptorForBlock, cableDescriptor } from "./electricalBlocks.js";
 import { CABLE_ID } from "./constants.js";
 import { blockKey, parseNodeRef } from "./blockKeys.js";
@@ -91,7 +92,18 @@ export function refreshAdapterVisuals(block) {
                 : descriptorForBlock(adjacent);
         } catch { /* An unavailable neighbor is not a visual contact. */ }
     }
-    const blue = cableConnectionMask(face,neighbors);
+    const {x,y,z} = block.location;
+    const blue = cableConnectionMask(face,neighbors) | outerArmMask(face,([dx,dy,dz]) => {
+        const position = {x:x+dx,y:y+dy,z:z+dz};
+        try {
+            if (block.dimension.isChunkLoaded?.(position) === false) return undefined;
+            const other = block.dimension.getBlock(position);
+            if (!other?.isValid) return undefined;
+            return other.typeId === CABLE_ID
+                ? cableDescriptor({mountFace:other.permutation.getState("minecraft:block_face"),connections:15})
+                : descriptorForBlock(other);
+        } catch { return undefined; }
+    });
     const red = redstoneContactMask(block);
     let permutation = block.permutation;
     if (permutation.getState(STATE_CONNECTIONS) !== blue) permutation = permutation.withState(STATE_CONNECTIONS,blue);

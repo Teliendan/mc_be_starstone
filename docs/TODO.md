@@ -2,10 +2,15 @@
 
 ## Deferred by owner — 2026-10-25
 
-- [ ] Redo the full graphics set using `.claude/skills/bedrock-art/SKILL.md`
-  and its style guide. Cover hardware, cables, adapters, icons and pack art as
-  one coherent family; compare with vanilla at inventory and world scales.
-  This is a separate graphics task, not part of the test-feedback bug fixes.
+- [x] Redo the full graphics set using `.claude/skills/bedrock-art/SKILL.md`
+  (commit `7aa74ca`, 16x16). Owner 2026-10-26: "The graphics as such is OK";
+  per-asset checks in `GRAPHICS_TASKS.md`.
+
+## Owner test feedback — 2026-10-26
+
+- [ ] Re-test in game: Bridge/Lamp held in hand, cable and inner corner into a
+  conduit end, lamp/bridge/adapter around an outside edge, "->" emblems
+  (`TEST_FEEDBACK_2026-10-26.md`, `TEST-WORLD.md` step 2).
 
 ## Accepted after follow-up
 

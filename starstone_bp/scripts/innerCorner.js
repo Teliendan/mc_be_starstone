@@ -45,12 +45,14 @@ export function innerRoutes(pair) {
     return faces.flatMap(face=>FACE_LIST.filter(other=>dot(faceNormal(face),faceNormal(other))===0)
         .map(other=>({direction:faceNormal(other),neighborFace:face})));
 }
+// Full blocks without a mount face meet any face's arm that points at them.
+const FULL_KINDS=new Set(["source","conduit"]);
 export function innerNeighborAllowed(corner,other,dir) {
     if (corner?.kind!=="inner-corner" || !other) return false;
     const neighborFaces=other.kind==="inner-corner" ? facesOfPair(other.facePair) :
         other.mountFace ? [other.mountFace] : undefined;
     return innerRoutes(corner.facePair).some(route=>same(route.direction,dir) &&
-        (neighborFaces ? neighborFaces.includes(route.neighborFace) : other.kind==="source"));
+        (neighborFaces ? neighborFaces.includes(route.neighborFace) : FULL_KINDS.has(other.kind)));
 }
 export function innerSupports(location,pair) {
     const faces=facesOfPair(pair);
@@ -105,12 +107,12 @@ export function withArms(permutation,bits) {
 // conductor on `face` exposing a port back at the corner. Cables must be passed
 // with their potential (all four) arms, as for ordinary cable masks.
 export function neighborContactsFace(neighbor,face,toward) {
-    if (!neighbor?.lanes || neighbor.kind==="conduit") return false;
+    if (!neighbor?.lanes) return false;
     const back=negate(faceNormal(toward));
     if (neighbor.kind==="inner-corner")
         return innerNeighborAllowed(neighbor,{mountFace:face},back);
     if (neighbor.mountFace && neighbor.mountFace!==face) return false;
-    if (!neighbor.mountFace && neighbor.kind!=="source") return false;
+    if (!neighbor.mountFace && !FULL_KINDS.has(neighbor.kind)) return false;
     return neighbor.lanes.some(lane=>[...(lane?.ports||[])].some(port=>{
         const direction=worldDirOfPort(neighbor.mountFace,port);
         return direction && same(direction,back);

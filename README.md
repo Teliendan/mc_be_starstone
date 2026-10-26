@@ -39,12 +39,15 @@ use their normal IDs, such as `/give @s starstone:generator` or
 
 Surface cables, bridges, lamps and adapters mount on all six support faces.
 Cables expose joined tangent arms; a bridge keeps its two lanes independent.
-Surface cables also wrap around outside edges of the same full support cube.
-An Inner Corner item crafted from two Cables occupies an empty inside-corner
-cell with two perpendicular full support faces, joining both cable runs. A matching
-conduit or full generator supplies a back contact; bridges have tangent
-contacts only. A conduit selects X/Y/Z from its placement face and conducts
-only between its opposite ends. Break and replace it to change the axis.
+Every one-face device (cable, bridge, lamp, adapters) also wraps around the
+outside edges of its full support cube, so a lamp on top of a block meets a
+cable on its side. An Inner Corner item crafted from two Cables occupies an
+empty inside-corner cell with two perpendicular full support faces, joining
+both cable runs. A matching conduit or full generator supplies a back contact;
+bridges have tangent contacts only. A conduit selects X/Y/Z from its placement
+face and conducts only between its opposite ends; a device mounted on an end, or
+any arm beside an end pointing into it (a floor cable, an inner corner laid over
+it), connects there. Its sides never connect. Break and replace it to change the axis.
 
 The generator starts enabled and interaction toggles it. Internal power is
 binary: any active source powers its connected component. Removing a support

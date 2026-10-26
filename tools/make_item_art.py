@@ -14,6 +14,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from starstone_art import BP, CLEAR, CRYSTAL, METAL, RED_ON, RP, Canvas, from_rows  # noqa: E402
+import make_block_art as block_art  # noqa: E402
+from make_block_art import bevel  # noqa: E402
 
 ITEMS = RP / 'textures' / 'items'
 WORKSPACE = Path(__file__).resolve().parents[3]
@@ -313,6 +315,63 @@ def adapter_icon(source, target):
     return c
 
 
+# ---------------------------------------------------------------- bridge and lamp
+
+def bridge_icon():
+    """The Bridge seen from above, as placed: a raised navy plate with corner rivets, the north-south lane
+    running over it (bright) and the east-west lane passing under it (dimmer), entering through dark ports
+    in the rim. Lanes are outlined only off the plate, so the plate stays readable."""
+    c = Canvas()
+    x0, y0, x1, y1 = 3, 3, 12, 12
+    on_plate = lambda q: x0 <= q[0] <= x1 and y0 <= q[1] <= y1
+    def lane(cells, core, outline=True):
+        """A 2-wide conductor: lit sheath on the top/left side, energy core, shaded sheath."""
+        part = {}
+        for (u, v, axis) in cells:
+            for k, col in enumerate((METAL[4], core[0], core[1], METAL[2])):
+                part[(u, v + k - 1) if axis == 'x' else (u + k - 1, v)] = col
+        for q in mask_outline(set(part)):
+            if outline and not on_plate(q):
+                c[q] = METAL[0]
+        for q, col in part.items():
+            c[q] = col
+    lane([(x, 7, 'x') for x in [*range(1, 4), *range(12, 15)]], (CRYSTAL[2], CRYSTAL[1]))
+    for x in range(x0, x1 + 1):
+        for y in range(y0, y1 + 1):
+            c[x, y] = METAL[3]
+    for x in range(x0 - 1, x1 + 2):
+        c[x, y0 - 1] = c[x, y1 + 1] = METAL[0]
+    for y in range(y0 - 1, y1 + 2):
+        c[x0 - 1, y] = c[x1 + 1, y] = METAL[0]
+    bevel(c, x0, y0, x1, y1, METAL[5], METAL[1])
+    for x, y in ((4, 4), (11, 4), (4, 11), (11, 11)):
+        c[x, y], c[x + 1, y + 1] = METAL[6], METAL[1]   # rivets (shadow below-right, clipped by the rim)
+    for y in (7, 8):                               # ports where the east-west lane dives under
+        c[x0, y] = c[x1, y] = METAL[0]
+        c[x0 + 1, y] = c[x1 - 1, y] = METAL[1]
+    lane([(7, y, 'y') for y in range(1, 15)], (CRYSTAL[4], CRYSTAL[3]))
+    for x in (6, 7, 8, 9):                         # end ferrules
+        c[x, 1] = METAL[5] if x < 8 else METAL[4]
+        c[x, 14] = METAL[3] if x < 8 else METAL[2]
+    return c
+
+
+def lamp_icon():
+    """The lit Lamp as placed, seen from above: the block texture's panel and four-pane lens, without the
+    contacts, on a dark outline."""
+    tex = block_art.lamp(True)
+    c = Canvas()
+    for x in range(1, 15):
+        for y in range(1, 15):
+            c[x, y] = METAL[0]
+    for x in range(2, 14):
+        for y in range(2, 14):
+            c[x, y] = tex[x, y]
+    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        c[x, y] = CLEAR
+    return c
+
+
 RED = [RED_ON[1], RED_ON[2], RED_ON[3], RED_ON[4]]
 CYAN = [CRYSTAL[3], CRYSTAL[4], CRYSTAL[5], CRYSTAL[6]]
 
@@ -352,6 +411,8 @@ ICONS = {
     'starstone_inner_corner': inner_corner_icon,
     'starstone_redstone_input': lambda: adapter_icon(RED, CYAN),
     'starstone_redstone_output': lambda: adapter_icon(CYAN, RED),
+    'starstone_bridge': bridge_icon,
+    'starstone_lamp': lamp_icon,
 }
 
 VANILLA = WORKSPACE / 'reference/vanilla/current/resource_packs'

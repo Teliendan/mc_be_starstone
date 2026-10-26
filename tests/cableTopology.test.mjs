@@ -56,11 +56,11 @@ function sameFaceBridge(face) {
     };
 }
 
-function conduitNeighbor() {
+// A conduit has no mount face; its two world ports lie on its axis.
+function conduitNeighbor(ports = ["world_up", "world_down"]) {
     return {
         kind: "conduit",
-        mountFace: "up",
-        lanes: [{ id: "main", ports: new Set(["world_up", "world_down"]) }]
+        lanes: [{ id: "main", ports: new Set(ports) }]
     };
 }
 
@@ -104,16 +104,18 @@ eq(cableConnectionMask(FACE, { local_n: sameFaceBridge(FACE), local_w: sameFaceB
 console.log("cableTopology: different-face rejection");
 eq(cableConnectionMask(FACE, { local_n: sameFaceCable("east") }), 0, "a neighbor on a different mounting face connects nothing");
 
-console.log("cableTopology: conduit is not a tangent mask bit");
-eq(cableConnectionMask(FACE, { local_n: conduitNeighbor() }), 0, "a conduit neighbor sets no tangent bit");
+console.log("cableTopology: a conduit end is a tangent contact, its side is not");
+// On a north wall local_n points up: a y conduit above shows its lower end.
+eq(cableConnectionMask(FACE, { local_n: conduitNeighbor() }), ARM_BITS.local_n, "an arm reaches a conduit end");
+eq(cableConnectionMask(FACE, { local_n: conduitNeighbor(["world_east", "world_west"]) }), 0, "an arm never reaches a conduit side");
 
 console.log("cableTopology: reciprocal device port checks");
 eq(cableConnectionMask(FACE, { local_s: sameFaceDevice(FACE) }), ARM_BITS.local_s, "a flat device with a joined port on the reciprocal side connects");
 eq(cableConnectionMask(FACE, { local_n: sameFaceDevice(FACE, ["local_n"]) }), 0, "a device port pointing away from the neighbor is not reciprocal");
 eq(
-    hasReciprocalPort(FACE, conduitNeighbor(), [0, -1, 0]),
+    hasReciprocalPort(FACE, conduitNeighbor(["world_north", "world_south"]), [0, -1, 0]),
     false,
-    "hasReciprocalPort rejects a conduit on the tangent surface"
+    "hasReciprocalPort rejects a conduit whose axis misses the cable"
 );
 eq(
     hasReciprocalPort(FACE, sameFaceCable("east"), [0, -1, 0]),

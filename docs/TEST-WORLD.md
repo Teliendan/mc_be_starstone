@@ -33,6 +33,13 @@ a 17x9x17 seed volume; connected loaded components can extend beyond it.
    Then put one cable on the top and another on a side of the same solid cube.
    Their arms should meet around the outside edge and conduct in either
    direction. Repeat with the cube at a chunk border and after breaking one side.
+   Repeat with a lamp, a bridge and an output adapter on top instead of the top
+   cable: each must light or carry power from the side cable.
+   Lay a horizontal conduit fed from a generator at one end. At its other end,
+   run a floor cable away from it: the cable's arm must reach into the conduit
+   end and carry power. Replace that cable with an Inner Corner laid over the
+   conduit end (floor + conduit end face) and a floor cable beyond it: power
+   must pass. A floor cable beside the conduit's side must not connect.
    For an inside edge, craft an Inner Corner from two Cables and place it into
    the empty cell between a floor and wall (or two walls). Its traces must
    join the adjacent cable runs. Also make a one-block hole with a solid floor

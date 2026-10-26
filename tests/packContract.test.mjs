@@ -55,6 +55,14 @@ const item = read(`${bp}/items/cable_item.json`)['minecraft:item'];
 assert.equal(typeof item.components['minecraft:display_name'].value,'string');
 assert.ok(items[item.components['minecraft:icon']]);
 assert.equal(items.starstone_inner_corner.textures,'textures/items/starstone_inner_corner');
+// Thin devices are held as flat item sprites, not floating block models: each has
+// a same-ID native block-item replacement, or a separate placer item (cable, corner).
+for (const id of ['bridge','lamp','redstone_input','redstone_output']) {
+    const replacement = read(`${bp}/items/${id}.json`)['minecraft:item'];
+    assert.equal(replacement.description.identifier,`starstone:${id}`);
+    assert.deepEqual(replacement.components['minecraft:block_placer'],{block:`starstone:${id}`,replace_block_item:true},`${id} item replaces its block item`);
+    assert.ok(items[replacement.components['minecraft:icon']],`${id} item icon is registered`);
+}
 const manifest = read(`${bp}/manifest.json`);
 assert.ok(manifest.dependencies.some(d => d.uuid === read(`${rp}/manifest.json`).header.uuid));
 for (const pack of [bp,rp]) {

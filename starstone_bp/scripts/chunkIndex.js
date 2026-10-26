@@ -4,7 +4,7 @@ import { world } from "@minecraft/server";
 import { descriptorForBlock } from "./electricalBlocks.js";
 import { worldDirOfPort } from "./portDirections.js";
 import { ARM_NAMES } from "./constants.js";
-import { FACE_LIST } from "./surfaceFrame.js";
+import { FACE_LIST, faceNormal } from "./surfaceFrame.js";
 import { outerCornerOffset, outerOffsets, outerWrap, wrapFaces } from "./cornerTopology.js";
 import { innerNeighborAllowed, facesOfPair } from "./innerCorner.js";
 
@@ -39,8 +39,8 @@ function nodeRef(dimensionId, location, lane) {
 }
 
 // Shared by the local builder and metadata graph. Direction is from a to b.
-// Reciprocal directions are necessary but do not override mounting or conduit
-// rules. A conduit can contact a surface only through that surface's back.
+// Reciprocal directions are necessary but do not override mounting rules. A
+// conduit's axial port meets a surface's back or a tangent arm alike.
 export function compatibleSegmentContacts(a, b, direction) {
     if (direction.reduce((sum, value) => sum + Math.abs(value), 0) === 2) {
         return Boolean(outerWrap(a,b,direction));
@@ -48,12 +48,6 @@ export function compatibleSegmentContacts(a, b, direction) {
     if (a.kind === "inner-corner" && !innerNeighborAllowed(a,b,direction)) return false;
     if (b.kind === "inner-corner" && !innerNeighborAllowed(b,a,negate(direction))) return false;
     if (a.mountFace && b.mountFace && a.mountFace !== b.mountFace) return false;
-    const surface = a.mountFace ? a : b;
-    const full = a.mountFace ? b : a;
-    if (surface.mountFace && full.kind === "conduit") {
-        const towardFull = a.mountFace ? direction : negate(direction);
-        if (!same(worldDirOfPort(surface.mountFace, "back"), towardFull)) return false;
-    }
     return true;
 }
 
@@ -228,7 +222,10 @@ export function validateChunkSegments(snapshot) {
             if (port.kind === "conduit" && port.mountFace) return false;
             if (port.kind === "bridge") {
                 const arms = p.lane === "ns" ? ["local_n", "local_s"] : ["local_e", "local_w"];
-                if (!arms.some(arm => same(worldDirOfPort(port.mountFace, arm), port.direction))) return false;
+                // A diagonal port leaves through the arm toward the wrapped edge.
+                const normal = faceNormal(port.mountFace);
+                const armDir = diagonal ? port.direction.map((v, i) => v + normal[i]) : port.direction;
+                if (!arms.some(arm => same(worldDirOfPort(port.mountFace, arm), armDir))) return false;
             }
             const key = `${port.ref}|${port.direction.join(",")}`;
             if (seenBoundaries.has(key)) return false;

@@ -1,8 +1,9 @@
-// Two surface cables can wrap an outside edge when mounted on perpendicular
+// Two surface conductors can wrap an outside edge when mounted on perpendicular
 // faces of the same full support cube. Their occupied cells are diagonal; the
-// surfaces meet at the cube edge. An inner corner's faces wrap the same way,
-// so a run can go floor -> inner corner -> wall -> over the top edge.
-import { FACE_LIST, faceNormal } from "./surfaceFrame.js";
+// surfaces meet at the cube edge. Every one-face device (cable, bridge, lamp,
+// adapters) and each face of an inner corner wraps the same way, so a run can go
+// floor -> inner corner -> wall -> over the top edge to a lamp.
+import { FACE_LIST, faceNormal, ARM_NAMES, worldOffset } from "./surfaceFrame.js";
 import { facesOfPair, oppositeFace, externalArms, tangentFaces } from "./innerCorner.js";
 
 const equal = (a, b) => a.every((value, i) => value === b[i]);
@@ -24,11 +25,11 @@ export function outerCornerContact(from, to, delta, fromPort, toPort) {
     return equal(fromPort, b) && equal(toPort, a);
 }
 
-// The surfaces a conductor can carry around an outside edge.
+// The surfaces a conductor can carry around an outside edge. Full blocks
+// (generator, conduit) have no mount face and never wrap.
 export function wrapFaces(descriptor) {
-    if (descriptor?.kind === "cable") return descriptor.mountFace ? [descriptor.mountFace] : [];
     if (descriptor?.kind === "inner-corner") return facesOfPair(descriptor.facePair) || [];
-    return [];
+    return descriptor?.mountFace ? [descriptor.mountFace] : [];
 }
 
 // The faces joined when `from` and `to` (at `delta` from it) wrap one outside
@@ -54,6 +55,21 @@ export function outerOffsets(descriptor, armDir) {
     return faces.filter(face => dot(faceNormal(face), armDir) === 0 &&
         !(descriptor.kind === "inner-corner" && faces.includes(oppositeFace(edgeFace))))
         .map(face => outerCornerOffset(face, edgeFace));
+}
+
+// Connection bits (1 n, 2 e, 4 s, 8 w) of a one-face device on `face` whose arm
+// wraps an outside edge. diagonalAt(offset) returns the descriptor there, with a
+// cable's potential (all four) arms.
+export function outerArmMask(face, diagonalAt) {
+    let mask = 0;
+    ARM_NAMES.forEach((arm, bit) => {
+        const toward = worldOffset(face, arm);
+        const edgeFace = FACE_LIST.find(candidate => equal(faceNormal(candidate), toward));
+        const offset = outerCornerOffset(face, edgeFace);
+        const wrap = offset && outerWrap({ kind: "cable", mountFace: face }, diagonalAt(offset), offset);
+        if (wrap?.toFace === edgeFace) mask |= 1 << bit;
+    });
+    return mask;
 }
 
 // External inner-corner arms that wrap an outside edge. diagonalAt(offset)

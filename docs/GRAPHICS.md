@@ -48,6 +48,11 @@ supported face. Every selected face must retain full support. Its item is
 crafted from two Cables and placed into an empty cell.
 Its item has a separate bent-cable icon from `tools/make_item_art.py`.
 
+Bridge, Lamp and both adapters are held as flat item sprites: each has a same-ID
+item (`starstone_bp/items/<id>.json`, `minecraft:block_placer` with
+`replace_block_item`) with its own icon. Without one, the hand shows the thin block
+model floating in front of the player (owner report 2026-10-25/26).
+
 Cable mask and face transformation tests cover all 16 masks and all six mounting
 faces. The user's remaining one-direction visual inversion could not be
 reproduced offline and needs a targeted in-game check with the exact clicked
@@ -68,7 +73,9 @@ lane passes underneath.
 
 `geometry.starstone_adapter` is a grounded center box. It has independently
 masked blue Starstone arms and red redstone contact arms; unused arms disappear.
-The redstone input and output emblems show conversion direction, while face
+A blue arm also shows toward an outside edge that wraps to a conductor.
+The redstone input and output emblems show the conversion direction as one
+arrow ("->", shaft in the source colour, head in the target colour), while face
 transformations orient the whole model to the support. The Starstone and
 redstone masks must be refreshed when touching blocks change. Output power is
 still controlled by Bedrock's `minecraft:redstone_producer` component.

@@ -8,6 +8,12 @@
         "starstone_inner_corner": {
             "textures": "textures/items/starstone_inner_corner"
         },
+        "starstone_bridge": {
+            "textures": "textures/items/starstone_bridge"
+        },
+        "starstone_lamp": {
+            "textures": "textures/items/starstone_lamp"
+        },
         "starstone_redstone_input": {
             "textures": "textures/items/starstone_redstone_input"
         },

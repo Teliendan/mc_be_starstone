@@ -215,6 +215,10 @@
         {
           "path": "starstone_bp/blocks/bridge.json",
           "sha256": "726e037b72868c0a864f1c93d6b4d55c9909fdf881c7134b3570bb3e9fef2ef5"
+        },
+        {
+          "path": "starstone_bp/items/bridge.json",
+          "sha256": "5899b3885b479460f24f7f9212ead35ddf78d1f74f4f09d9b50fc8f7b3591b0c"
         }
       ],
       "id": "starstone:bridge",
@@ -329,6 +333,10 @@
         {
           "path": "starstone_bp/blocks/lamp.json",
           "sha256": "42bb3d3fe2d6e4514d224786cac7758b78c5ac4e6a916ce897e0a811c265c3d5"
+        },
+        {
+          "path": "starstone_bp/items/lamp.json",
+          "sha256": "883951ca3071a586e2082badcca2e94871f299aca7902764b3a0b597deddbe2b"
         }
       ],
       "id": "starstone:lamp",
@@ -497,11 +505,11 @@
         },
         {
           "path": "starstone_bp/scripts/cableComponent.js",
-          "sha256": "b22f19870f14f2e5ddca1e11a233ee8beb9d115fe7c7795ea86978f3e35eaefc"
+          "sha256": "f8b4f7a48dfd2de497e7fe4f9fd754008cd0a8f27d6f02e2edd212efaa6f34ef"
         },
         {
           "path": "starstone_bp/scripts/cableTopology.js",
-          "sha256": "7557db9b47ff31d65eb97725771ac4818a20f24836917211b978516b26edfba8"
+          "sha256": "3216fd50ce23d95341846b4805dfe341f6daf4effc8268520ebb5381c253eb38"
         },
         {
           "path": "starstone_bp/scripts/chunkController.js",
@@ -509,7 +517,7 @@
         },
         {
           "path": "starstone_bp/scripts/chunkIndex.js",
-          "sha256": "e93ecf709384992c0b375dc47f58ddefe504526d0ac892b25a3c768c149599e1"
+          "sha256": "ded157217de8634b9cdbffdc1b21df4830edf4ac546a25efd34def343f196848"
         },
         {
           "path": "starstone_bp/scripts/constants.js",
@@ -517,7 +525,7 @@
         },
         {
           "path": "starstone_bp/scripts/cornerTopology.js",
-          "sha256": "be8308d4017fb23acd0ff1393b037e9185993421fb1a3d5f84686b9f21c708c0"
+          "sha256": "efa475e6b0e59e078fc71c937b19152f163913af6e85d91cdeb17fee1d9ea266"
         },
         {
           "path": "starstone_bp/scripts/diagnostics.js",
@@ -541,7 +549,7 @@
         },
         {
           "path": "starstone_bp/scripts/innerCorner.js",
-          "sha256": "dc31e00875ee718dab4d23dd07183d03ee6c502725892b4e746a9c3be9b6f10f"
+          "sha256": "ddd850c11de8929a720374ec4e7abddd4e901618be4e2c31aee8ae11d110a35f"
         },
         {
           "path": "starstone_bp/scripts/main.js",
@@ -565,7 +573,7 @@
         },
         {
           "path": "starstone_bp/scripts/networkGraph.js",
-          "sha256": "a4922bc370dcb2284c26a2a408f3f0157469a24e9a6429a9b18beb3eeb13e4eb"
+          "sha256": "0d5b33661dc70c08356474d7347303ed0239ed843fbbe9e9d8830d40d2dbd411"
         },
         {
           "path": "starstone_bp/scripts/networkRuntime.js",
@@ -593,7 +601,7 @@
         },
         {
           "path": "starstone_bp/scripts/redstoneAdapters.js",
-          "sha256": "201b39c31f784602c99a830e5f8a2e50342c40a5fa8ad3ce12cf57a957974447"
+          "sha256": "3ff6ab3e20a69de3aa63231ee355ffae2ec0a74eaed356387fa69f99c145e228"
         },
         {
           "path": "starstone_bp/scripts/repair.js",

@@ -32,8 +32,8 @@ unloaded-middle game test are separate tasks.
   `activeSources`, `consumers`, `unresolvedBoundaries`. Power is the OR of saved
   active-source summaries. Invalid input and duplicate chunk snapshots throw.
 - `validateChunkSegments(snapshot)` and `parseSegmentNodeRef(ref)` expose the
-  validators. `reciprocalSegmentContact(a,b,direction)` shares the mounting and
-  conduit compatibility rule between the local builder and metadata graph.
+  validators. `reciprocalSegmentContact(a,b,direction)` shares the mounting
+  compatibility rule between the local builder and metadata graph.
 
 ## Snapshot schema
 

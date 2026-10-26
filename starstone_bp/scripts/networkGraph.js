@@ -267,13 +267,6 @@ export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = n
                             // Reciprocal directions alone do not imply coplanarity.
                             if (!neighbor.corner && descriptor.mountFace && nDesc.mountFace &&
                                 descriptor.mountFace !== nDesc.mountFace) continue;
-                            // A conduit meets a surface only through its back contact.
-                            const surface = descriptor.mountFace ? descriptor : nDesc;
-                            const full = descriptor.mountFace ? nDesc : descriptor;
-                            if (!neighbor.corner && surface.mountFace && full.kind === "conduit") {
-                                const towardFull = descriptor.mountFace ? neighbor.dir : negate(neighbor.dir);
-                                if (!vecEquals(worldDirOfPort(surface.mountFace, "back"), towardFull)) continue;
-                            }
                             const wrap = neighbor.corner && outerWrap(descriptor,nDesc,neighbor.dir);
                             if (neighbor.corner && (!wrap || !vecEquals(faceNormal(wrap.toFace),neighbor.armDir))) continue;
                             const recipLane = findReciprocalLane(nDesc, neighbor.corner

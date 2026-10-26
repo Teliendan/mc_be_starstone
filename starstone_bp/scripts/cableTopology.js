@@ -14,9 +14,9 @@
 //
 // A bit is set only when the neighbor in that direction has a reciprocal port on
 // the same surface: the neighbor mounts on the same face and exposes a port whose
-// world direction points back at this cable. For the prototype a conduit is a
-// full support block reached through the separate back-contact rule, so a conduit
-// never contributes a tangent mask bit.
+// world direction points back at this cable. Full blocks without a mount face
+// (generator, conduit) count when one of their world ports faces the cable, so
+// a cable reaches a conduit's end from beside it, not only from its face.
 
 import { worldOffset } from "./surfaceFrame.js";
 import { worldDirOfPort } from "./portDirections.js";
@@ -60,20 +60,14 @@ function portWorldDir(face, port) {
 }
 
 // True when the neighbor exposes a port pointing back at this cable, i.e. a
-// reciprocal port on the same surface. A conduit is excluded: its connection is a
-// back-contact rule handled elsewhere, never a tangent mask bit.
+// reciprocal port on the same surface, or a full block's port facing it.
 export function hasReciprocalPort(face, neighbor, recipWorldDir) {
     if (!neighbor || !neighbor.lanes) {
         return false;
     }
-    if (neighbor.kind === "conduit") {
-        return false;
-    }
     if (neighbor.kind === "inner-corner" &&
         !innerNeighborAllowed(neighbor,{mountFace:face},recipWorldDir)) return false;
-    if (neighbor.mountFace !== face && !(neighbor.kind === "source" && !neighbor.mountFace)) {
-        if (neighbor.kind !== "inner-corner") return false;
-    }
+    if (neighbor.mountFace && neighbor.mountFace !== face) return false;
     for (const lane of neighbor.lanes) {
         if (!lane || !lane.ports) {
             continue;

@@ -103,6 +103,9 @@
     "segment-graph": [
       "segmentGraph.test.mjs"
     ],
+    "side-contacts": [
+      "sideContacts.test.mjs"
+    ],
     "stale-metadata": [
       "staleMetadata.test.mjs"
     ],
