@@ -37,7 +37,7 @@
   {
     "id": "starstone:bridge/icon",
     "featureId": "starstone:bridge",
-    "source": "starstone_rp/textures/blocks/starstone_casing.png",
+    "source": "starstone_rp/textures/blocks/starstone_bridge.png",
     "kind": "texture",
     "alt": "Isolated Bridge"
   },

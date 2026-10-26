@@ -15,7 +15,7 @@
       },
       {
         "path": "starstone_bp/scripts/cableComponent.js",
-        "sha256": "fb61a3058330a9bb160b2cabdc5ffad7e9fad35073f5de39e32395aa537cff83"
+        "sha256": "b22f19870f14f2e5ddca1e11a233ee8beb9d115fe7c7795ea86978f3e35eaefc"
       },
       {
         "path": "starstone_bp/scripts/cableTopology.js",
@@ -23,7 +23,7 @@
       },
       {
         "path": "starstone_bp/scripts/chunkController.js",
-        "sha256": "1927303e41be0d22821ec22255d9e10a3793ce399b3b85ec82b49f7639413e36"
+        "sha256": "81030723752541bb80dc965d274b5c2de8ec18d02d9d950fd31dbc14872ad99f"
       },
       {
         "path": "starstone_bp/scripts/chunkIndex.js",
@@ -35,11 +35,11 @@
       },
       {
         "path": "starstone_bp/scripts/cornerTopology.js",
-        "sha256": "e85fe4bc45341f402b5ee7948cea31fb220595a1b10807ed8d25cb50e2dca8a0"
+        "sha256": "be8308d4017fb23acd0ff1393b037e9185993421fb1a3d5f84686b9f21c708c0"
       },
       {
         "path": "starstone_bp/scripts/diagnostics.js",
-        "sha256": "1c0adccc91fcd474f6529a844aee04eab7df78523e7ed71e5a995d7edf4eeffb"
+        "sha256": "006e5f68ec4c2548a31e8255b5077fdbfba3e3ddd371688000f2c7cd408fe977"
       },
       {
         "path": "starstone_bp/scripts/electricalBlocks.js",
@@ -47,7 +47,7 @@
       },
       {
         "path": "starstone_bp/scripts/generatorComponent.js",
-        "sha256": "2b772cc429fc795634b889a4063d74088e0922e5dc0825a19b4e33f9438f7811"
+        "sha256": "4e652993ed8f1f0e3e92f2188e792aae8d09cc85f4117f97d156e631710a40f2"
       },
       {
         "path": "starstone_bp/scripts/harvestGate.js",
@@ -63,7 +63,7 @@
       },
       {
         "path": "starstone_bp/scripts/main.js",
-        "sha256": "65c8ef7d087769de7440f85b8758abe7966b0bb987ee24089b868773bf446dff"
+        "sha256": "f71758e8211790085ae7ebdbca33491ba778834f18521d79aaedc04ef4ddcd94"
       },
       {
         "path": "starstone_bp/scripts/messages.js",
@@ -71,11 +71,11 @@
       },
       {
         "path": "starstone_bp/scripts/mutationController.js",
-        "sha256": "59650028ab99e9b8c0d3e02db149a0a0e58de325460fffdd427e1d8f97ce7ba0"
+        "sha256": "1b17abb6f55a718ee53c715189dd3511fb40b86210e43462e07d813006130c65"
       },
       {
         "path": "starstone_bp/scripts/networkController.js",
-        "sha256": "fadacefd25dc627d6c3c1cd83e3e4db5eda075a86d893c8e53c260ad422a07e7"
+        "sha256": "639e95e365d14a5ed054a8126ec42a7337c6f00cc96f95bfff8c343cbc2d978b"
       },
       {
         "path": "starstone_bp/scripts/networkEvents.js",
@@ -83,15 +83,15 @@
       },
       {
         "path": "starstone_bp/scripts/networkGraph.js",
-        "sha256": "cc07fb21081a472492f40587034b405d10442ddd3fdb9323f79c0667d1ffe98d"
+        "sha256": "a4922bc370dcb2284c26a2a408f3f0157469a24e9a6429a9b18beb3eeb13e4eb"
       },
       {
         "path": "starstone_bp/scripts/networkRuntime.js",
-        "sha256": "4e09125f2f950d8bbafb435d7ddf5f2a7f144732a8d8ccec07045e201024a7e5"
+        "sha256": "6ca0292695f99db358445098ecd54972452c10ad94b6fd83f86581842e6aaa71"
       },
       {
         "path": "starstone_bp/scripts/oreExperience.js",
-        "sha256": "c355056cb56c826f93e5bc555cf7187123aff524a43b2e467bbcfbfbd8cd601e"
+        "sha256": "cc9e840bf16b65484ac10dd8e659679e00fcc300bd351a8608a6c17703807cfc"
       },
       {
         "path": "starstone_bp/scripts/persistence.js",
@@ -107,11 +107,11 @@
       },
       {
         "path": "starstone_bp/scripts/powerPropagation.js",
-        "sha256": "8b91f8344e079a0e4cdbcc0178262d8d605996857dfd338fbdf71c1396d7ae2a"
+        "sha256": "cfc72a9478bf024b053f19a0ba541930c52f3e8a724ba385d1c1dd8902db6acf"
       },
       {
         "path": "starstone_bp/scripts/redstoneAdapters.js",
-        "sha256": "a5edbb63fc980d6c8d34b80516cd88d89d555e4a641e92a241f5f8df91d83fe8"
+        "sha256": "201b39c31f784602c99a830e5f8a2e50342c40a5fa8ad3ce12cf57a957974447"
       },
       {
         "path": "starstone_bp/scripts/repair.js",
@@ -154,7 +154,7 @@
       },
       {
         "path": "starstone_bp/blocks/ore.json",
-        "sha256": "df2090e9cd74f58de876726558908d60d0cda04ce5c147ce00a6a4ee4f2bd704"
+        "sha256": "be082c569381e2a2f23bbb81f6a0032851b7b5151877f234dcc75c8def0ef656"
       },
       {
         "path": "starstone_bp/structures/starstone/ore_xp_1.mcstructure",
