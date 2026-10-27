@@ -12,7 +12,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/blocks/cable.json",
@@ -54,7 +54,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/items/compressed_dust.json",
@@ -87,7 +87,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/items/crystal.json",
@@ -120,7 +120,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/items/dust.json",
@@ -168,7 +168,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/blocks/inner_corner.json",
@@ -210,7 +210,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/blocks/bridge.json",
@@ -252,7 +252,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/blocks/conduit.json",
@@ -290,7 +290,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/blocks/generator.json",
@@ -328,7 +328,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/blocks/lamp.json",
@@ -370,31 +370,11 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/blocks/ore.json",
           "sha256": "be082c569381e2a2f23bbb81f6a0032851b7b5151877f234dcc75c8def0ef656"
-        },
-        {
-          "path": "starstone_bp/structures/starstone/ore_xp_1.mcstructure",
-          "sha256": "f2539fd784db6593b4b9f1b8669596f797e597b1f5198486d950d732acd6c61e"
-        },
-        {
-          "path": "starstone_bp/structures/starstone/ore_xp_2.mcstructure",
-          "sha256": "f1ec78ddc1fa4762751c15ef7c505a40c19f55839c54ff22e2ecca5ee0dfbcf9"
-        },
-        {
-          "path": "starstone_bp/structures/starstone/ore_xp_3.mcstructure",
-          "sha256": "42b94ac8005c11b3bb1176e6faa250b0c635917f1982f411f2e9829d90822c8e"
-        },
-        {
-          "path": "starstone_bp/structures/starstone/ore_xp_4.mcstructure",
-          "sha256": "8fb82c789f924187b9d195de72138d0e988ad56498e2fa27d2531a3c5701ad6a"
-        },
-        {
-          "path": "starstone_bp/structures/starstone/ore_xp_5.mcstructure",
-          "sha256": "9f1bc28af825b3558702c596278af396de909d49ea4a41fdbffcb624374b7b8a"
         },
         {
           "path": "starstone_bp/feature_rules/ore_underground.json",
@@ -431,7 +411,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/blocks/redstone_input.json",
@@ -468,7 +448,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "8840058b459c911ab8ea0580e017dfb2dfdadc11d3f58025188200ce89de17d1"
+          "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
         },
         {
           "path": "starstone_bp/blocks/redstone_output.json",
@@ -505,7 +485,7 @@
         },
         {
           "path": "starstone_bp/scripts/cableComponent.js",
-          "sha256": "f8b4f7a48dfd2de497e7fe4f9fd754008cd0a8f27d6f02e2edd212efaa6f34ef"
+          "sha256": "40751ff900a8108f268f5d9eb9f03d593e09b167a8fb21f411571f6831f4f8dd"
         },
         {
           "path": "starstone_bp/scripts/cableTopology.js",
@@ -513,15 +493,15 @@
         },
         {
           "path": "starstone_bp/scripts/chunkController.js",
-          "sha256": "81030723752541bb80dc965d274b5c2de8ec18d02d9d950fd31dbc14872ad99f"
+          "sha256": "07aed2a05efbf817a940ac09e8b5978cc57a68bad6fc04fbeb69958f991a0ed0"
         },
         {
           "path": "starstone_bp/scripts/chunkIndex.js",
-          "sha256": "ded157217de8634b9cdbffdc1b21df4830edf4ac546a25efd34def343f196848"
+          "sha256": "6e1c70b519c3f202b6492a611667c6442ed92e1e3c3bca3856b72c75adc509de"
         },
         {
           "path": "starstone_bp/scripts/constants.js",
-          "sha256": "c1d5f1060382eade01bf0c2ba66c4fc45797a22d975922f36937a4553e6baac2"
+          "sha256": "36a7c4b6e66cfdcf6edeb14fffb253278f8af03fdc286e8b9d56a95bd8bd1b9d"
         },
         {
           "path": "starstone_bp/scripts/cornerTopology.js",
@@ -533,7 +513,7 @@
         },
         {
           "path": "starstone_bp/scripts/electricalBlocks.js",
-          "sha256": "4da01ee6f22bffffa787849120cb1c878edcda4e2df3778a3a6e5562a83e29bb"
+          "sha256": "94973679b23ba1167c048f65760d04622d62d384b45d631b9dfc19ec0157fba3"
         },
         {
           "path": "starstone_bp/scripts/generatorComponent.js",
@@ -541,7 +521,7 @@
         },
         {
           "path": "starstone_bp/scripts/harvestGate.js",
-          "sha256": "e296f5b858d3f797ed726667ccb0c326fb201981e2f7f32f77535cefe69f840c"
+          "sha256": "c718c18bebe1ab2dd0fc91f5a4747fdcd8b8054dadf22686c4ab5766060b6ac6"
         },
         {
           "path": "starstone_bp/scripts/harvestWear.js",
@@ -549,11 +529,11 @@
         },
         {
           "path": "starstone_bp/scripts/innerCorner.js",
-          "sha256": "ddd850c11de8929a720374ec4e7abddd4e901618be4e2c31aee8ae11d110a35f"
+          "sha256": "108549a11859dffdf1234231e17969452d213c59a1f16b359381c3acd0d83e06"
         },
         {
           "path": "starstone_bp/scripts/main.js",
-          "sha256": "f71758e8211790085ae7ebdbca33491ba778834f18521d79aaedc04ef4ddcd94"
+          "sha256": "9540d116c2ee4e868439e9f8664c37a8e9bd3ce0fabb7e20bf4d2a5a728a5440"
         },
         {
           "path": "starstone_bp/scripts/messages.js",
@@ -565,7 +545,7 @@
         },
         {
           "path": "starstone_bp/scripts/networkController.js",
-          "sha256": "639e95e365d14a5ed054a8126ec42a7337c6f00cc96f95bfff8c343cbc2d978b"
+          "sha256": "34109871b13536daee284bebe776f47de4549b116b525e6ca2d15306d606733f"
         },
         {
           "path": "starstone_bp/scripts/networkEvents.js",
@@ -581,11 +561,11 @@
         },
         {
           "path": "starstone_bp/scripts/oreExperience.js",
-          "sha256": "cc9e840bf16b65484ac10dd8e659679e00fcc300bd351a8608a6c17703807cfc"
+          "sha256": "3d0b641a1edab88757c749d1f122dc1b90a2c54371cfa0ca38990eeb427cbe5d"
         },
         {
           "path": "starstone_bp/scripts/persistence.js",
-          "sha256": "aebe59ff80b928376fba5171b5ee213676e6b5e8a97dbd9954da949ed34ae323"
+          "sha256": "85551c2c430c04f7b003ad5525f3cfcafcaf6bcd0f27f2667d2c9e7fd673c140"
         },
         {
           "path": "starstone_bp/scripts/pistonController.js",
@@ -597,11 +577,11 @@
         },
         {
           "path": "starstone_bp/scripts/powerPropagation.js",
-          "sha256": "cfc72a9478bf024b053f19a0ba541930c52f3e8a724ba385d1c1dd8902db6acf"
+          "sha256": "078d92820eb87b3d005e99d858a32d66039f9dde959f18914092d3e726ebe6cd"
         },
         {
           "path": "starstone_bp/scripts/redstoneAdapters.js",
-          "sha256": "3ff6ab3e20a69de3aa63231ee355ffae2ec0a74eaed356387fa69f99c145e228"
+          "sha256": "b822093cc560cce072cbcc7e4bee92f195845b2dcc14b06dd2c33ad4b7c66f5b"
         },
         {
           "path": "starstone_bp/scripts/repair.js",
@@ -621,7 +601,7 @@
         },
         {
           "path": "starstone_bp/scripts/support_motion_service.js",
-          "sha256": "32addb6d0db9a94724f80aa8eca42d86c2fd02c502d7854f11f577d52a8a75a7"
+          "sha256": "2e7059ba17b2cf3b252cf20591087e49ae4a24ec7be689e388da4c25a8e8351f"
         },
         {
           "path": "starstone_bp/scripts/surfaceFrame.js",

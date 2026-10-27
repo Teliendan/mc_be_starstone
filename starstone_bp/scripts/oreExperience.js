@@ -2,13 +2,13 @@ import { world } from '@minecraft/server';
 
 const ORE = 'starstone:ore';
 
+// One native orb per entry, so the total keeps vanilla-like denominations.
+const ORBS = { 1: [1], 2: [1, 1], 3: [3], 4: [3, 1], 5: [3, 1, 1] };
+
 export function spawnOreExperience(dimension, location, amount) {
     if (!Number.isInteger(amount) || amount < 1 || amount > 5) throw new RangeError('Ore XP must be 1–5');
-    // These structures contain native valued xp_orb actors and no blocks.
-    // Explicitly exclude both block layers, preserving replacement blocks/water.
-    world.structureManager.place(`starstone:ore_xp_${amount}`, dimension, {
-        x: Math.floor(location.x), y: Math.floor(location.y), z: Math.floor(location.z)
-    }, { includeBlocks: false, includeEntities: true });
+    // Native orbs: pickup (and Mending) is handled by the engine.
+    for (const orb of ORBS[amount]) dimension.spawnXp(location, orb);
 }
 
 export function handleOreExperience(event, random = Math.random) {
@@ -20,7 +20,7 @@ export function handleOreExperience(event, random = Math.random) {
     if (world.gameRules.doTileDrops === false) return 0;
     if (tool.getComponent('minecraft:enchantable')?.hasEnchantment('silk_touch')) return 0;
     const amount = 1 + Math.floor(random() * 5);
-    spawnOreExperience(event.block.dimension, event.block.location, amount);
+    spawnOreExperience(event.block.dimension, event.block.center(), amount);
     return amount;
 }
 

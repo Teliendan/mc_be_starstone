@@ -69,7 +69,7 @@ native behavior.
 ## Evidence and acceptance
 
 Group18 adds a separate eligible native-player-break XP owner, preserving the
-existing single native item-drop owner. The exact1–5 native-orb templates,
+existing single native item-drop owner. The 1–5 native `spawnXp` orb split,
 Silk/tool/mode/gamerule gates and native acceptance are documented in
 [VANILLA_PARITY.md](VANILLA_PARITY.md). Item-loot tests alone do not verify XP.
 

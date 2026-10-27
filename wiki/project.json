@@ -131,26 +131,6 @@
     {
       "featureId": "starstone:network",
       "pattern": "starstone_bp/scripts/surfaceFrame.js"
-    },
-    {
-      "featureId": "starstone:ore",
-      "pattern": "starstone_bp/structures/starstone/ore_xp_1.mcstructure"
-    },
-    {
-      "featureId": "starstone:ore",
-      "pattern": "starstone_bp/structures/starstone/ore_xp_2.mcstructure"
-    },
-    {
-      "featureId": "starstone:ore",
-      "pattern": "starstone_bp/structures/starstone/ore_xp_3.mcstructure"
-    },
-    {
-      "featureId": "starstone:ore",
-      "pattern": "starstone_bp/structures/starstone/ore_xp_4.mcstructure"
-    },
-    {
-      "featureId": "starstone:ore",
-      "pattern": "starstone_bp/structures/starstone/ore_xp_5.mcstructure"
     }
   ],
   "id": "starstone",

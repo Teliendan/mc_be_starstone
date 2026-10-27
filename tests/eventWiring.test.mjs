@@ -120,18 +120,17 @@ assert.equal(harvestWorld.dim.getBlock(harvestSource.location).typeId,'minecraft
 assert.equal(harvestLamp.permutation.getState('starstone:powered'),false,'native hand break must split powered network');
 assert.ok(!saved().some(p => p.x === 0 && p.y === 0 && p.z === 0),'native hand break must delete saved hint');
 // The real entry point must connect eligible native ore breaks to XP placement.
-const xpPlacements=[];
 mc.world.gameRules={doTileDrops:true};
-mc.world.structureManager={place:(...args)=>xpPlacements.push(args)};
 const ore=harvestWorld.put('starstone:ore',5,0,0);
+const xpPlacements=harvestWorld.dim.xp;
 const orePermutation=ore.permutation;
 harvestWorld.store.delete('5,0,0');
 fire('playerBreakBlock',{block:harvestWorld.dim.getBlock(ore.location),dimension:harvestWorld.dim,
     brokenBlockPermutation:orePermutation,player:nativeBreak.player,
     itemStackBeforeBreak:{typeId:'minecraft:iron_pickaxe',getComponent:()=>undefined}});
-assert.equal(xpPlacements.length,1,'main registers exactly one ore XP owner');
-assert.match(xpPlacements[0][0],/^starstone:ore_xp_[1-5]$/);
-assert.deepEqual(xpPlacements[0][3],{includeBlocks:false,includeEntities:true});
+assert.ok(xpPlacements.length>=1&&xpPlacements.length<=3,'main registers exactly one ore XP owner');
+assert.deepEqual(xpPlacements[0].location,{x:5.5,y:0.5,z:0.5});
+assert.ok(xpPlacements.reduce((n,p)=>n+p.amount,0)>=1&&xpPlacements.reduce((n,p)=>n+p.amount,0)<=5);
 const input=harvestWorld.put('starstone:redstone_input',10,0,0);input.redstonePower=0;
 const output=harvestWorld.put('starstone:redstone_output',11,0,0);
 harvestWorld.put('minecraft:stone',10,-1,0);harvestWorld.put('minecraft:stone',11,-1,0);

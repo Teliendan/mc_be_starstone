@@ -67,6 +67,8 @@ export function fixture() {
             if (!dim.isChunkLoaded(p)) return undefined;
             return store.get(`${p.x},${p.y},${p.z}`) || make('minecraft:air', p.x,p.y,p.z, {});
         },
+        xp: [],
+        spawnXp(location, amount) { dim.xp.push({ location, amount }); },
         runCommand(command) {
             const [,x,y,z] = command.split(' ');
             store.delete(`${x},${y},${z}`);
@@ -77,6 +79,7 @@ export function fixture() {
         return {
             type: { id }, typeId: id, isValid: true, isAir: id === 'minecraft:air', isLiquid: false,
             dimension: dim, location: { x,y,z }, permutation: permutation(id, states), writes: 0,
+            center() { return { x: x + 0.5, y: y + 0.5, z: z + 0.5 }; },
             getRedstonePower() { return this.redstonePower; },
             setPermutation(perm) { this.permutation = perm; this.writes++; },
             setType(typeId) { store.set(`${x},${y},${z}`, make(typeId,x,y,z,{})); }

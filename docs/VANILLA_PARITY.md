@@ -24,12 +24,10 @@ study, probe notes): git `08a2e65` and earlier. Counterparts: redstone ore, lamp
   self-drop, light 3, `instrument_sound.up = note.bd`, furnace and blast furnace -> 1 Dust
   (no XP field exists in Bedrock recipes).
 - **Ore XP**: after-break event (filtered to `starstone:ore`) for Survival/Adventure,
-  not Silk Touch, `doTileDrops` not false: random 1-5, placed as an entity-only
-  structure (`starstone:ore_xp_N`, `includeBlocks:false`, `includeEntities:true`) holding
-  native `minecraft:xp_orb` actors with Int `experience value` (totals via `[1] [1,1] [3]
-  [3,1] [3,1,1]`). Native pickup owns Mending and the award. Rebuild assets with
-  `node tools/build_ore_xp.mjs`. `spawnXp` is not in 2.8.0; `addExperience` would bypass
-  Mending. Wrong-tool Survival/Adventure breaks are canceled by `harvestGate`, so the
+  not Silk Touch, `doTileDrops` not false: random 1-5, spawned with native `Dimension.spawnXp(block.center(), n)`, one call per
+  orb with the split `[1] [1,1] [3] [3,1] [3,1,1]`. Native pickup owns Mending and the award.
+  Requires API 2.11.0 / engine 1.26.60 (stable since release 26.60). Replaced the
+  `.mcstructure` orb workaround on 2026-10-27 (commit "Replace ore XP structures with Dimension.spawnXp"). Wrong-tool Survival/Adventure breaks are canceled by `harvestGate`, so the
   handler does not re-check the tool.
 
 ## Owner decisions
@@ -58,8 +56,7 @@ study, probe notes): git `08a2e65` and earlier. Counterparts: redstone ore, lamp
    periodic pass no longer reads power). Also: input beside an already-powered source after
    placement, and after leaving/re-entering the world.
 2. Observer pulse (2 ticks) through an input lights the lamp.
-3. `/summon minecraft:xp_orb` pickup value (if fixed 1, `dimension.spawnEntity` replaces the
-   structures); one ore break gives 1-5 total XP; Mending repairs.
-4. Two quick ore breaks both drop orbs (structures reuse a fixed UniqueID per template).
+3. One ore break gives 1-5 total XP (`spawnXp` orbs); Mending repairs; Silk Touch gives none.
+4. Two quick ore breaks both drop orbs.
 5. `doTileDrops` false behaviour vs. vanilla redstone ore; furnace/blast furnace smelting;
    note block under ore plays bass drum.
