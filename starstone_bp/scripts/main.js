@@ -17,6 +17,9 @@ import { registerOreExperience } from "./oreExperience.js";
 import { registerPistonController } from "./pistonController.js";
 
 const TAG = "[Starstone]";
+// Engine-side event filters; the handlers keep their own type checks.
+const ELECTRICAL_IDS = Object.keys(KIND_BY_ID);
+const PLACED_DEVICE_IDS = ELECTRICAL_IDS.filter(id => id !== CABLE_ID);
 
 world.afterEvents.worldLoad.subscribe(() => {
     console.log("[Starstone] Starstone active.");
@@ -53,7 +56,7 @@ world.afterEvents.playerPlaceBlock.subscribe((event) => {
             console.warn(`${TAG} Could not merge network after placement: ${err.message}`);
         }
     });
-});
+}, { blockTypes: PLACED_DEVICE_IDS });
 
 // When a Starstone block is removed, its old network must be re-fragmented
 // using its cached nodes. The removed type comes from
@@ -90,7 +93,7 @@ function handleElectricalBreak(event) {
         }
     });
 }
-world.afterEvents.playerBreakBlock.subscribe(handleElectricalBreak);
+world.afterEvents.playerBreakBlock.subscribe(handleElectricalBreak, { blockTypes: ELECTRICAL_IDS });
 
 registerHarvestGate(({ dimension, location, typeId, block }) => {
     handleElectricalBreak({ dimension, block: block ?? { location }, brokenBlockPermutation: { type: { id: typeId } } });

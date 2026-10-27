@@ -30,7 +30,7 @@ export function trackInput(block, fromEvent = false) {
     if (!block?.isValid || block.typeId !== REDSTONE_INPUT_ID) return;
     const key = blockKey(block.dimension, block.location);
     if (!inputs.has(key)) {
-        inputs.set(key, { dimension: block.dimension, location: { ...block.location }, last: undefined });
+        inputs.set(key, { key, dimension: block.dimension, location: { ...block.location }, last: undefined });
         rechecks.add(key);
         if (!fromEvent) initial.add(key);
         scheduleRechecks();
@@ -132,8 +132,7 @@ function commitInput(block, input, on, visualsReady = false) {
     const { dimension, location } = block;
     // Preserve the existing durable source owner and loaded-network fallback.
     const committed = sourceChanged(dimension, location, on);
-    const key = blockKey(dimension, location);
-    const network = runtime.networkOf(runtime.networkIdOf(`${key}#main`));
+    const network = runtime.networkOf(runtime.networkIdOf(`${input.key}#main`));
     if (!committed || isCompleteNetwork(network, dimension)) {
         if (network) {
             const powered = anySourceOn(network, dimension);
@@ -153,7 +152,7 @@ export function reactToRedstoneUpdate(event) {
     const block = event.block;
     const input = trackInput(block, true);
     if (!input) return;
-    initial.delete(blockKey(block.dimension, block.location));
+    initial.delete(input.key);
     try { commitInput(block, input, event.powerLevel > 0); }
     catch (error) { console.warn(`[Starstone] Native input update deferred: ${error.message}`); }
 }

@@ -142,7 +142,7 @@ function captureRemovedNetworks(dimension, x, y, z) {
     const ids = new Set(laneRefs.map(ref => runtime.networkIdOf(ref)));
     for (const id of ids) {
         if (id === undefined) continue;
-        for (const ref of runtime.nodesIn(id) || []) networkNodes.add(ref);
+        for (const ref of runtime.networkOf(id)?.nodes || []) networkNodes.add(ref);
     }
     if (networkNodes.size === 0) {
         return undefined;

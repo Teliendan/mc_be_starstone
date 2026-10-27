@@ -183,8 +183,7 @@ function supportBlock(block, mountFace) {
 
 // The conduit axis a surface element sits on, read from its support block, or
 // undefined when the support is absent, not a conduit, or unreadable.
-function supportAxis(block, mountFace) {
-    const support = supportBlock(block, mountFace);
+function supportAxis(support) {
     if (!support || !support.isValid) {
         return undefined;
     }
@@ -198,8 +197,7 @@ function supportAxis(block, mountFace) {
 // True when a full-cube generator backs the element. Unlike a conduit, which
 // only matches its own axis, every one of a generator's six faces is a valid
 // back-contact, so a surface cable mounted directly on any face connects.
-function supportIsGenerator(block, mountFace) {
-    const support = supportBlock(block, mountFace);
+function supportIsGenerator(support) {
     try {
         return Boolean(support) && support.isValid && support.type && support.type.id === GENERATOR_ID;
     } catch {
@@ -208,13 +206,14 @@ function supportIsGenerator(block, mountFace) {
 }
 
 // Apply a back-contact port when the support is a matching conduit or a full
-// generator, otherwise return the descriptor unchanged.
+// generator, otherwise return the descriptor unchanged. The support is read once.
 function withBackContact(descriptor, block, mountFace) {
-    const axis = supportAxis(block, mountFace);
+    const support = supportBlock(block, mountFace);
+    const axis = supportAxis(support);
     if (axis !== undefined && matchingConduitAxis(mountFace, axis)) {
         return addBackContact(descriptor);
     }
-    if (supportIsGenerator(block, mountFace)) {
+    if (supportIsGenerator(support)) {
         return addBackContact(descriptor);
     }
     return descriptor;

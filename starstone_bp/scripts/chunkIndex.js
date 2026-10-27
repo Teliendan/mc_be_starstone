@@ -155,6 +155,12 @@ export function buildChunkSegments(dimensionId, cx, cz, entries) {
 // snapshot. A guarded Block view also protects descriptor support lookups.
 export function* buildIndexedChunkSegments(dimension, cx, cz, placementIndex) {
     const entries = [];
+    const guardedDimension = {
+        getBlock(position) {
+            try { return dimension.isChunkLoaded(position) ? dimension.getBlock(position) : undefined; }
+            catch { return undefined; }
+        }
+    };
     for (const location of placementIndex.positionsInChunk(dimension.id, cx, cz)) {
         let block;
         try {
@@ -162,12 +168,6 @@ export function* buildIndexedChunkSegments(dimension, cx, cz, placementIndex) {
             block = dimension.getBlock(location);
             if (!block?.isValid) return undefined;
         } catch { return undefined; }
-        const guardedDimension = {
-            getBlock(position) {
-                try { return dimension.isChunkLoaded(position) ? dimension.getBlock(position) : undefined; }
-                catch { return undefined; }
-            }
-        };
         const descriptor = descriptorForBlock({
             isValid: true, type: block.type, location: { ...location },
             permutation: block.permutation, dimension: guardedDimension

@@ -24,7 +24,7 @@ export function registerHarvestGate(onRemoved = () => {}) {
     const keyFor = (dimension, location) =>
         `${dimension.id}|${location.x}|${location.y}|${location.z}`;
     const invalidate = event => {
-        if (event.block) pending.delete(keyFor(event.block.dimension, event.block.location));
+        if (pending.size && event.block) pending.delete(keyFor(event.block.dimension, event.block.location));
     };
     world.afterEvents.playerPlaceBlock.subscribe(invalidate);
     world.afterEvents.blockExplode.subscribe(invalidate);
@@ -66,5 +66,5 @@ export function registerHarvestGate(onRemoved = () => {}) {
                 if (pending.get(key) === token) pending.delete(key);
             }
         });
-    });
+    }, { blockTypes: [...GATED_BLOCKS] });
 }

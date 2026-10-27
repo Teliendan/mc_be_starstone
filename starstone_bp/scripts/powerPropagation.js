@@ -143,20 +143,23 @@ export function makeCurrentPowered(dimension) {
             return "none";
         }
         try {
-            if (!dimension.isChunkLoaded({ x: parsed.x, y: parsed.y, z: parsed.z })) {
+            const location = { x: parsed.x, y: parsed.y, z: parsed.z };
+            if (!dimension.isChunkLoaded(location)) {
                 return "unloaded";
             }
-            const block = dimension.getBlock({ x: parsed.x, y: parsed.y, z: parsed.z });
+            const block = dimension.getBlock(location);
             if (!block || !block.isValid) {
                 return "none";
             }
-            if (!POWERED_CAPABLE.has(block.type.id)) {
+            const typeId = block.type.id;
+            if (!POWERED_CAPABLE.has(typeId)) {
                 return "none";
             }
-            const state = block.type.id === REDSTONE_INPUT_ID ? STATE_STAR_POWERED : poweredStateForLane(parsed.lane);
-            if (block.permutation.getState(state) === undefined) return "none";
+            const state = typeId === REDSTONE_INPUT_ID ? STATE_STAR_POWERED : poweredStateForLane(parsed.lane);
+            const current = block.permutation.getState(state);
+            if (current === undefined) return "none";
             const pending = queue.get(writeKey(dimension, parsed.x, parsed.y, parsed.z, state));
-            return { state, value: pending ? pending.value : Boolean(block.permutation.getState(state)) };
+            return { state, value: pending ? pending.value : Boolean(current) };
         } catch {
             return "none";
         }

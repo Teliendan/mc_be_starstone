@@ -15,9 +15,6 @@ for (let mask=0;mask<(1<<FACE_LIST.length);mask++) {
 export function facesOfPair(pair) {
     return INNER_PAIRS.includes(pair) ? pair.split("_") : undefined;
 }
-export function pairOfFaces(a,b) {
-    return INNER_PAIRS.find(pair=>{const faces=pair.split("_");return faces.length===2&&faces.includes(a)&&faces.includes(b);});
-}
 export function stateOfFaces(faces) {
     const state=FACE_LIST.filter(face=>faces.includes(face)).join("_");
     return facesOfPair(state) ? state : undefined;
@@ -85,10 +82,6 @@ export function oppositeFace(face) {
 }
 export function tangentFaces(face) {
     return FACE_LIST.filter(other=>dot(faceNormal(face),faceNormal(other))===0);
-}
-// The arm on `face` toward `toward` ends in the support of oppositeFace(toward).
-export function isInternalArm(faces,face,toward) {
-    return faces.includes(face) && faces.includes(oppositeFace(toward));
 }
 export function externalArms(faces) {
     return faces.flatMap(face=>tangentFaces(face).filter(toward=>!faces.includes(oppositeFace(toward)))

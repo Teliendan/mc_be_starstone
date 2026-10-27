@@ -178,35 +178,45 @@ export function refreshCable(block) {
         }
     }
 }
+function refreshSurface(dim, block, x, y, z) {
+    if (pistonSupport.isPending(dim, block.location)) return;
+    try {
+        let supports;
+        if (block.type.id===INNER_CORNER_ID) {
+            supports=innerSupports(block.location,pairFromPermutation(block.permutation));
+        } else {
+            const [dx,dy,dz]=supportOffset(mountFace(block));
+            supports=[{position:{x:x+dx,y:y+dy,z:z+dz}}];
+        }
+        // An unavailable support is not proof it was destroyed.
+        if (!supports || supports.some(({position})=> {
+            const support=read(dim,position);
+            return !support || support.typeId === "minecraft:moving_block";
+        })) return;
+        if (!isSupportValid(block)) removeUnsupported(block);
+        else if (block.type.id === CABLE_ID || block.type.id === INNER_CORNER_ID) refreshCable(block);
+        else refreshAdapterVisuals(block);
+    } catch (err) { console.warn(`[Starstone] Surface refresh: ${err.message}`); }
+}
 export function flushPending() {
     const work = [...pending];
     pending.clear();
     // Corners settle their faces first, so neighboring cables in the same pass
-    // already see the faces they may connect to.
-    for (const cornersPass of [true, false]) for (const [dim, positions] of work) {
-        for (const key of positions) {
-            const [x,y,z] = key.split(",").map(Number);
-            const block = read(dim, { x,y,z });
-            if (!block?.isValid || !SURFACES.has(block.type.id)) continue;
-            if (pistonSupport.isPending(dim, block.location)) continue;
-            if ((block.type.id === INNER_CORNER_ID) !== cornersPass) continue;
-            try {
-                let supports;
-                if (block.type.id===INNER_CORNER_ID) {
-                    supports=innerSupports(block.location,pairFromPermutation(block.permutation));
-                } else {
-                    const [dx,dy,dz]=supportOffset(mountFace(block));
-                    supports=[{position:{x:x+dx,y:y+dy,z:z+dz}}];
-                }
-                // An unavailable support is not proof it was destroyed.
-                if (!supports || supports.some(({position})=> {
-                    const support=read(dim,position);
-                    return !support || support.typeId === "minecraft:moving_block";
-                })) continue;
-                if (!isSupportValid(block)) removeUnsupported(block);
-                else if (block.type.id === CABLE_ID || block.type.id === INNER_CORNER_ID) refreshCable(block);
-                else refreshAdapterVisuals(block);
-            } catch (err) { console.warn(`[Starstone] Surface refresh: ${err.message}`); }
+    // already see the faces they may connect to. The corner pass only rewrites
+    // corner states (removals are deferred), so it alone reads every queued
+    // position; the second pass re-reads just the other surfaces it found.
+    const others = [];
+    for (const [dim, positions] of work) for (const key of positions) {
+        const [x,y,z] = key.split(",").map(Number);
+        const block = read(dim, { x,y,z });
+        if (!block?.isValid || !SURFACES.has(block.type.id)) continue;
+        if (block.type.id === INNER_CORNER_ID) refreshSurface(dim, block, x, y, z);
+        else others.push([dim, x, y, z]);
+    }
+    for (const [dim, x, y, z] of others) {
+        const block = read(dim, { x,y,z });
+        if (block?.isValid && SURFACES.has(block.type.id) && block.type.id !== INNER_CORNER_ID) {
+            refreshSurface(dim, block, x, y, z);
         }
     }
     const seeds = [...discoveries];

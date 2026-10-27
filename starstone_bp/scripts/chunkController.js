@@ -108,6 +108,10 @@ function schedule() {
         });
     } catch (error) { scheduled = false; throw error; }
 }
+function hasDiscoveryRetry(key) {
+    for (const entry of discoveryRetries.values()) if (entry.key === key) return true;
+    return false;
+}
 function* rebuildPending() {
     try {
         while (pending.size) {
@@ -115,7 +119,7 @@ function* rebuildPending() {
             pending.delete(key);
             const { dimension, cx, cz, y } = request;
             if (!loaded(dimension, { x:cx*16+8, y, z:cz*16+8 })) { retry.set(key, request); continue; }
-            if ([...discoveryRetries.values()].some(entry => entry.key === key)) { retry.set(key, request); continue; }
+            if (hasDiscoveryRetry(key)) { retry.set(key, request); continue; }
             const revision = revisions.get(key);
             builds++;
             try {

@@ -64,7 +64,6 @@ export const ARM_BITS = {
 };
 
 // Descriptor port names (plan section 5.4).
-export const LOCAL_PORT_NAMES = ["local_n", "local_e", "local_s", "local_w"];
 export const BACK_PORT = "back";
 export const WORLD_UP = "world_up";
 export const WORLD_DOWN = "world_down";
@@ -72,7 +71,6 @@ export const WORLD_NORTH = "world_north";
 export const WORLD_SOUTH = "world_south";
 export const WORLD_EAST = "world_east";
 export const WORLD_WEST = "world_west";
-export const WORLD_PORT_NAMES = [WORLD_UP, WORLD_DOWN, WORLD_NORTH, WORLD_SOUTH, WORLD_EAST, WORLD_WEST];
 
 // Block-state names (plan section 5.2/5.3).
 export const STATE_BLOCK_FACE = "minecraft:block_face";
