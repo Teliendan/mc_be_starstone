@@ -106,6 +106,30 @@ assert.match(PLACEMENT_PROPERTY_PREFIX, /^starstone:/, 'index keys have a privat
     console.warn = originalWarn;
 }
 
+// Shard keys come from one lazy id scan; record and remove keep them current,
+// and a failed write never adds a key.
+{
+    const f = fixture();
+    const store = mapStorage(); let scans = 0, failing = false;
+    const ids = store.getDynamicPropertyIds, set = store.setDynamicProperty;
+    store.getDynamicPropertyIds = () => { scans++; return ids.call(store); };
+    store.setDynamicProperty = (key, value) => { if (failing) throw new Error('storage unavailable'); set.call(store, key, value); };
+    const index = createPlacementIndex(store);
+    index.record(f.put('starstone:cable', 0, 0, 0));
+    assert.deepEqual(index.positionsInChunk('minecraft:overworld', 0, 0), [{ x:0, y:0, z:0 }]);
+    index.record(f.put('starstone:cable', 17, 40, 0));
+    assert.deepEqual(index.positionsInChunk('minecraft:overworld', 1, 0), [{ x:17, y:40, z:0 }], 'a shard made after the scan is found');
+    failing = true;
+    assert.throws(() => index.record(f.put('starstone:cable', 40, 0, 0)), /storage unavailable/);
+    failing = false;
+    assert.deepEqual(index.positionsInChunk('minecraft:overworld', 2, 0), []);
+    assert.deepEqual(index.stats(), { shards:2, positions:2 });
+    assert.equal(index.remove('minecraft:overworld', { x:17, y:40, z:0 }), true);
+    assert.deepEqual(index.stats(), { shards:1, positions:1 });
+    assert.equal([...index.entries()].filter(Boolean).length, 1);
+    assert.equal(scans, 1, 'only the first query scans property ids');
+}
+
 // Validation treats loaded world state as authoritative, while a missing chunk
 // is explicitly unknown rather than evidence that an indexed block was removed.
 {

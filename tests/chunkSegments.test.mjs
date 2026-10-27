@@ -66,6 +66,40 @@ assert.equal(broken.readChunk(dim,0,0),undefined);
 assert.equal(warnings.length,1);
 index.writeChunk(crossing);
 assert.deepEqual([...broken.chunks()],[crossing],'one corrupt chunk does not hide others');
+assert.equal(warnings.length,1,'the lazy scan does not repeat a corrupt-chunk warning');
+
+// RAM cache: one lazy id scan, then reads come from memory kept current by
+// writeChunk. A failed commit leaves the last committed snapshot cached.
+{
+    const disk = store(), index = createChunkIndex(disk);
+    index.writeChunk(separate);
+    let reads = 0, scans = 0;
+    const get = disk.getDynamicProperty, ids = disk.getDynamicPropertyIds;
+    disk.getDynamicProperty = key => { reads++; return get(key); };
+    disk.getDynamicPropertyIds = () => { scans++; return ids(); };
+    assert.deepEqual([...index.chunks()],[separate]);
+    reads = 0;
+    assert.deepEqual([...index.chunks()],[separate]);
+    assert.deepEqual(index.readChunk(dim,0,0),separate);
+    assert.equal(reads,0,'a second refresh reads no dynamic properties');
+    index.writeChunk(crossing);
+    reads = 0;
+    assert.deepEqual([...index.chunks()],[separate,crossing],'a committed write is visible to the next chunks()');
+    assert.equal(reads,0);
+    for (const failing of [key=>!key.endsWith(':head'), key=>key.endsWith(':head')]) {
+        disk.failWhen(failing);
+        assert.throws(()=>index.writeChunk(changed),/storage unavailable/);
+        disk.failWhen(undefined);
+        assert.deepEqual(index.readChunk(dim,0,0),separate,'a failed write leaves the cache at the committed state');
+        assert.deepEqual(index.readChunk(dim,0,0),createChunkIndex(disk).readChunk(dim,0,0),'cache matches a fresh disk read');
+    }
+    assert.throws(()=>{ index.readChunk(dim,0,0).segments[0].activeSources.push('x'); },TypeError,'cached snapshots are frozen');
+    index.writeChunk(changed);
+    assert.equal(index.updateSource(`${dim}|0|0|0#main`,false),true);
+    assert.deepEqual(index.readChunk(dim,0,0).segments[0].activeSources,[]);
+    assert.deepEqual(index.readChunk(dim,0,0),createChunkIndex(disk).readChunk(dim,0,0),'updateSource commits a copy');
+    assert.equal(scans,1,'no further id scans after the first chunks()');
+}
 
 const f = fixture();
 f.put('starstone:cable',15,0,0,{'minecraft:block_face':'west'});

@@ -36,6 +36,7 @@ function address(dimensionId, location) {
     const cx = Math.floor(x / 16), sy = Math.floor(y / 16), cz = Math.floor(z / 16);
     if (![cx, sy, cz].every(validSection)) return undefined;
     return {
+        cx, cz,
         key: `${PLACEMENT_PROPERTY_PREFIX}${encodeURIComponent(dimensionId)}|${cx}|${sy}|${cz}`,
         code: (x - cx * 16) + 16 * (z - cz * 16) + 256 * (y - sy * 16)
     };
@@ -68,6 +69,29 @@ function isElectrical(block) {
 export function createPlacementIndex(storage, { warn = message => console.warn(message) } = {}) {
     const warned = new Set();
     const changes = new Set();
+    // Only write() below changes these properties, so after one lazy scan the
+    // shard-key set stays current: chunk id -> Map(key -> parsed shard).
+    // Shard contents are still read from storage, which keeps write failures safe.
+    let byChunk;
+    const chunkId = (dimensionId, cx, cz) => `${dimensionId}|${cx}|${cz}`;
+    function track(shard, present) {
+        const id = chunkId(shard.dimensionId, shard.cx, shard.cz);
+        if (present) {
+            if (!byChunk.has(id)) byChunk.set(id, new Map());
+            byChunk.get(id).set(shard.key, shard);
+        } else if (byChunk.get(id)?.delete(shard.key) && !byChunk.get(id).size) byChunk.delete(id);
+    }
+    function scan() {
+        if (byChunk) return;
+        const ids = storage.getDynamicPropertyIds();
+        byChunk = new Map();
+        for (const key of ids) {
+            if (typeof key !== "string" || !key.startsWith(PLACEMENT_PROPERTY_PREFIX)) continue;
+            const shard = parseKey(key);
+            if (shard) track(shard, true);
+            else corrupt(key);
+        }
+    }
     function notify(type, dimensionId, location) {
         for (const listener of changes) listener({ type, dimensionId, location: { ...location } });
     }
@@ -113,25 +137,21 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
     function write(key, codes) {
         if (codes.size === 0) {
             storage.setDynamicProperty(key, undefined);
+            if (byChunk) track(parseKey(key), false);
             return;
         }
         const data = JSON.stringify({ v: PLACEMENT_SCHEMA_VERSION, p: [...codes].sort((a, b) => a - b) });
         // ASCII-only payload means JS length equals its UTF-8 byte count.
         if (data.length > PLACEMENT_MAX_STRING_BYTES) throw new Error("Placement shard exceeds storage limit");
         storage.setDynamicProperty(key, data);
+        if (byChunk) track(parseKey(key), true);
     }
 
-    function* shards(dimensionId, cx, cz) {
-        for (const key of storage.getDynamicPropertyIds()) {
-            if (typeof key !== "string" || !key.startsWith(PLACEMENT_PROPERTY_PREFIX)) continue;
-            const shard = parseKey(key);
-            if (!shard) {
-                corrupt(key);
-                continue;
-            }
-            if (dimensionId !== undefined && (shard.dimensionId !== dimensionId || shard.cx !== cx || shard.cz !== cz)) continue;
-            yield shard;
-        }
+    // A copied list, like the id array before: callers yield while writes go on.
+    function shards(dimensionId, cx, cz) {
+        scan();
+        if (dimensionId !== undefined) return [...(byChunk.get(chunkId(dimensionId, cx, cz))?.values() || [])];
+        return [...byChunk.values()].flatMap(chunkShards => [...chunkShards.values()]);
     }
 
     function validChunk(dimensionId, cx, cz) {
@@ -161,6 +181,10 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
     function remove(dimensionId, location) {
         const target = address(dimensionId, location);
         if (!target) return false;
+        // Most removals (every non-Starstone cell a piston or break touches) hit
+        // no shard: answer from the key cache without a storage read.
+        scan();
+        if (!byChunk.get(chunkId(dimensionId, target.cx, target.cz))?.has(target.key)) return true;
         const codes = read(target.key);
         if (!codes) return false;
         if (codes.delete(target.code)) {
@@ -184,11 +208,8 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
     // yields an empty work item too, so one caller step cannot skip an
     // unbounded collection of bad shards. No world blocks are read here.
     function* entries() {
-        for (const key of storage.getDynamicPropertyIds()) {
-            if (typeof key !== "string" || !key.startsWith(PLACEMENT_PROPERTY_PREFIX)) { yield undefined; continue; }
-            const shard = parseKey(key);
-            if (!shard) { corrupt(key); yield undefined; continue; }
-            const codes = read(key);
+        for (const shard of shards()) {
+            const codes = read(shard.key);
             if (!codes?.size) { yield undefined; continue; }
             for (const code of codes) yield { dimensionId: shard.dimensionId, location: position(shard, code) };
         }

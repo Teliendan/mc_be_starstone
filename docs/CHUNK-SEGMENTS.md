@@ -20,8 +20,9 @@ unloaded-middle game test are separate tasks.
   subscriptions or revision counters.
 - `createChunkIndex(storage, {warn})` accepts world-style dynamic-property
   get/set/list methods. `chunkIndex` is a world-backed singleton with no world
-  reads at import. `readChunk(dimensionId,cx,cz)` returns a detached snapshot or
-  `undefined`. `writeChunk(snapshot)` validates and durably commits a snapshot.
+  reads at import. `readChunk(dimensionId,cx,cz)` returns a deep-frozen snapshot or
+  `undefined` from a RAM cache (one property read per chunk, then none; the first
+  `chunks()` scans property ids once). Only a successful head write updates the cache. `writeChunk(snapshot)` validates and durably commits a snapshot.
   `chunks()` lazily yields valid committed snapshots and isolates corrupt ones.
   `updateSource(nodeRef,on)` patches a known source summary without any block
   reads; returns `false` for an unknown source and `true` for durable success,

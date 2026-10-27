@@ -30,3 +30,10 @@ Tests: `redstoneAdapters.test.mjs`, real `eventWiring.test.mjs`, support/contact
 power, persistence and stale-metadata suites. Full verification runs42 feature
 runners. The optional script-only monitor observes production states and XP;
 it has no block definitions and runs its bounded timer only during a command.
+
+Index caches (2026-10-27, offline only): `chunks()` and placement shard lookups no
+longer list all world property ids or re-read saved chunks. Each index scans once,
+lazily, then keeps a RAM copy current from its own writes (the only writers of its
+prefix). Chunk snapshots are cached deep-frozen after the head commit; placement
+caches only shard keys and still reads shard contents. Tests: `chunkSegments`,
+`persistence`. `buildSegmentGraph` still re-validates every snapshot per refresh.

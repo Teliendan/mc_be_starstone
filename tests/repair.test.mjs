@@ -187,7 +187,11 @@ assert.equal(repair.REBUILD_HEIGHT, 4);
     };
     const f = withDimensionId(fixture(), 'test:repair-corrupt');
     const corruptKey = `${PLACEMENT_PROPERTY_PREFIX}${encodeURIComponent(f.dim.id)}|0|0|0`;
+    // Register the shard through the index (its key cache is already warm), then corrupt it.
+    assert.equal(placementIndex.record(f.put('starstone:generator', 3, 0, 0)), true);
+    assert.equal(stored.has(corruptKey), true);
     stored.set(corruptKey, '{not valid json');
+    f.put('minecraft:air', 3, 0, 0);
     f.put('starstone:generator', 0, 0, 0);
     f.put('starstone:cable', 1, 0, 0);
     const lamp = f.put('starstone:lamp', 2, 0, 0);

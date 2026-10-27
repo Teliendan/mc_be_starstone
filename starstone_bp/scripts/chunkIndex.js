@@ -255,15 +255,26 @@ function parseHead(raw) {
     return head;
 }
 
+// Freeze cached snapshots so a caller cannot change the committed state in RAM.
+function deepFreeze(value) {
+    if (value && typeof value === "object" && !Object.isFrozen(value)) {
+        Object.freeze(value);
+        for (const item of Object.values(value)) deepFreeze(item);
+    }
+    return value;
+}
+
+// Only writeChunk writes these properties, so RAM mirrors disk after one lazy
+// scan. known: property base -> frozen snapshot, or undefined (absent/corrupt).
 export function createChunkIndex(storage, { warn = message => console.warn(message) } = {}) {
-    const warned = new Set();
+    const warned = new Set(), known = new Map();
+    let scanned = false;
     function corrupt(key) {
         if (warned.has(key)) return;
         warned.add(key);
         try { warn(`[Starstone] Ignoring corrupt segment chunk ${key}`); } catch { /* Diagnostic only. */ }
     }
-    function readChunk(dimensionId, cx, cz) {
-        const base = propertyBase(dimensionId, cx, cz);
+    function load(base, dimensionId, cx, cz) {
         const rawHead = storage.getDynamicProperty(`${base}:head`);
         if (rawHead === undefined) return undefined;
         let head;
@@ -280,8 +291,14 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
             if (checksum(text) !== head.checksum) throw new Error("Segment checksum mismatch");
             const snapshot = JSON.parse(text);
             if (!validateChunkSegments(snapshot) || snapshot.dimensionId !== dimensionId || snapshot.cx !== cx || snapshot.cz !== cz) throw new Error("Invalid segment snapshot");
-            return snapshot;
+            return deepFreeze(snapshot);
         } catch { corrupt(base); return undefined; }
+    }
+    function readChunk(dimensionId, cx, cz) {
+        const base = propertyBase(dimensionId, cx, cz);
+        // Storage exceptions propagate and leave nothing cached.
+        if (!known.has(base)) known.set(base, load(base, dimensionId, cx, cz));
+        return known.get(base);
     }
     function writeChunk(snapshot) {
         if (!validateChunkSegments(snapshot)) throw new Error("Invalid segment snapshot");
@@ -301,18 +318,23 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         // The sole commit point. Until this succeeds all readers retain the
         // previous complete bank. Exceptions propagate; no RAM state is advanced.
         storage.setDynamicProperty(`${base}:head`, JSON.stringify({ v: CHUNK_SCHEMA_VERSION, bank, pages, length: text.length, checksum: checksum(text) }));
+        // Cache what a disk read would now return, never the caller's object.
+        known.set(base, deepFreeze(JSON.parse(text)));
         return true;
     }
     function* chunks() {
-        for (const key of storage.getDynamicPropertyIds()) {
-            if (typeof key !== "string" || !key.startsWith(CHUNK_PROPERTY_PREFIX) || !key.endsWith(":head")) continue;
-            const parts = key.slice(CHUNK_PROPERTY_PREFIX.length, -5).split("|");
-            let dimensionId;
-            try { dimensionId = decodeURIComponent(parts[0]); } catch { corrupt(key); continue; }
-            if (parts.length !== 3 || !parts.slice(1).every(p => INTEGER.test(p)) || !validChunk(dimensionId, Number(parts[1]), Number(parts[2])) || encodeURIComponent(dimensionId) !== parts[0]) { corrupt(key); continue; }
-            const value = readChunk(dimensionId, Number(parts[1]), Number(parts[2]));
-            if (value) yield value;
+        if (!scanned) {
+            for (const key of storage.getDynamicPropertyIds()) {
+                if (typeof key !== "string" || !key.startsWith(CHUNK_PROPERTY_PREFIX) || !key.endsWith(":head")) continue;
+                const parts = key.slice(CHUNK_PROPERTY_PREFIX.length, -5).split("|");
+                let dimensionId;
+                try { dimensionId = decodeURIComponent(parts[0]); } catch { corrupt(key); continue; }
+                if (parts.length !== 3 || !parts.slice(1).every(p => INTEGER.test(p)) || !validChunk(dimensionId, Number(parts[1]), Number(parts[2])) || encodeURIComponent(dimensionId) !== parts[0]) { corrupt(key); continue; }
+                readChunk(dimensionId, Number(parts[1]), Number(parts[2]));
+            }
+            scanned = true;
         }
+        for (const snapshot of [...known.values()]) if (snapshot) yield snapshot;
     }
     function updateSource(ref, on) {
         const p = parseSegmentNodeRef(ref);
@@ -322,8 +344,9 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         if (!segment) return false;
         const active = new Set(segment.activeSources);
         if (on) active.add(ref); else active.delete(ref);
-        segment.activeSources = [...active].sort();
-        return writeChunk(snapshot);
+        // Cached snapshots are frozen: write a changed copy.
+        const changed = { ...segment, activeSources: [...active].sort() };
+        return writeChunk({ ...snapshot, segments: snapshot.segments.map(s => s === segment ? changed : s) });
     }
     return { readChunk, writeChunk, chunks, updateSource };
 }
