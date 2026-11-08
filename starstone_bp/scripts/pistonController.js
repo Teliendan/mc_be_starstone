@@ -89,7 +89,7 @@ export function registerPistonController() {
     system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
         blockComponentRegistry.registerCustomComponent("starstone:piston_support", {
             onPlace({block}) { pistonSupport.observe(block, {reset:true}); },
-            onRandomTick({block}) { pistonSupport.observe(block); }
+            onRandomTick({block}) { pistonSupport.tick(block); }
         });
     });
     world.afterEvents.pistonActivate.subscribe(event => {
