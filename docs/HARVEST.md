@@ -39,8 +39,9 @@ identical states within that one-tick interval cannot be distinguished by the
 documented API; no unique block-instance token is exposed.
 
 Canceled breaks do not issue the normal after-player-break event. The callback
-explicitly runs Starstone's existing placement-index removal, network capture/
-split and neighboring support/connection refresh. Native allowed-tool Ore breaks
+runs Starstone's neighboring support/connection refresh (the gated Ore is not an
+electrical block, so it has no placement-index or network entry, but it may
+support a cable). Native allowed-tool Ore breaks
 and every conduit/generator player break keep their existing event route.
 
 ## Tool wear and remaining limits

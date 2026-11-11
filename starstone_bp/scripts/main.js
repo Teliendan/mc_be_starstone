@@ -65,10 +65,8 @@ function handleElectricalBreak(event) {
 }
 world.afterEvents.playerBreakBlock.subscribe(handleElectricalBreak, { blockTypes: ELECTRICAL_IDS });
 
-registerHarvestGate(({ dimension, location, typeId, block }) => {
-    handleElectricalBreak({ dimension, block: block ?? { location }, brokenBlockPermutation: { type: { id: typeId } } });
-    if (block) scheduleAffected(block);
-});
+// The only gated block is the ore, which is not electrical but may support a cable.
+registerHarvestGate(({ block }) => { if (block) scheduleAffected(block); });
 registerOreExperience();
 
 registerCableComponent();

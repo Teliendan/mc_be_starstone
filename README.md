@@ -20,9 +20,7 @@ redstone input/output adapters.
 - `tests/` - Node suites (`node tests/run.mjs`), with a `@minecraft/server` shim in `tests/shims/`.
 - `tools/make_block_art.py`, `tools/make_item_art.py` and `tools/make_block_models.py` generate
   every 16x16 texture, icon, pack icon and model UV from the palette in `tools/starstone_art.py`
-  (`docs/GRAPHICS.md`); `tools/build_inner_corner.py --model-only` regenerates the Inner Corner model;
-  `tools/generate-cable-permutations.mjs` regenerates the cable permutations
-  (`generated/cable-permutations.json`); `tools/validate-json.ps1` is a JSON-only syntax check.
+  (`docs/GRAPHICS.md`); `tools/build_inner_corner.py --model-only` regenerates the Inner Corner model.
 
 ## Blocks and basic operation
 
