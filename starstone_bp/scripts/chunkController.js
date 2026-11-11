@@ -52,9 +52,15 @@ function persistPower(network, powered = network.powered) {
 function applyLogical(network, dimension) {
     const nodes = new Set();
     const owners = new Set();
+    // Chunk availability cannot change inside one synchronous call.
+    const complete = new Map();
     for (const ref of network.nodes) {
         const owner = runtime.networkIdOf(ref);
-        if (owner !== undefined && isCompleteNetwork(runtime.networkOf(owner), dimension)) continue;
+        if (owner !== undefined) {
+            let done = complete.get(owner);
+            if (done === undefined) { done = isCompleteNetwork(runtime.networkOf(owner), dimension); complete.set(owner, done); }
+            if (done) continue;
+        }
         if (owner !== undefined) owners.add(owner);
         nodes.add(ref);
     }
