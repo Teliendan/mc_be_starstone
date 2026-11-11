@@ -17,6 +17,7 @@ import { anySourceOn } from "./networkController.js";
 import { applyPower } from "./powerPropagation.js";
 import { GENERATOR_ID, STATE_ENABLED } from "./constants.js";
 import { sourceChanged } from "./networkEvents.js";
+import { schedulePlaced } from "./cableComponent.js";
 
 const TAG = "[Starstone]";
 
@@ -66,6 +67,7 @@ export function reactToGeneratorToggle(dimension, x, y, z) {
 export function registerGeneratorController() {
     system.beforeEvents.startup.subscribe((event) => {
         event.blockComponentRegistry.registerCustomComponent("starstone:generator", {
+            onPlace({ block }) { schedulePlaced(block); },
             onPlayerInteract({ block }) {
                 if (!block || !block.isValid || block.type.id !== GENERATOR_ID) return;
                 try {

@@ -1,10 +1,10 @@
 import { world, system } from "@minecraft/server";
-import { CABLE_ID, KIND_BY_ID } from "./constants.js";
+import { KIND_BY_ID } from "./constants.js";
 import {
     removeAndSplitNetwork,
     captureRemovedNetworks
 } from "./networkController.js";
-import { registerCableComponent, schedulePlaced, scheduleAffected } from "./cableComponent.js";
+import { registerCableComponent, scheduleAffected } from "./cableComponent.js";
 import { registerGeneratorController } from "./generatorComponent.js";
 import { registerDiagnostics } from "./diagnostics.js";
 import { registerRecovery } from "./repair.js";
@@ -19,44 +19,14 @@ import { registerPistonController } from "./pistonController.js";
 const TAG = "[Starstone]";
 // Engine-side event filters; the handlers keep their own type checks.
 const ELECTRICAL_IDS = Object.keys(KIND_BY_ID);
-const PLACED_DEVICE_IDS = ELECTRICAL_IDS.filter(id => id !== CABLE_ID);
 
 world.afterEvents.worldLoad.subscribe(() => {
     console.log("[Starstone] Starstone active.");
 });
 
-// When a Starstone block is added, discover from the new node and merge the
-// result into the runtime index: every cached network that shares a node is
-// collected and replaced by one component, while unrelated networks are left
-// untouched. Cable placement is handled by cableComponent after its connection
-// mask has been written; other devices are stable as soon as they are placed.
-world.afterEvents.playerPlaceBlock.subscribe((event) => {
-    const placed = event.block;
-    if (
-        !placed ||
-        !placed.isValid ||
-        placed.type.id === CABLE_ID ||
-        KIND_BY_ID[placed.type.id] === undefined
-    ) {
-        return;
-    }
-    const dimension = placed.dimension;
-    const typeId = placed.type.id;
-    const x = Math.floor(placed.location.x);
-    const y = Math.floor(placed.location.y);
-    const z = Math.floor(placed.location.z);
-    system.run(() => {
-        try {
-            const current = dimension.getBlock({ x, y, z });
-            if (!current || !current.isValid || current.type.id !== typeId) {
-                return;
-            }
-            schedulePlaced(current);
-        } catch (err) {
-            console.warn(`${TAG} Could not merge network after placement: ${err.message}`);
-        }
-    });
-}, { blockTypes: PLACED_DEVICE_IDS });
+// Placement discovery runs from each block component's onPlace hook (cableComponent.js,
+// generatorComponent.js): the new node is discovered and merged into the runtime
+// index, while unrelated cached networks stay untouched.
 
 // When a Starstone block is removed, its old network must be re-fragmented
 // using its cached nodes. The removed type comes from

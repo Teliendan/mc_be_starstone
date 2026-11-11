@@ -313,6 +313,7 @@ export function registerCableComponent() {
             onPlayerBreak({block}) {scheduleAffected(block);}
         });
         init.blockComponentRegistry.registerCustomComponent("starstone:conduit", {
+            onPlace({ block }) { schedulePlaced(block); },
             beforeOnPlayerPlace(event) {
                 const face = String(event.face).toLowerCase();
                 const axis = face === "up" || face === "down" ? "y" :

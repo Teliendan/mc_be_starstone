@@ -30,6 +30,7 @@ for (const file of fs.readdirSync(`${bp}/blocks`).filter(f => f.endsWith('.json'
         for (const id of Object.keys(group || {}).filter(id => !id.startsWith('minecraft:'))) assert.ok(definitions.has(id),`${file}: ${id} must register through main startup`);
     }
 }
+for (const id of ['conduit','generator','bridge','surface','input_surface','inner_corner','cable']) assert.equal(typeof definitions.get(`starstone:${id}`).onPlace,'function',`${id} discovers its own placement`);
 const runtime = (await import('../starstone_bp/scripts/networkRuntime.js')).default;
 const { createPlacementIndex } = await import('../starstone_bp/scripts/persistence.js');
 const saved = () => createPlacementIndex(mc.world).positionsInChunk('minecraft:overworld',0,0);
@@ -57,7 +58,7 @@ for (const last of ['generator','lamp','cable']) {
     const lamp = f.put('starstone:lamp',2,0,0);
     f.put('minecraft:stone',1,-1,0); f.put('minecraft:stone',2,-1,0);
     if (last === 'cable') definitions.get('starstone:cable').onPlace({block:cable});
-    else fire('playerPlaceBlock',{block:last === 'generator' ? gen : lamp});
+    else definitions.get(last === 'generator' ? 'starstone:generator' : 'starstone:surface').onPlace({block:last === 'generator' ? gen : lamp});
     await tick();
     assert.equal(lamp.permutation.getState('starstone:powered'),true,`${last}-last event must power lamp`);
     const placed = last === 'generator' ? gen : last === 'lamp' ? lamp : cable;
@@ -102,7 +103,7 @@ const harvestWorld = liveFixture();
 const harvestSource = harvestWorld.put('starstone:generator',0,0,0);
 const harvestLamp = harvestWorld.put('starstone:lamp',1,0,0);
 harvestWorld.put('minecraft:stone',1,-1,0);
-fire('playerPlaceBlock',{block:harvestSource}); await tick();
+definitions.get('starstone:generator').onPlace({block:harvestSource}); await tick();
 assert.equal(harvestLamp.permutation.getState('starstone:powered'),true);
 assert.ok(saved().some(p => p.x === 0 && p.y === 0 && p.z === 0));
 const nativeBreak = { block:harvestSource, itemStack:undefined, cancel:false,
@@ -134,7 +135,7 @@ assert.ok(xpPlacements.reduce((n,p)=>n+p.amount,0)>=1&&xpPlacements.reduce((n,p)
 const input=harvestWorld.put('starstone:redstone_input',10,0,0);input.redstonePower=0;
 const output=harvestWorld.put('starstone:redstone_output',11,0,0);
 harvestWorld.put('minecraft:stone',10,-1,0);harvestWorld.put('minecraft:stone',11,-1,0);
-fire('playerPlaceBlock',{block:input});await tick();
+definitions.get('starstone:input_surface').onPlace({block:input});await tick();
 const nativeInput=definitions.get('starstone:input_surface').onRedstoneUpdate;
 assert.equal(typeof nativeInput,'function','input registration includes stable native hook');
 for(const id of ['cable','bridge','surface'])assert.equal(definitions.get(`starstone:${id}`).onRedstoneUpdate,undefined,`${id} has no consumer, so no native hook`);
