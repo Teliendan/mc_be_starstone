@@ -60,3 +60,15 @@ study, probe notes): git `08a2e65` and earlier. Counterparts: redstone ore, lamp
 4. Two quick ore breaks both drop orbs.
 5. `doTileDrops` false behaviour vs. vanilla redstone ore; furnace/blast furnace smelting;
    note block under ore plays bass drum.
+
+## Bedrock 26.60 impact (2026-10-27, documented only)
+
+Source review against the 26.60 changelog and API 2.11.0 / 2.12.0-beta declarations; nothing tested in game on 26.60.
+
+- Verdict: nothing in the mod breaks. The review's top item, `Dimension.spawnXp` (stable in 2.11.0) replacing the ore XP structures, is now in `oreExperience.js` (checked 2026-11-11).
+- MCPE-242204 (dust connects to a custom `redstone_producer`): owner check only. Dust beside a Redstone Output should bend into it; if it does, close the redstone watch note in the workspace `docs/workarounds.md`.
+- Deferred: redstone dust now exposes `redstone_north/east/south/west` states, which could narrow `redstoneContactMask` to dust that points at the adapter; ignored unless the owner reports a mismatch (current rule deliberately shows contact at zero power).
+- Deferred: experimental `minecraft:neighbor_change` / `onNeighborChanged` (block format 1.26.60, beta API 2.12.0) could replace the scripted support-survival and random-tick fallback. Wait for stable (owner decision 2026-10-21: no experiments or beta APIs). Limits: 100 events per chunk per tick, queue of 4,096 per chunk.
+- Latent: single-object `collision_box` is rejected at block format 1.26.60 (`bridge`, `lamp`, `redstone_input`, `redstone_output`); wrap it in `[ ]` before any bump. Whether `collision_box: false` (cable, inner corner) stays valid is unknown.
+- Not relevant: MCPE-240755 (no `placement_filter`/`onBreak`), loot count-0 change (tables are not format 1.26.60), entity schema strictness (no entities).
+- Owner checks: Starstone loads and works on 26.60 at API 2.8.0; dust bends into Redstone Output; a piston pushing a conduit or generator into a mob pushes or damages it like vanilla (optional).

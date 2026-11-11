@@ -7,7 +7,7 @@
       },
       {
         "path": "docs/VANILLA_PARITY.md",
-        "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
+        "sha256": "ce29fc8c8ca0fd57eb2a0eccfade98bb20ff7fc5a5287c98ba06f8870904160d"
       },
       {
         "path": "starstone_bp/scripts/blockKeys.js",
@@ -150,7 +150,7 @@
       },
       {
         "path": "docs/VANILLA_PARITY.md",
-        "sha256": "8c5202efb34e34e5a75e99d9d88c8aa65cbcf8a8eec028de12fa3d87bacc958f"
+        "sha256": "ce29fc8c8ca0fd57eb2a0eccfade98bb20ff7fc5a5287c98ba06f8870904160d"
       },
       {
         "path": "starstone_bp/blocks/ore.json",
