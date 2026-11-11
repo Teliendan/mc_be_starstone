@@ -1,6 +1,6 @@
 # Starstone piston policy
 
-Accepted rollout: 2026-10-09, Bedrock 1.26.52 / stable server API 2.8.0.
+Accepted rollout: 2026-10-09, Bedrock 1.26.52; written against server API 2.8.0 (the manifest now uses 2.11.0).
 Implementation commit: `Implement Starstone piston movement and support survival`.
 
 Generator, conduit and ore use native `push_pull`; enabled state and conduit axis

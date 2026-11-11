@@ -2,7 +2,7 @@
 
 Workflow and checks: workspace `docs/localization.md`.
 
-2026-10-04; target Bedrock 1.26.52 / Script API 2.8.0.
+2026-10-04; written for Bedrock 1.26.52 / Script API 2.8.0 (the manifest now uses 2.11.0).
 Commit: `Localize starstone with contextual catalogs and nine locales`.
 
 Owner approved (2026-10-04) English, Czech, Spanish Spain/Mexico, Portuguese Portugal/Brazil, German, French and Polish, with context and localization required during future development. Catalogs are mod-scoped (`localization/catalog.json`); en_GB=en_US and fr_CA=fr_FR are compatibility aliases.

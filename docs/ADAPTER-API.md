@@ -1,6 +1,6 @@
 # Redstone adapter API and behavior
 
-Owner-approved native input, 2026-10-21. Bedrock1.26.52 / stable server2.8.0.
+Owner-approved native input, 2026-10-21. Bedrock1.26.52; written against server API 2.8.0 (the manifest now uses 2.11.0).
 Input block format1.26.0; output format1.21.120. No experimental features.
 
 ## Output
@@ -22,7 +22,9 @@ previous tick power is not treated as the previous callback state.
 This deliberately replaces the old maximum-of-six-neighbors rule. A neighboring
 powered block alone no longer enables input: native delivery determines the
 received signal. Source updates keep the durable `sourceChanged` owner and the
-existing loaded-network fallback. Red `starstone:powered` and blue
+existing loaded-network fallback. Starstone power never writes the input's source flag, which prevents feedback through its
+own visual state; unavailable supports retain the previous state. The adapter's emblem is a
+conversion arrow, not a placement direction. Red `starstone:powered` and blue
 `starstone:star_powered` remain independent. Topology is not rebuilt per edge.
 
 A newly tracked input (load, placement, network discovery; not a first callback) gets one

@@ -24,7 +24,31 @@ and their strips are palindromes, so every arm meets its neighbour with a clamp
 pair at the cell edge. Custom geometry renders model X mirrored, so the machine
 frame shared by Generator (vanilla full block) and Conduit (custom cube) is
 symmetric left-right, and the adapter emblems are drawn mirrored in the texture.
-Review state per asset: `docs/GRAPHICS_TASKS.md`.
+Review state: every asset below is final (owner accepted in game).
+
+Owner verdicts: 2026-10-26, after the 16x16 redo (commits `7aa74ca` and `f7e6283`): "The
+graphics as such is OK", and after the follow-up fixes "Fixed, I like it." Verdicts are final
+(owner accepted in game), to check (deployed, owner to look) or to do. Per-asset notes:
+
+| Asset | Verdict | Notes |
+|---|---|---|
+| Ore | final | Dark purple-grey stone, six blue shards in different directions |
+| Generator on/off | final | Navy machine frame, cut crystal; off = dark gem |
+| Conduit ends on/off, casing sides | final | Round port with glowing core; vented casing |
+| Cable arms and hubs on/off | final | 2-wide conductor, clamp pair at each cell edge, 4-fold hub |
+| Inner Corner | final | Same textures as the cable |
+| Bridge | final | Own plate texture; NS lane over it, EW ports under |
+| Lamp on/off | final | Four-pane lens, contacts lit when powered |
+| Redstone Input/Output emblems | final | One arrow ("->" per owner, not ">>"): shaft in the source colour, head in the target colour, drawn mirrored for the mirrored model X |
+| Redstone arms on/off | final | Red strips in vanilla redstone dust colours |
+| Crystal, Dust, Compressed Dust icons | final | |
+| Cable icon | final | Stacked coil with a plug end |
+| Inner Corner icon | final | L bend (wall arm + floor arm) |
+| Redstone Input/Output icons | final | Capsule with arrow, source colour on the left |
+| Bridge, Lamp icons | final | Riveted plate with lane over and lane under; lit lamp panel (held-item fix) |
+| Pack icon | final | Crystal cluster on a navy tile, 16x16 scaled 16x |
+
+The retired task list is in git `1492493` (`docs/GRAPHICS_TASKS.md`).
 
 ## Cables and edge joins
 
@@ -104,3 +128,12 @@ python -B mods/starstone/tools/make_item_art.py
 ```
 
 The generators change only PNGs and model UVs, never block behaviour JSON.
+
+## Material parameter note (2026-10-10, Bedrock 1.26.52)
+
+Conduit, generator and ore material declarations use numeric `ambient_occlusion` 0 (the old
+boolean `false`, intentionally unshaded); the shared visual-parameter checker rejects the
+boolean form for block format 1.26.50 and later, and official release 26.20 requires 0..10
+with default 1. Not an in-game appearance test: compare these blocks' unshaded look after a
+reload. Retired: `docs/VISUAL_PARAMETERS.md` and `docs/CONTENT-LOG.md` (ore feature files
+renamed to match their identifiers, resource `blocks.json` format 1.21.40, 2026-10-04) in git `1492493`.

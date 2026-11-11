@@ -49,7 +49,7 @@
       "loot_checks": {
         "loot_tables/blocks/conduit.json": {
           "counterpart": "minecraft:redstone_block",
-          "source": "https://learn.microsoft.com/en-us/minecraft/creator/documents/lootandtradetablefunctions?view=minecraft-bedrock-stable; mods/starstone/docs/HARVEST.md",
+          "source": "https://learn.microsoft.com/en-us/minecraft/creator/documents/lootandtradetablefunctions?view=minecraft-bedrock-stable; mods/starstone/docs/VANILLA_PARITY.md",
           "reason": "Native loot is sole item owner for any-tool/hand mining and environmental destruction, with per-item blast decay.",
           "explosion_decay": true
         }
@@ -68,7 +68,7 @@
       "loot_checks": {
         "loot_tables/blocks/generator.json": {
           "counterpart": "minecraft:redstone_block",
-          "source": "https://learn.microsoft.com/en-us/minecraft/creator/documents/lootandtradetablefunctions?view=minecraft-bedrock-stable; mods/starstone/docs/HARVEST.md",
+          "source": "https://learn.microsoft.com/en-us/minecraft/creator/documents/lootandtradetablefunctions?view=minecraft-bedrock-stable; mods/starstone/docs/VANILLA_PARITY.md",
           "reason": "Native loot is sole item owner for any-tool/hand mining and environmental destruction, with per-item blast decay.",
           "explosion_decay": true
         }
@@ -114,7 +114,7 @@
       "loot_checks": {
         "loot_tables/blocks/ore.json": {
           "counterpart": "minecraft:redstone_ore",
-          "source": "https://learn.microsoft.com/en-us/minecraft/creator/documents/lootandtradetablefunctions?view=minecraft-bedrock-stable; mods/starstone/docs/HARVEST.md",
+          "source": "https://learn.microsoft.com/en-us/minecraft/creator/documents/lootandtradetablefunctions?view=minecraft-bedrock-stable; mods/starstone/docs/VANILLA_PARITY.md",
           "reason": "Native loot is sole item owner for allowed player and environmental destruction; approved custom ore counts retained.",
           "explosion_decay": true
         }

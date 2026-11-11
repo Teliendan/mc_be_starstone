@@ -123,6 +123,29 @@ network the live walk saw powered. Rediscovery, logical refresh, generator
 toggles and redstone inputs all apply this rule (`staleMetadata.test.mjs`).
 New source kinds must do the same.
 
+## Recovery and observer
+
+Moved here from the README.
+
+On initial player spawn, a bounded scan covers the player's complete 16x16x16 section.
+Successful sections are deduplicated by dimension, horizontal chunk and height for that
+session; normal respawns do not rescan. Concurrent automatic requests queue. Manual nearby
+rebuilding (`/scriptevent starstone:rebuild_nearby`) scans at most 17x9x17 seed positions;
+connected loaded components may extend farther. Unknown command-created circuits therefore
+need nearby rebuilding.
+
+Placement hints are versioned, separated by dimension/chunk/vertical section, and contain at
+most 4,096 compact local positions per property. They are checked against actual blocks;
+unavailable positions are retained. Corrupt hints warn once and are ignored without
+preventing world-based reconstruction. Snapshots use 24,000-byte pages in two banks; the
+head pointer switches only after staging a complete replacement, failed commits preserve the
+previous snapshot, and revision checks reject scans made stale by intervening edits.
+
+A slow observer checks at most 32 cached chunk candidates every 100 ticks, deduplicates
+players and retries newly available boundaries. Standing still in a loaded chunk does not
+repeatedly rebuild it. No ticking areas or forced chunk loading are used. Saved topology can
+be stale until a changed chunk is observed and reconciled; the world remains authoritative.
+
 ## Verification and remaining gate
 
 `chunkSegments.test.mjs` exercises deterministic membership, bridge isolation,
