@@ -343,7 +343,7 @@
       },
       {
         "path": "starstone_bp/scripts/messages.js",
-        "sha256": "662df13b3a05d916ad035fae2c45fe8b6d6d2a2967b283fb9d50c01e0704926b"
+        "sha256": "9e0eba5233123c49795d476c77fe24cc009ad84a20fb10b1e4c42288eb5a784d"
       },
       {
         "path": "starstone_bp/scripts/mutationController.js",

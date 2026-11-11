@@ -19,8 +19,9 @@ export function renderRawMessage(value) {
     if (Array.isArray(value?.rawtext)) return value.rawtext.map(renderRawMessage).join('');
     if (typeof value?.text === 'string') return value.text;
     if (typeof value?.translate !== 'string' || !language.has(value.translate)) throw new Error(`Missing message translation: ${value?.translate}`);
-    const args=value.with || [];
-    if (!Array.isArray(args) || !args.every(arg=>typeof arg === 'string')) throw new Error('Translation arguments must be strings');
+    // Shared helper payload: no `with` without arguments, otherwise { rawtext: [...] } (nested RawMessages allowed).
+    if (value.with !== undefined && (!Array.isArray(value.with?.rawtext) || value.with.rawtext.length === 0)) throw new Error('Translation arguments must be a non-empty rawtext container');
+    const args=(value.with?.rawtext || []).map(renderRawMessage);
     const template=language.get(value.translate);
     if (value.translate.startsWith('starstone.message.')) {
         if (/(^|[^%])%[1-9]\d*/.test(template)) throw new Error(`Unsupported bare positional placeholder: ${value.translate}`);

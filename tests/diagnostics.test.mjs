@@ -26,16 +26,16 @@ assert.match(user.messages[0], /powerQueue=0 peak=0 planning=0/);
 assert.match(user.messages[0], /inputSources=0 inputPolled=0/);
 assert.match(user.messages[0], /addon world dynamic-property bytes=1234/);
 assert.equal(byteQueries,1);
-assert.ok(user.rawMessages[0].rawtext.every(part=>part.translate.startsWith('starstone.message.') && part.with.every(arg=>typeof arg==='string')));
+assert.ok(user.rawMessages[0].rawtext.every(part=>part.translate.startsWith('starstone.message.') && (part.with===undefined || part.with.rawtext.every(arg=>typeof arg.text==='string'))));
 assert.equal(cable.writes,0);
 assert.equal(diagnostics.startRebuildNearby(user,{ radius:2, height:1 }),true);
 assert.equal(diagnostics.startRebuildNearby(user),false);
 await drain();
 assert.equal(diagnostics.isRebuildRunning(),false);
 assert.ok(user.rawMessages.filter(raw=>raw.translate).every(raw=>raw.translate.startsWith('starstone.message.')),'debug and rebuild messages use resource keys');
-assert.throws(()=>renderRawMessage({translate:'starstone.message.missing',with:[]}),/Missing message translation/);
-assert.throws(()=>renderRawMessage({translate:'starstone.message.rebuild.start',with:['8']}),/Translation argument count/);
-assert.throws(()=>renderRawMessage({translate:'starstone.message.debug.on',with:['unused']}),/Translation argument count/);
+assert.throws(()=>renderRawMessage({translate:'starstone.message.missing',with:undefined}),/Missing message translation/);
+assert.throws(()=>renderRawMessage({translate:'starstone.message.rebuild.start',with:{rawtext:[{text:'8'}]}}),/Translation argument count/);
+assert.throws(()=>renderRawMessage({translate:'starstone.message.debug.on',with:{rawtext:[{text:'unused'}]}}),/Translation argument count/);
 
 // Explicit load probes are bounded and cannot accidentally load/read blocks.
 const queries=[];
