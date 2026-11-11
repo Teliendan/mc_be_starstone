@@ -103,7 +103,11 @@ console.log('diagnostics: registration, read-only diagnose, real rebuild, concur
 
 // Requests cannot silently increase the scan budget, even through internal APIs.
 let scanned = 0;
-const empty = player({ getBlock() { scanned++; return undefined; } });
+const empty = player({ heightRange:{min:-64,max:320}, getBlocks(volume) {
+    const { from, to } = volume;
+    scanned = (to.x-from.x+1)*(to.y-from.y+1)*(to.z-from.z+1);
+    return { getBlockLocationIterator: () => [][Symbol.iterator]() };
+}, getBlock() { return undefined; } });
 assert.equal(diagnostics.startRebuildNearby(empty,{radius:100000,height:100000}),true);
 await drain();
 assert.equal(scanned,2601);

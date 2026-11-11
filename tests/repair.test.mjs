@@ -51,21 +51,35 @@ assert.equal(repair.REBUILD_HEIGHT, 4);
 {
     runtime.clearNetworks();
     const manual = withDimensionId(fixture(), 'test:repair-manual-budget');
-    let manualReads = 0;
-    const manualRead = manual.dim.getBlock;
-    manual.dim.getBlock = location => { manualReads++; return manualRead(location); };
+    const queries = dim => {
+        const volumes = [], query = dim.getBlocks;
+        dim.getBlocks = (volume, ...rest) => { volumes.push(volume); return query(volume, ...rest); };
+        return volumes;
+    };
+    const manualVolumes = queries(manual.dim);
     assert.equal(repair.startRebuildNearby(player(manual.dim), { radius:999, height:999 }), true);
     await drain();
-    assert.equal(manualReads, 2601, 'manual scans stay at the 17x9x17 maximum');
+    assert.deepEqual(manualVolumes.map(v => [v.from, v.to]), [[{x:-8,y:-4,z:-8},{x:8,y:4,z:8}]],
+        'manual scans are one filtered query over the 17x9x17 maximum');
 
     const automatic = withDimensionId(fixture(), 'test:repair-auto-budget');
-    let automaticReads = 0;
-    const automaticRead = automatic.dim.getBlock;
-    automatic.dim.getBlock = location => { automaticReads++; return automaticRead(location); };
+    const automaticVolumes = queries(automatic.dim);
     const autoPlayer = player(automatic.dim); autoPlayer.location = { x:7, y:8, z:7 };
     spawn(autoPlayer);
     await drain();
-    assert.equal(automaticReads, 4096, 'initial spawn scans all 16x16x16 cells in its section');
+    assert.deepEqual(automaticVolumes.map(v => [v.from, v.to]), [[{x:0,y:0,z:0},{x:15,y:15,z:15}]],
+        'initial spawn queries its whole 16x16x16 section');
+
+    // Near the world floor and ceiling the volume is clamped to the height range.
+    const low = withDimensionId(fixture(), 'test:repair-clamp-low');
+    const lowVolumes = queries(low.dim), lowPlayer = player(low.dim); lowPlayer.location = { x:0, y:-62, z:0 };
+    repair.startRebuildNearby(lowPlayer, { radius:0, height:4 }); await drain();
+    assert.equal(lowVolumes[0].from.y, -64);
+    assert.equal(lowVolumes[0].to.y, -58);
+    const high = withDimensionId(fixture(), 'test:repair-clamp-high');
+    const highVolumes = queries(high.dim), highPlayer = player(high.dim); highPlayer.location = { x:0, y:318, z:0 };
+    repair.startRebuildNearby(highPlayer, { radius:0, height:4 }); await drain();
+    assert.equal(highVolumes[0].to.y, 319);
 }
 
 // Initial spawn runs once after a restart, while an ordinary respawn never

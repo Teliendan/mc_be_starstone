@@ -1,6 +1,6 @@
 // Recovery seeds are bounded; connected loaded networks can extend beyond them.
 // All world access is deferred until a command or an initial-spawn callback.
-import { system, world } from "@minecraft/server";
+import { system, world, BlockVolume } from "@minecraft/server";
 import { descriptorForBlock } from "./electricalBlocks.js";
 import { discoverAndRegisterNetwork } from "./networkController.js";
 import { refreshCable } from "./cableComponent.js";
@@ -65,21 +65,24 @@ function* rebuild(request) {
             }
         }
         // Finish every in-volume cable mask before any component traversal.
-        for (let y = bounds.minY; y <= bounds.maxY; y++) {
-            for (let x = bounds.minX; x <= bounds.maxX; x++) {
-                for (let z = bounds.minZ; z <= bounds.maxZ; z++) {
-                    requirePlayer(player);
-                    const location = { x, y, z };
-                    const block = read(dimension, location);
-                    if (electrical(block)) {
-                        refreshCable(block);
-                        recordBlock(block);
-                        indexed.add(`${x},${y},${z}`);
-                        seeds.push(location);
-                    }
-                    yield;
-                }
+        // One native query lists only the electrical blocks; unloaded chunks
+        // are skipped. The volume is clamped to the dimension's build height.
+        const { min, max } = dimension.heightRange;
+        const volume = new BlockVolume(
+            { x: bounds.minX, y: Math.max(bounds.minY, min), z: bounds.minZ },
+            { x: bounds.maxX, y: Math.min(bounds.maxY, max - 1), z: bounds.maxZ });
+        const found = dimension.getBlocks(volume, { includeTypes: Object.keys(KIND_BY_ID) }, true);
+        for (const { x, y, z } of found.getBlockLocationIterator()) {
+            requirePlayer(player);
+            const location = { x, y, z };
+            const block = read(dimension, location);
+            if (electrical(block)) {
+                refreshCable(block);
+                recordBlock(block);
+                indexed.add(`${x},${y},${z}`);
+                seeds.push(location);
             }
+            yield;
         }
         for (const location of seeds) {
             requirePlayer(player);

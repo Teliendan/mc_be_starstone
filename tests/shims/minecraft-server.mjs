@@ -62,6 +62,10 @@ export const world = {
     },
     runtime: {}
 };
+// Axis-aligned block volume, as built by repair.js for Dimension.getBlocks.
+export class BlockVolume {
+    constructor(from, to) { this.from = from; this.to = to; }
+}
 export class LiquidType {}
 export class BlockSourceType {}
 export class ItemStack {

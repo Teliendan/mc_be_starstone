@@ -67,6 +67,20 @@ export function fixture() {
             if (!dim.isChunkLoaded(p)) return undefined;
             return store.get(`${p.x},${p.y},${p.z}`) || make('minecraft:air', p.x,p.y,p.z, {});
         },
+        heightRange: { min: -64, max: 320 },
+        // Trivial Dimension.getBlocks: filters the placed blocks inside the volume by type.
+        getBlocks(volume, { includeTypes = [] } = {}, allowUnloadedChunks = false) {
+            const { from, to } = volume;
+            const found = [];
+            for (const block of store.values()) {
+                const { x, y, z } = block.location;
+                if (x < from.x || x > to.x || y < from.y || y > to.y || z < from.z || z > to.z) continue;
+                if (!includeTypes.includes(block.typeId)) continue;
+                if (!allowUnloadedChunks && !dim.isChunkLoaded(block.location)) continue;
+                found.push({ x, y, z });
+            }
+            return { getBlockLocationIterator: () => found[Symbol.iterator]() };
+        },
         xp: [],
         spawnXp(location, amount) { dim.xp.push({ location, amount }); },
         runCommand(command) {
