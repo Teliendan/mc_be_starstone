@@ -66,6 +66,10 @@
     },
     {
       "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/message_helper.js"
+    },
+    {
+      "featureId": "starstone:network",
       "pattern": "starstone_bp/scripts/mutationController.js"
     },
     {
