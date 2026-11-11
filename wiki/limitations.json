@@ -3,11 +3,11 @@
     "evidence": [
       {
         "path": "docs/SURVIVAL.md",
-        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+        "sha256": "28a044d1b44fd8742322ad2a90495fd885a7f27e77dfa1875a1d33470c407d56"
       },
       {
         "path": "docs/VANILLA_PARITY.md",
-        "sha256": "ce29fc8c8ca0fd57eb2a0eccfade98bb20ff7fc5a5287c98ba06f8870904160d"
+        "sha256": "3029fe08a1de57c9d3784eb3aa6a781c2b88a65621b37ccba78a5643b7c67805"
       },
       {
         "path": "starstone_bp/scripts/blockKeys.js",
@@ -146,11 +146,11 @@
     "evidence": [
       {
         "path": "docs/SURVIVAL.md",
-        "sha256": "0b0193068bfc02ae39b50f581f0ae5f762b7b287398a6a2283de8f27d2520f3e"
+        "sha256": "28a044d1b44fd8742322ad2a90495fd885a7f27e77dfa1875a1d33470c407d56"
       },
       {
         "path": "docs/VANILLA_PARITY.md",
-        "sha256": "ce29fc8c8ca0fd57eb2a0eccfade98bb20ff7fc5a5287c98ba06f8870904160d"
+        "sha256": "3029fe08a1de57c9d3784eb3aa6a781c2b88a65621b37ccba78a5643b7c67805"
       },
       {
         "path": "starstone_bp/blocks/ore.json",
