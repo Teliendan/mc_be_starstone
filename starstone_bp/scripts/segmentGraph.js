@@ -3,11 +3,13 @@ import { parseSegmentNodeRef, reciprocalSegmentContact, validateChunkSegments } 
 
 const contactKey = (dimensionId, x, y, z, dir) => `${dimensionId}|${x}|${y}|${z}|${dir.join(",")}`;
 
-export function buildSegmentGraph(chunks) {
+// `trusted` skips re-validation for snapshots that come from chunkIndex, which
+// validated them when they were loaded or written.
+export function buildSegmentGraph(chunks, { trusted = false } = {}) {
     const segments = new Map(), contacts = new Map(), adjacency = new Map(), unresolved = new Map();
     const chunkKeys = new Set();
     for (const snapshot of chunks) {
-        if (!validateChunkSegments(snapshot)) throw new Error("Invalid segment graph input");
+        if (!trusted && !validateChunkSegments(snapshot)) throw new Error("Invalid segment graph input");
         const chunkKey = `${snapshot.dimensionId}|${snapshot.cx}|${snapshot.cz}`;
         if (chunkKeys.has(chunkKey)) throw new Error("Duplicate segment chunk");
         chunkKeys.add(chunkKey);

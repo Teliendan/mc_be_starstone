@@ -32,10 +32,10 @@ const crossing = buildChunkSegments(dim,-1,0,[entry(-1,0,8)]);
 assert.ok(crossing.segments[0].boundaries.some(p => p.destination[0] === 0 && p.direction[0] === 1), 'missing visual mask does not remove potential border contact');
 
 const disk = store(), index = createChunkIndex(disk);
-index.writeChunk(separate);
+assert.deepEqual(index.writeChunk(separate),{changed:true});
 assert.deepEqual(createChunkIndex(disk).readChunk(dim,0,0),separate);
 const unchanged = new Map(disk.data);
-index.writeChunk(separate);
+assert.deepEqual(index.writeChunk(separate),{changed:false});
 assert.deepEqual(disk.data,unchanged);
 const changed = buildChunkSegments(dim,0,0,[entry(0,0,0,generatorDescriptor({sourceOn:true})),entry(1,0,0)]);
 disk.failWhen(key=>!key.endsWith(':head'));

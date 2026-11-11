@@ -35,7 +35,7 @@ function setDurable(key, value) {
 function ensureGraph() {
     if (!graph) {
         const snapshots = [...chunkIndex.chunks()];
-        const next = buildSegmentGraph(snapshots);
+        const next = buildSegmentGraph(snapshots, { trusted: true });
         for (const network of next.networks) persistPower(network);
         graph = next;
         cacheCandidates(snapshots);
@@ -70,9 +70,29 @@ function applyLogical(network, dimension) {
     }
     if (nodes.size) applyPower({ ...network, nodes }, dimension);
 }
+// An unchanged snapshot leaves the graph as it is; a chunk that became loaded
+// again only needs the latest state re-applied to the networks it belongs to.
+// Returns false when there is no usable graph (caller rebuilds it).
+function reapplyChunkNetworks(snapshot) {
+    if (!graph) return false;
+    const networks = new Set();
+    for (const segment of snapshot.segments) {
+        const network = graph.segmentToNetwork.get(segment.key);
+        if (!network) return false;
+        networks.add(network);
+    }
+    for (const network of networks) {
+        const first = parseNodeRef(network.nodes.values().next().value);
+        const dimension = first && dimensionFor(first.dimensionId);
+        if (!dimension) continue;
+        applyLogical(network, dimension);
+        notifyNetworkDiscovered(network, dimension);
+    }
+    return true;
+}
 function refreshLogicalGraph() {
     const snapshots = [...chunkIndex.chunks()];
-    const next = buildSegmentGraph(snapshots);
+    const next = buildSegmentGraph(snapshots, { trusted: true });
     // Commit every logical result before allowing any loaded visual writes.
     for (const network of next.networks) persistPower(network);
     graph = next;
@@ -141,10 +161,10 @@ function* rebuildPending() {
                     continue;
                 }
                 if (!snapshot) { retry.set(key, request); continue; }
-                chunkIndex.writeChunk(snapshot);
+                const { changed } = chunkIndex.writeChunk(snapshot);
                 commits++;
                 retry.delete(key);
-                refreshLogicalGraph();
+                if (changed || !reapplyChunkNetworks(snapshot)) refreshLogicalGraph();
             } catch (error) {
                 retry.set(key, request);
                 console.warn(`[Starstone] Chunk reconciliation failed: ${error.message}`);

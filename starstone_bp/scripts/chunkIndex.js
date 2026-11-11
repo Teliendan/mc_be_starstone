@@ -312,7 +312,7 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
             try { oldHead = parseHead(rawHead); } catch { corrupt(base); }
         }
         const previous = readChunk(snapshot.dimensionId, snapshot.cx, snapshot.cz);
-        if (previous && JSON.stringify(previous) === JSON.stringify(snapshot)) return true;
+        if (previous && JSON.stringify(previous) === JSON.stringify(snapshot)) return { changed: false };
         const bank = oldHead ? 1 - oldHead.bank : 0;
         for (let i = 0; i < pages; i++) storage.setDynamicProperty(`${base}:${bank}:${i}`, text.slice(i * CHUNK_PAGE_BYTES, (i + 1) * CHUNK_PAGE_BYTES));
         // The sole commit point. Until this succeeds all readers retain the
@@ -320,7 +320,7 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         storage.setDynamicProperty(`${base}:head`, JSON.stringify({ v: CHUNK_SCHEMA_VERSION, bank, pages, length: text.length, checksum: checksum(text) }));
         // Cache what a disk read would now return, never the caller's object.
         known.set(base, deepFreeze(JSON.parse(text)));
-        return true;
+        return { changed: true };
     }
     function* chunks() {
         if (!scanned) {
@@ -346,7 +346,8 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         if (on) active.add(ref); else active.delete(ref);
         // Cached snapshots are frozen: write a changed copy.
         const changed = { ...segment, activeSources: [...active].sort() };
-        return writeChunk({ ...snapshot, segments: snapshot.segments.map(s => s === segment ? changed : s) });
+        writeChunk({ ...snapshot, segments: snapshot.segments.map(s => s === segment ? changed : s) });
+        return true;
     }
     return { readChunk, writeChunk, chunks, updateSource };
 }
