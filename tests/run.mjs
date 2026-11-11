@@ -1,17 +1,8 @@
-import { readdirSync } from 'node:fs';
+// Thin full-suite entry point; select features with --suite NAME (repeatable).
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-// Suites use paths relative to the mod root, so run each one from there,
-// whatever directory this runner was started from.
-const modRoot = fileURLToPath(new URL('..', import.meta.url));
-let failures = 0, suites = 0;
-for (const file of readdirSync(new URL('.', import.meta.url)).filter(name => name.endsWith('.test.mjs')).sort()) {
-    suites++;
-    const result = spawnSync(process.execPath,[`tests/${file}`],{ cwd:modRoot, encoding:'utf8', timeout:30000 });
-    if (result.status !== 0) {
-        failures++;
-        console.error(`FAIL ${file}\n${result.stdout}\n${result.stderr}\n${result.error?.message || ""}`);
-    } else console.log(`PASS ${file}`);
-}
-console.log(`${suites-failures}/${suites} test suites passed`);
-process.exitCode = failures ? 1 : 0;
+const runner = fileURLToPath(new URL('../../../tools/test_suites.py', import.meta.url));
+const manifest = fileURLToPath(new URL('./suites.json', import.meta.url));
+const result = spawnSync('python', ['-B', runner, manifest, ...process.argv.slice(2)], { stdio: 'inherit' });
+if (result.error) console.error(result.error.message);
+process.exitCode = result.status ?? 1;
