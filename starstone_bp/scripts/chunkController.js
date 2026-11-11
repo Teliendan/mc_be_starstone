@@ -12,11 +12,10 @@ import { KIND_BY_ID } from "./constants.js";
 
 export const CHUNK_OBSERVER_INTERVAL_TICKS = 100;
 export const CHUNK_OBSERVER_BUDGET = 32;
-// Durable source-change hints/receipts, not authoritative topology or power.
-// This controller never reads these hints to override segment snapshots or
-// current loaded block state; stale hints after failed cleanup cannot conduct.
-export const SOURCE_PROPERTY_PREFIX = "starstone:source_state:";
-export const LOGICAL_POWER_PREFIX = "starstone:logical_power:";
+// Write-only property families of earlier versions (source hints, per-network
+// power). Nothing read them; ensureGraph() deletes leftovers once per session.
+const OBSOLETE_PREFIXES = ["starstone:source_state:", "starstone:logical_power:"];
+let swept = false;
 const pending = new Map(), retry = new Map(), revisions = new Map(), observed = new Set();
 const knownDimensions = new Map();
 const discoveryRetries = new Map();
@@ -29,21 +28,25 @@ const dimensionFor = id => { try { return world.getDimension(id); } catch { retu
 function loaded(dimension, position) {
     try { return Boolean(dimension?.isChunkLoaded(position)); } catch { return false; }
 }
-function setDurable(key, value) {
-    if (world.getDynamicProperty(key) !== value) world.setDynamicProperty(key, value);
+function sweepObsoleteProperties() {
+    swept = true;
+    try {
+        for (const id of world.getDynamicPropertyIds()) {
+            if (OBSOLETE_PREFIXES.some(prefix => id.startsWith(prefix))) world.setDynamicProperty(id, undefined);
+        }
+    } catch (error) {
+        console.warn(`[Starstone] Obsolete property sweep failed: ${error.message}`);
+    }
 }
 function ensureGraph() {
+    if (!swept) sweepObsoleteProperties();
     if (!graph) {
         const snapshots = [...chunkIndex.chunks()];
         const next = buildSegmentGraph(snapshots, { trusted: true });
-        for (const network of next.networks) persistPower(network);
         graph = next;
         cacheCandidates(snapshots);
     }
     return graph;
-}
-function persistPower(network, powered = network.powered) {
-    setDurable(`${LOGICAL_POWER_PREFIX}${encodeURIComponent(network.id)}`, Boolean(powered));
 }
 // Saved snapshots are rebuilt a chunk at a time after every edit, so a logical
 // network can briefly describe an older topology. Nodes owned by a completely
@@ -93,8 +96,6 @@ function reapplyChunkNetworks(snapshot) {
 function refreshLogicalGraph() {
     const snapshots = [...chunkIndex.chunks()];
     const next = buildSegmentGraph(snapshots, { trusted: true });
-    // Commit every logical result before allowing any loaded visual writes.
-    for (const network of next.networks) persistPower(network);
     graph = next;
     cacheCandidates(snapshots);
     for (const network of graph.networks) {
@@ -175,13 +176,11 @@ function* rebuildPending() {
 }
 
 // Synchronous source commit; no topology discovery or segment rebuilding here.
-// The small per-source property covers a source whose first segment build has
-// not finished. A false result allows the caller's ordinary loaded-cache pass
-// only after this durable write has succeeded.
+// A false result (unknown source) lets the caller run its ordinary
+// loaded-cache pass; the chunk snapshot write in updateSource is the commit.
 export function commitSourceState(dimension, location, on) {
     knownDimensions.set(dimension.id,dimension);
     const ref = nodeRef(dimension.id, location, "main");
-    setDurable(`${SOURCE_PROPERTY_PREFIX}${encodeURIComponent(ref)}`, Boolean(on));
     const key = keyOf(dimension.id, chunkOf(location.x), chunkOf(location.z));
     revisions.set(key, (revisions.get(key) || 0) + 1);
     const current = ensureGraph();
@@ -194,7 +193,6 @@ export function commitSourceState(dimension, location, on) {
     const active = new Set(network.activeSources);
     if (on) active.add(ref); else active.delete(ref);
     const powered = active.size > 0;
-    persistPower(network, powered);
     network.activeSources = active;
     network.powered = powered;
     applyLogical(network, dimension);
@@ -328,10 +326,6 @@ export function registerChunkController() {
     placementIndex.subscribeChanges(({type,dimensionId,location}) => {
         const dimension = dimensionFor(dimensionId);
         if (dimension) queueChunkRebuild(dimension,chunkOf(location.x),chunkOf(location.z),location.y);
-        // The placement mutation is already committed. Queue reconciliation
-        // before optional hint cleanup, whose storage failure must not leave
-        // an entirely removed component conducting through stale metadata.
-        if (type === "remove") setDurable(`${SOURCE_PROPERTY_PREFIX}${encodeURIComponent(nodeRef(dimensionId,location,"main"))}`, undefined);
     });
     subscribeNetworkDiscovery(discovered);
     configureNetworkPersistence({

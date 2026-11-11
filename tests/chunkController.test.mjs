@@ -11,6 +11,10 @@ const props = new Map();
 mc.world.getDynamicProperty = key => props.get(key);
 mc.world.getDynamicPropertyIds = () => [...props.keys()];
 mc.world.setDynamicProperty = (key,value) => value === undefined ? props.delete(key) : props.set(key,value);
+// Keys of the removed write-only families, present in an old world save.
+props.set('starstone:source_state:old|0|0|0%23main',true);
+props.set('starstone:logical_power:old%7C0',false);
+props.set('starstone:unrelated:keep',1);
 globalThis.__mcDimensions = new Map();
 const f = fixture(); f.dim.id = 'test:three-chunks';
 globalThis.__mcDimensions.set(f.dim.id, f.dim);
@@ -140,23 +144,20 @@ controller.pollLoadedChunks(); await drain();
 assert.equal(controller.chunkStats().discoveryRetry,0);
 assert.ok(placementIndex.positionsInChunk(f.dim.id,5,0).some(p=>p.x===80));
 
-// Placement removal has already committed when its change listener runs. Even
-// if cleaning the auxiliary source hint fails, the now-source-free chunk must
-// still reconcile, including consumers across unloaded intermediate metadata.
+// Placement removal has already committed when its change listener runs; the
+// now-source-free chunk must still reconcile across unloaded intermediate metadata.
 assert.equal(lamp.permutation.getState('starstone:powered'),true);
 f.store.delete('0,0,0');
-const sourceHint = `${controller.SOURCE_PROPERTY_PREFIX}${encodeURIComponent(`${f.dim.id}|0|0|0#main`)}`;
-mc.world.setDynamicProperty = (key,value) => {
-    if (key === sourceHint && value === undefined) throw new Error('source hint cleanup unavailable');
-    return store(key,value);
-};
-assert.throws(()=>placementIndex.remove(f.dim.id,source.location),/source hint cleanup unavailable/);
-assert.ok(controller.chunkStats().queued > 0,'metadata repair queues before fallible hint cleanup');
+placementIndex.remove(f.dim.id,source.location);
+assert.ok(controller.chunkStats().queued > 0,'metadata repair queues on placement removal');
 assert.ok(!placementIndex.positionsInChunk(f.dim.id,0,0).some(p=>p.x===0),'placement removal really committed');
-mc.world.setDynamicProperty = store;
 await drain();
 assert.equal(chunkIndex.readChunk(f.dim.id,0,0).segments.flatMap(s=>s.sources).length,0);
 assert.equal(lamp.permutation.getState('starstone:powered'),false,'removed source cannot power C across unloaded B');
-assert.equal(props.get(sourceHint),true,'failed-cleanup hint is non-authoritative');
+const ids = [...props.keys()];
+assert.ok(!ids.some(k=>k.startsWith('starstone:source_state:')||k.startsWith('starstone:logical_power:')),'obsolete keys swept and never rewritten');
+assert.equal(props.get('starstone:unrelated:keep'),1,'sweep touches only the two obsolete prefixes');
+assert.ok(ids.some(k=>k.startsWith('starstone:placement:')),'placement index untouched by sweep');
+assert.ok(chunkIndex.readChunk(f.dim.id,0,0),'chunk snapshots untouched by sweep');
 assert.equal(unloadedReads,0);
 console.log('chunk controller: integrated A-B-C continuity, source durability, unload/reload, observer dedup and revision guard passed');
