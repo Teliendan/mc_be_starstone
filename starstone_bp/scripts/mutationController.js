@@ -195,7 +195,8 @@ export function validateKnownPositions() {
             const signature = fingerprint(block);
             const descriptor = descriptorForBlock(block);
             const missing = descriptor?.lanes.some(lane => runtime.networkIdOf(`${key}#${lane.id}`) === undefined);
-            if (fingerprints.get(key) !== signature || missing ||
+            const known = fingerprints.get(key);
+            if ((known !== undefined && known !== signature) || missing ||
                 (block.type.id === CABLE_ID && block.permutation.getState("starstone:connections") !== computeCableMask(block)) ||
                 (block.type.id === INNER_CORNER_ID && staleInnerCorner(block)) ||
                 unsupported(block)) queueMutation(dimension, location);

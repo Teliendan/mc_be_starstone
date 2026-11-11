@@ -94,6 +94,19 @@ for (const replacement of ['minecraft:air', 'minecraft:water', 'minecraft:flowin
     assert.equal(f.dim.getBlock({x:2,y:0,z:0}).type.id, 'minecraft:air');
 }
 
+// A registered, unchanged block seen for the first time (no fingerprint yet,
+// as after every world load) queues no rebuild.
+{
+    props.clear(); runtime.clearNetworks();
+    const f = world('test:first-visit-unchanged');
+    f.put('starstone:generator',0,0,0); f.put('minecraft:stone',0,-1,0);
+    f.put('starstone:cable',1,0,0); f.put('minecraft:stone',1,-1,0);
+    repair.startRebuildNearby(player(f.dim), {radius:2,height:1}); await drain();
+    const before = mutation.mutationStats().batches;
+    for (let tick = 0; tick < 4; tick++) { mutation.validateKnownPositions(); await drain(); }
+    assert.equal(mutation.mutationStats().batches, before, 'first visit of an unchanged, registered block queues nothing');
+}
+
 assert.deepEqual(mutation.PISTON_POLICY, {standalone:'push_pull', supported:'popped'});
 for (const id of ['generator','cable','inner_corner','bridge','conduit','lamp','redstone_input','redstone_output','ore']) {
     const block = JSON.parse(fs.readFileSync(`starstone_bp/blocks/${id}.json`,'utf8'))['minecraft:block'];
