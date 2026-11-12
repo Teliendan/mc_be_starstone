@@ -60,7 +60,7 @@ fixtures pass; no Minecraft test of the unloaded-middle case has run.
 |---|---|
 | Silk Touch and Fortune ore drops | Not tested (plain mining works) |
 | Actual unloaded-middle or alternate save/unload/load sequence (TEST-WORLD gate 7.6) | Not run |
-| 1k/5k/10k real ticks, queue observations and watchdog logs | Not run |
+| 1k/5k/10k real ticks, queue observations and watchdog logs; since 2026-11-12 also the engine-paced power writer on a 1,000-cable line, PC and tablet (TEST-WORLD item 23) | Not run |
 | Partial-block support classification | Needs in-game validation |
 | Piston-pushed conduit/generator into a mob; dust bends into Redstone Output; load on 26.60 (VANILLA_PARITY "Bedrock 26.60 impact") | Optional owner checks |
 

@@ -150,3 +150,28 @@ counts are exact and engine-independent. Re-measure after the fixes and update t
 | Toggle the generator, 1,024 cables / 4 chunks (synchronous part) | 2 | 4,103 | 3 | 25,858 | 1 | 2.9 |
 | Toggle the generator, 4,096 cables / 16 chunks (synchronous part) | 2 | 65,555 | 3 | 25,858 | 1 | 11.6 |
 | One logical-graph rebuild, 10,240 cables / 40 chunks (`buildSegmentGraph`) | - | - | - | - | 1 | 34 (15 of it re-validation) |
+
+### After Batch 2 (2026-11-12; Starstone commits `12f2956`, `9366008`, `2d8c7e1`, `b93f787`, `a971ad6`, `0d6ed22`, `c330add`)
+
+Same harness and counts (`temp/starstone-b2/bench.mjs`, scratch; 256 cables per chunk, one
+generator), exact call counts, V8 ms are rough. Changes: one read per cell per walk, a placement
+walks only the new nodes and merges cached networks, a placement rebuilds only its own chunk, the
+logical graph is updated incrementally, power is one engine-paced job, a toggle writes a small
+source overlay. The oracle (random placements checked against a full rediscovery, visuals and fresh
+snapshots; 6 seeds x 250 placements on a 36x36 floor) passes.
+
+| Scenario | getBlock | isChunkLoaded | dyn-prop reads | dyn-prop bytes written | chunk builds / commits | V8 ms |
+|---|---:|---:|---:|---:|---:|---:|
+| Place ONE cable, 256 cables / 1 chunk | 331 | 666 | 4 | 26,818 | 1 / 1 | 13 |
+| Place ONE cable, 1,024 / 4 chunks | 331 | 675 | 4 | 27,217 | 1 / 1 | 13 |
+| Place ONE cable, 4,096 / 16 chunks | 331 | 711 | 4 | 27,731 | 1 / 1 | 10 |
+| Place ONE cable, 10,240 / 40 chunks | 331 | 783 | 4 | 27,731 | 1 / 1 | 12 |
+| Toggle the generator, 1,024 / 4 (synchronous part) | 2 | 11 | 0 | 33 (off) / 0 (on, overlay removed) | 0 | 2 |
+| Toggle the generator, 4,096 / 16 (synchronous part) | 2 | 35 | 0 | 33 / 0 | 0 | 2 |
+
+The place-one-cable bytes are the one rebuilt chunk snapshot (an unavoidable topology write); the
+walk, power plan and logical graph no longer depend on the network size. Visual settling after a
+toggle is now one job step per node (1,024 cables: 1,025 steps, 0 `system.run` callbacks; 4,096:
+4,097 steps). `node tests/stress.mjs` asserts one read per power job step at 1k/5k/10k and exact
+write counts. How many steps the engine runs per tick is not measured: the owner checks a
+1,000-cable line on PC and tablet (TEST-WORLD item 23).

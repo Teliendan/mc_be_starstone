@@ -147,6 +147,12 @@ a 17x9x17 seed volume; connected loaded components can extend beyond it.
 23. Test 1,000, 5,000 and 10,000 cable nodes separately. Record real rebuild ticks,
     power-update ticks, queue peaks, dynamic-property bytes and watchdog/Content
     Log messages. Offline PERFORMANCE.md measurements are algorithm evidence only.
+    Since 2026-11-12 power visuals are written by one engine-paced job (one read and at most
+    one write per step, no fixed per-tick budget): on a straight 1,000-cable line with the
+    generator at one end and a lamp at the other, toggle the generator and note the time until the
+    far lamp and the last cable change and any stutter or Content Log watchdog warning, on PC and
+    on the tablet. The far lamp changes first. If the tablet stutters the next lever is dropping
+    `minecraft:light_emission` on powered cables (not done).
 24. With debug off, normal placement, walking and source toggles produce no chat
     spam or Content Log warnings/errors. Recheck floor/wall/ceiling textures in
     bright and dark conditions. Both packs should show the new crystal-circuit
