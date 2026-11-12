@@ -178,7 +178,7 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
         return true;
     }
 
-    function remove(dimensionId, location) {
+    function remove(dimensionId, location, { notify: announce = true } = {}) {
         const target = address(dimensionId, location);
         if (!target) return false;
         // Most removals (every non-Starstone cell a piston or break touches) hit
@@ -189,7 +189,7 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
         if (!codes) return false;
         if (codes.delete(target.code)) {
             write(target.key, codes);
-            notify("remove", dimensionId, location);
+            if (announce) notify("remove", dimensionId, location);
         }
         return true;
     }

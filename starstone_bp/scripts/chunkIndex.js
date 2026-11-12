@@ -153,14 +153,11 @@ export function buildChunkSegments(dimensionId, cx, cz, entries) {
 // Generator reads only explicitly loaded indexed locations. A single unavailable
 // indexed position makes the result undefined, preserving the prior whole-chunk
 // snapshot. A guarded Block view also protects descriptor support lookups.
-export function* buildIndexedChunkSegments(dimension, cx, cz, placementIndex) {
+export function* buildIndexedChunkSegments(dimension, cx, cz, placementIndex, { onStale } = {}) {
     const entries = [];
-    const guardedDimension = {
-        getBlock(position) {
-            try { return dimension.isChunkLoaded(position) ? dimension.getBlock(position) : undefined; }
-            catch { return undefined; }
-        }
-    };
+    // The snapshot never depends on the support: directions() always adds the
+    // potential back contact. Skip the descriptor's support read.
+    const noSupport = { getBlock() { return undefined; } };
     for (const location of placementIndex.positionsInChunk(dimension.id, cx, cz)) {
         let block;
         try {
@@ -170,9 +167,10 @@ export function* buildIndexedChunkSegments(dimension, cx, cz, placementIndex) {
         } catch { return undefined; }
         const descriptor = descriptorForBlock({
             isValid: true, type: block.type, location: { ...location },
-            permutation: block.permutation, dimension: guardedDimension
+            permutation: block.permutation, dimension: noSupport
         });
         if (descriptor) entries.push({ location: { ...location }, descriptor });
+        else onStale?.({ ...location });
         yield;
     }
     return buildChunkSegments(dimension.id, cx, cz, entries);

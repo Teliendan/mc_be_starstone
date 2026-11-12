@@ -19,6 +19,9 @@
     "chunk-controller": [
       "chunkController.test.mjs"
     ],
+    "chunk-rebuild-scope": [
+      "chunkRebuildScope.test.mjs"
+    ],
     "chunk-segments": [
       "chunkSegments.test.mjs"
     ],

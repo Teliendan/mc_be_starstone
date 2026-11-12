@@ -150,12 +150,8 @@ function* rebuildPending() {
             const revision = revisions.get(key);
             builds++;
             try {
-                const guarded = {
-                    id: dimension.id,
-                    getBlock(position) { return loaded(dimension, position) ? dimension.getBlock(position) : undefined; }
-                };
-                yield* placementIndex.validateChunk(guarded, cx, cz);
-                const snapshot = yield* buildIndexedChunkSegments(dimension, cx, cz, placementIndex);
+                const stale = [];
+                const snapshot = yield* buildIndexedChunkSegments(dimension, cx, cz, placementIndex, { onStale: p => stale.push(p) });
                 if (revision !== revisions.get(key)) {
                     staleBuilds++;
                     if (!pending.has(key)) pending.set(key, request);
@@ -165,6 +161,13 @@ function* rebuildPending() {
                 const { changed } = chunkIndex.writeChunk(snapshot);
                 commits++;
                 retry.delete(key);
+                // The snapshot already excludes these; drop their hints without
+                // re-queueing this chunk. Re-read: a block may have returned.
+                for (const p of stale) {
+                    if (!loaded(dimension, p)) continue;
+                    const block = dimension.getBlock(p);
+                    if (block?.isValid && !KIND_BY_ID[block.typeId]) placementIndex.remove(dimension.id, p, { notify: false });
+                }
                 if (changed || !reapplyChunkNetworks(snapshot)) refreshLogicalGraph();
             } catch (error) {
                 retry.set(key, request);
@@ -206,12 +209,15 @@ function discovered(network, dimension) {
     knownDimensions.set(dimension.id, dimension);
     const job = function* () {
         const chunks = new Map();
+        const committed = ensureGraph().nodeToNetwork;
         try {
             for (const ref of network.nodes) {
                 const position = parseNodeRef(ref);
                 if (!position || position.dimensionId !== dimension.id) continue;
                 const cx = chunkOf(position.x), cz = chunkOf(position.z);
                 const key = keyOf(dimension.id,cx,cz);
+                // Saved and not awaiting a rebuild: its position is indexed.
+                if (committed.has(ref) && !pending.has(key) && !retry.has(key)) continue;
                 chunks.set(key, { cx, cz, y:position.y });
                 try {
                     if (!loaded(dimension, position)) throw new Error("Discovered position unloaded");
@@ -229,10 +235,7 @@ function discovered(network, dimension) {
                 yield;
             }
         } finally {
-            for (const {cx,cz,y} of chunks.values()) {
-                try { queueChunkRebuild(dimension,cx,cz,y); }
-                catch (error) { console.warn(`[Starstone] Discovery rebuild deferred: ${error.message}`); }
-            }
+            // New hints queue their chunk through the index change listener.
         }
     }();
     try { system.runJob(job); }
@@ -330,6 +333,9 @@ export function registerChunkController() {
     subscribeNetworkDiscovery(discovered);
     configureNetworkPersistence({
         sourceChanged: commitSourceState,
+        topologyChanged(dimension, location) {
+            queueChunkRebuild(dimension, chunkOf(location.x), chunkOf(location.z), location.y);
+        },
         resolvePower(network) {
             const known = ensureGraph();
             let found = false, powered = false;

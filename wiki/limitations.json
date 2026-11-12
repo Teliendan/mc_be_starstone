@@ -15,7 +15,7 @@
       },
       {
         "path": "starstone_bp/scripts/cableComponent.js",
-        "sha256": "12e1b1ffb50c161c8574e977643870a30c8c2d3c7d62089368258224e2b10c64"
+        "sha256": "470a20a7843b7c7fd814fbff58ab63952fc44ecce3d162b2930bea671f6a405e"
       },
       {
         "path": "starstone_bp/scripts/cableTopology.js",
@@ -23,11 +23,11 @@
       },
       {
         "path": "starstone_bp/scripts/chunkController.js",
-        "sha256": "d4e2d8d37d3f6b7f5e70377bb01a6346614594024db23ce08c47379ff1b3582e"
+        "sha256": "f5c55026ad34a53d42201add9639373fad88d468b4db3877a594a52fb7b1d735"
       },
       {
         "path": "starstone_bp/scripts/chunkIndex.js",
-        "sha256": "21f7a9d05ba19870fb961c2a6da197bc2eb30fc356fd58c1f2c38ac5b2736097"
+        "sha256": "c7511934511b60b658c560ea7585186df95d3bfecd9347a345ff882e499412d1"
       },
       {
         "path": "starstone_bp/scripts/constants.js",
@@ -71,7 +71,7 @@
       },
       {
         "path": "starstone_bp/scripts/mutationController.js",
-        "sha256": "a3f07234485e4af143e5dd74a93750c99f3d92632beba3cc9d7516db4d79d9e1"
+        "sha256": "017fcb43d55136d8a0a0b8e80dc1635a6288d17cdc2ad90e77ecd69cfb44128c"
       },
       {
         "path": "starstone_bp/scripts/networkController.js",
@@ -79,7 +79,7 @@
       },
       {
         "path": "starstone_bp/scripts/networkEvents.js",
-        "sha256": "262a32dd90bdfeda80a7ca271bca3fc46414f2cf3225178d7283bdeaf0dfa282"
+        "sha256": "f9788cd2945e65cad4dbec35c7523056bedd363faab9fbf870bf4deaba566309"
       },
       {
         "path": "starstone_bp/scripts/networkGraph.js",
@@ -95,7 +95,7 @@
       },
       {
         "path": "starstone_bp/scripts/persistence.js",
-        "sha256": "85551c2c430c04f7b003ad5525f3cfcafcaf6bcd0f27f2667d2c9e7fd673c140"
+        "sha256": "5e26542ccbb4d2ce037e19497143564d386ae3d77aea6c8ddb16fb536c7d1a76"
       },
       {
         "path": "starstone_bp/scripts/pistonController.js",
@@ -115,7 +115,7 @@
       },
       {
         "path": "starstone_bp/scripts/repair.js",
-        "sha256": "dd212b529bee0605cb1a64785b50199d9f2f4b2503a122ac2b2d8a188d549939"
+        "sha256": "3352fcb0a7293c0893916bd0fccff0de06581c77a4ec31c61a800587f0e93da8"
       },
       {
         "path": "starstone_bp/scripts/segmentGraph.js",

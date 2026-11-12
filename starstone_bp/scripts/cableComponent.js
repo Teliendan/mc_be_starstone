@@ -13,6 +13,7 @@ import { placementIndex } from "./persistence.js";
 import { trackInput, refreshAdapterVisuals, reactToRedstoneUpdate } from "./redstoneAdapters.js";
 import { queueMutation } from "./mutationController.js";
 import { pistonSupport } from "./pistonController.js";
+import { topologyChanged } from "./networkEvents.js";
 
 const SURFACES = new Set([CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID]);
 const OFFSETS = [[1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [0,0,1], [0,0,-1]];
@@ -55,6 +56,7 @@ export function schedulePlaced(block) {
         // A persistence failure must not stop the live network from updating.
         console.warn(`[Starstone] Could not persist placement: ${err.message}`);
     }
+    topologyChanged(block.dimension, block.location);
     scheduleAffected(block);
     queue(discoveries, block.dimension, block.location);
 }

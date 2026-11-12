@@ -3,6 +3,7 @@
 import { system, world, BlockVolume } from "@minecraft/server";
 import { descriptorForBlock } from "./electricalBlocks.js";
 import { discoverAndRegisterNetwork } from "./networkController.js";
+import { topologyChanged } from "./networkEvents.js";
 import { refreshCable } from "./cableComponent.js";
 import { KIND_BY_ID } from "./constants.js";
 import { placementIndex } from "./persistence.js";
@@ -36,6 +37,7 @@ function recordBlock(block) {
     // must not block reconstruction from authoritative world blocks elsewhere.
     // Actual storage failures still throw and leave this area retryable.
     placementIndex.record(block);
+    topologyChanged(block.dimension, block.location);
 }
 function capture(player) {
     requirePlayer(player);

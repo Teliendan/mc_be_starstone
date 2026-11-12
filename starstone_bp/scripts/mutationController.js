@@ -10,6 +10,7 @@ import { isSupportValid, supportBlock } from "./support.js";
 import { KIND_BY_ID, CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID } from "./constants.js";
 import { innerSupports, pairFromPermutation, armsFromPermutation } from "./innerCorner.js";
 import { pistonSupport } from "./pistonController.js";
+import { topologyChanged } from "./networkEvents.js";
 
 export const VALIDATION_INTERVAL_TICKS = 100;
 export const VALIDATION_POSITION_BUDGET = 16;
@@ -124,6 +125,7 @@ function* reconcile(requests) {
                             fingerprints.delete(`${dimension.id}|${key}`);
                         } else {
                             placementIndex.record(block);
+                            topologyChanged(dimension, position);
                             fingerprints.set(`${dimension.id}|${key}`, fingerprint(block));
                         }
                     }

@@ -14,10 +14,21 @@ unloaded-middle game test are separate tasks.
   generator suitable for `yield*` inside `system.runJob`. It reads indexed
   positions only, yields after each position, and returns a snapshot. If any
   indexed position is unavailable it returns `undefined`; callers must retain
-  existing metadata. Loaded stale/non-electrical positions are excluded. Both
-  direct and descriptor support reads check `isChunkLoaded` first. Callers must
+  existing metadata. Loaded stale/non-electrical positions are excluded and
+  reported through the optional `{ onStale }` callback. Position reads check
+  `isChunkLoaded` first; the descriptor gets a dimension whose `getBlock` returns
+  nothing, because a snapshot never depends on the support (`directions()` always
+  adds the potential back contact of a surface kind). Callers must
   retry if topology changes during the scan; this module does not own event
   subscriptions or revision counters.
+- A chunk rebuild is queued by an index change (a new or removed position) or by
+  `topologyChanged(dimension, location)` in `networkEvents.js`, which callers
+  invoke when block state at an already indexed position changed: `schedulePlaced`,
+  `mutationController.reconcile` and `repair.js`. A discovery no longer queues a
+  rebuild of every chunk it touched; it only records positions that are not in a
+  committed snapshot yet. The rebuild drops stale hints itself after the commit
+  (`placementIndex.remove(..., { notify: false })`); `validateChunk` stays for
+  `repair.js`.
 - `createChunkIndex(storage, {warn})` accepts world-style dynamic-property
   get/set/list methods. `chunkIndex` is a world-backed singleton with no world
   reads at import. `readChunk(dimensionId,cx,cz)` returns a deep-frozen snapshot or
@@ -149,7 +160,7 @@ be stale until a changed chunk is observed and reconciled; the world remains aut
 ## Verification and remaining gate
 
 `chunkSegments.test.mjs` exercises deterministic membership, bridge isolation,
-negative chunks, absent visual border arms, guarded support reads, restart,
+negative chunks, absent visual border arms, support-independent snapshots, restart,
 dense paged storage, page/head failure recovery, corruption isolation, source
 patches, and malformed/cross-chunk rejection. Separate segment-graph acceptance
 tests cover A–B–C connectivity from saved metadata and exact reciprocal ports.
