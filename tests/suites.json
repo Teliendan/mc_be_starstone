@@ -10,9 +10,6 @@
     "cable-direction-regression": [
       "cableDirectionRegression.test.mjs"
     ],
-    "cable-topology": [
-      "cableTopology.test.mjs"
-    ],
     "cable-visual": [
       "cableVisual.test.mjs"
     ],
@@ -28,9 +25,6 @@
     "chunk-segments": [
       "chunkSegments.test.mjs"
     ],
-    "descriptor": [
-      "descriptor.test.mjs"
-    ],
     "diagnostics": [
       "diagnostics.test.mjs"
     ],
@@ -42,9 +36,6 @@
     ],
     "generator-toggle": [
       "generatorToggle.test.mjs"
-    ],
-    "graph-neighbor": [
-      "graphNeighbor.test.mjs"
     ],
     "harvest-gate": [
       "harvestGate.test.mjs"
@@ -91,9 +82,6 @@
     "placement-guard": [
       "placementGuard.test.mjs"
     ],
-    "port-directions": [
-      "portDirections.test.mjs"
-    ],
     "power-budget": [
       "powerBudget.test.mjs"
     ],
@@ -117,9 +105,6 @@
     ],
     "support-policy": [
       "supportPolicy.test.mjs"
-    ],
-    "surface-frame": [
-      "surfaceFrame.test.mjs"
     ],
     "survival": [
       "survival.test.mjs"
@@ -148,6 +133,9 @@
       "eventWiring.test.mjs",
       "powerBudget.test.mjs",
       "staleMetadata.test.mjs"
+    ],
+    "geometry-tables": [
+      "geometryTables.test.mjs"
     ]
   },
   "support_files": {
