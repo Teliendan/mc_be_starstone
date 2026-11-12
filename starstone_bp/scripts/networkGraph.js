@@ -170,7 +170,7 @@ const BATCH_SIZE = 24;
 // (main, else the first lane). A bridge exposes two isolated lanes (#ns, #ew);
 // rediscovery must start a surviving bridge lane on its own lane, never on the
 // first lane, so the correct lane is followed rather than an empty one.
-export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = new Set()) {
+export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = new Set(), { stopAtOwned = false } = {}) {
     return new Promise((resolve, reject) => {
         if (!seed || !seed.isValid || !seed.dimension) {
             resolve(emptyNetwork());
@@ -179,6 +179,7 @@ export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = n
 
         const dimension = seed.dimension;
         const net = emptyNetwork();
+        if (stopAtOwned) net.owned = new Set();
         const visited = new Set();
         const queue = [];
         let head = 0;
@@ -278,6 +279,9 @@ export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = n
                             const nKey = locKey(dimension, nx, ny, nz);
                             const nRef = nKey + "#" + recipLane;
                             if (excluded.has(nRef)) continue;
+                            // Placement mode: an owned node ends the walk; its
+                            // cached network is merged instead of re-walked.
+                            if (stopAtOwned && runtime.networkIdOf(nRef) !== undefined) { net.owned.add(nRef); continue; }
                             if (!visited.has(nRef)) {
                                 if (restrictTo && !restrictTo.has(nRef)) {
                                     // Admit newly encountered unowned loaded nodes, but

@@ -44,6 +44,30 @@ function resetState() {
 
 resetState();
 
+// Move every node of the given networks and the added nodes into the largest
+// of them (its id survives). Returns { record, absorbed }.
+function mergeNetworks(ids, added) {
+    const records = [...ids].map(id => networks.get(id)).filter(Boolean)
+        .sort((a, b) => b.nodes.size - a.nodes.size);
+    let record = records[0];
+    if (!record) {
+        record = addNetwork({ nodes: new Set(), sources: new Set(), consumers: new Set(), unresolvedBoundaries: new Set(), powered: false });
+    }
+    const absorbed = records.slice(1);
+    for (const other of absorbed) {
+        for (const node of other.nodes) { record.nodes.add(node); nodeToNetwork.set(node, record.id); }
+        for (const field of ["sources", "consumers", "unresolvedBoundaries"]) for (const value of other[field]) record[field].add(value);
+        networks.delete(other.id);
+    }
+    for (const node of added.nodes) {
+        const owner = nodeToNetwork.get(node);
+        if (owner !== undefined && owner !== record.id) throw new Error(`networkRuntime: node ${node} already belongs to network ${owner}`);
+        record.nodes.add(node); nodeToNetwork.set(node, record.id);
+    }
+    for (const field of ["sources", "consumers", "unresolvedBoundaries"]) for (const value of added[field] || []) record[field].add(value);
+    return { record, absorbed };
+}
+
 // Hand out the next network id. Ids are small positive integers and reset on a
 // full clear so a reloaded world starts numbering from one.
 function allocateId() {
@@ -209,6 +233,7 @@ function invariantHolds() {
     return {
         addNetwork,
         registerNetwork,
+        mergeNetworks,
         removeNetwork,
         networkIdOf,
         networkOf,
@@ -230,20 +255,31 @@ const runtime = createRuntime();
 // its power. Saved chunk metadata is needed once any part is out of reach,
 // including a chunk that unloaded after discovery and hides a source.
 const chunkProbes = new WeakMap();
+function addProbe(byChunk, ref) {
+    const parts = ref.slice(0, ref.indexOf("#")).split("|");
+    const [x, y, z] = parts.slice(1, 4).map(Number);
+    const key = `${Math.floor(x / 16)},${Math.floor(z / 16)}`;
+    if (!byChunk.has(key)) byChunk.set(key, { x, y, z });
+}
 function probesOf(network) {
     let probes = chunkProbes.get(network);
     if (!probes) {
-        const byChunk = new Map();
-        for (const ref of network.nodes || []) {
-            const parts = ref.slice(0, ref.indexOf("#")).split("|");
-            const [x, y, z] = parts.slice(1, 4).map(Number);
-            const key = `${Math.floor(x / 16)},${Math.floor(z / 16)}`;
-            if (!byChunk.has(key)) byChunk.set(key, { x, y, z });
-        }
-        probes = [...byChunk.values()];
+        probes = new Map();
+        for (const ref of network.nodes || []) addProbe(probes, ref);
         chunkProbes.set(network, probes);
     }
-    return probes;
+    return probes.values();
+}
+// Keep a merged record's probe cache current without re-reading all its nodes.
+export function mergeProbes(record, absorbed, addedNodes) {
+    const probes = chunkProbes.get(record);
+    if (!probes) return;
+    for (const other of absorbed) {
+        const theirs = chunkProbes.get(other);
+        if (theirs) { for (const [key, p] of theirs) if (!probes.has(key)) probes.set(key, p); }
+        else for (const ref of other.nodes) addProbe(probes, ref);
+    }
+    for (const ref of addedNodes) addProbe(probes, ref);
 }
 export function isCompleteNetwork(network, dimension) {
     if (!network || network.unresolvedBoundaries?.size > 0) return false;

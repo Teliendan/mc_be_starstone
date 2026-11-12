@@ -39,6 +39,12 @@ The system's name is Starstone (ore, dust, crystal).
    and merge or split networks. Commands, explosions, structures and pistons, which have no
    universal callback, are caught by bounded periodic validation (see README and
    SUPPORT-MOTION.md). Nothing scans every cable every tick.
+   A placement walks only the new nodes and merges the cached network records it touches
+   (`extendFromPlacement`, SS-07, 2026-11-12); it falls back to the full walk for an owned
+   seed, an incomplete owner or a vanished owner. The old full re-walk on every placement
+   also repaired stale runtime records (a block removed by a command without an event);
+   that repair now comes only from periodic validation (16 positions per 100 ticks) and
+   `rebuild_nearby`. Removal still re-walks (`removeAndSplitNetwork`).
 6. **Do not fight the vanilla redstone engine**: adapters only.
 
 ## Blocks and basic operation

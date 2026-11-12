@@ -9,7 +9,7 @@
 // The only Minecraft access here is resolving a source ref to a block so its
 // source-on state can be read; no block mutation lives in this module.
 
-import runtime, { isCompleteNetwork } from "./networkRuntime.js";
+import runtime, { isCompleteNetwork, mergeProbes } from "./networkRuntime.js";
 import { discoverNetwork } from "./networkGraph.js";
 import { descriptorForBlock } from "./electricalBlocks.js";
 import { applyPower } from "./powerPropagation.js";
@@ -79,6 +79,62 @@ export async function discoverAllLanes(seed) {
             records.push(network);
             for (const node of network.nodes) seen.add(node);
         }
+    }
+    return records;
+}
+
+// A placed block only adds nodes and joins networks; it never splits one.
+export async function extendFromPlacement(seed) {
+    const descriptor = descriptorForBlock(seed);
+    const dimension = seed.dimension;
+    const records = [];
+    const seen = new Set();
+    for (const lane of descriptor?.lanes || []) {
+        const { x, y, z } = seed.location;
+        const ref = `${dimension.id}|${x}|${y}|${z}#${lane.id}`;
+        if (seen.has(ref)) continue;
+        const full = async () => {
+            const r = await discoverAndRegisterNetwork(seed, lane);
+            if (r) { records.push(r); for (const n of r.nodes) seen.add(n); }
+        };
+        if (runtime.networkIdOf(ref) !== undefined) { await full(); continue; }
+        const walked = await discoverNetwork(seed, undefined, lane, undefined, { stopAtOwned: true });
+        if (walked.nodes.size === 0) continue;
+        const ids = new Set(), added = new Set();
+        let fallback = false;
+        for (const node of walked.nodes) {
+            const owner = runtime.networkIdOf(node);
+            if (owner === undefined) added.add(node); else ids.add(owner);
+        }
+        for (const node of walked.owned) {
+            const owner = runtime.networkIdOf(node);
+            if (owner === undefined) fallback = true; else ids.add(owner);
+        }
+        for (const id of ids) if (!isCompleteNetwork(runtime.networkOf(id), dimension)) fallback = true;
+        if (fallback) { await full(); continue; }
+        const pick = set => new Set([...set].filter(n => added.has(n)));
+        const delta = { nodes: added, sources: pick(walked.sources), consumers: pick(walked.consumers),
+            unresolvedBoundaries: walked.unresolvedBoundaries };
+        const before = [...ids].map(id => runtime.networkOf(id));
+        const was = new Map(before.map(r => [r, Boolean(r.powered)]));
+        let powered = before.some(r => r.powered) || anySourceOn(delta, dimension);
+        // Nodes whose visual state may change: added ones, plus every node of
+        // a joined network whose power differs (collected before the merge).
+        const { record, absorbed } = runtime.mergeNetworks(ids, delta);
+        mergeProbes(record, absorbed, added);
+        if (!isCompleteNetwork(record, dimension)) {
+            const logical = resolveNetworkPower(record, dimension);
+            if (logical !== undefined) powered = powered || logical;
+        }
+        const nodes = new Set(added);
+        for (const r of absorbed) if (was.get(r) !== powered) for (const n of r.nodes) nodes.add(n);
+        if (was.has(record) && was.get(record) !== powered) for (const n of record.nodes) nodes.add(n);
+        record.powered = powered;
+        notifyNetworkDiscovered(delta, dimension);
+        const consumers = new Set([...record.consumers].filter(n => nodes.has(n)));
+        applyPower({ nodes, consumers, powered }, dimension);
+        records.push(record);
+        for (const n of record.nodes) seen.add(n);
     }
     return records;
 }

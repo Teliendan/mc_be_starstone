@@ -67,6 +67,9 @@
     "network-split": [
       "networkSplit.test.mjs"
     ],
+    "placement-merge": [
+      "placementMerge.test.mjs"
+    ],
     "ore-experience": [
       "oreExperience.test.mjs"
     ],

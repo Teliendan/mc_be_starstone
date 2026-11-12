@@ -7,7 +7,7 @@ import { outerArmMask, innerOuterArmBits, outerContactedFaces } from "./cornerTo
 import { innerSupports, stateOfFaces, facesOfPair, pairFromPermutation, withFacePair,
     armsFromPermutation, withArms, innerArmBits, contactedFaces } from "./innerCorner.js";
 import { descriptorForBlock, cableDescriptor } from "./electricalBlocks.js";
-import { discoverAllLanes, captureRemovedNetworks, removeAndSplitNetwork } from "./networkController.js";
+import { extendFromPlacement, captureRemovedNetworks, removeAndSplitNetwork } from "./networkController.js";
 import { CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID, KIND_BY_ID } from "./constants.js";
 import { placementIndex } from "./persistence.js";
 import { trackInput, refreshAdapterVisuals, reactToRedstoneUpdate } from "./redstoneAdapters.js";
@@ -229,7 +229,7 @@ export function flushPending() {
             const block = read(dim, { x,y,z });
             if (!block?.isValid || !KIND_BY_ID[block.type.id]) continue;
             if (SURFACES.has(block.type.id) && !isSupportValid(block)) continue;
-            discoverAllLanes(block).catch(err => console.warn(`[Starstone] Placement discovery: ${err.message}`));
+            extendFromPlacement(block).catch(err => console.warn(`[Starstone] Placement discovery: ${err.message}`));
         }
     }
 }
