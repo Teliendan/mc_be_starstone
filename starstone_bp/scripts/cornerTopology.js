@@ -3,10 +3,10 @@
 // surfaces meet at the cube edge. Every one-face device (cable, bridge, lamp,
 // adapters) and each face of an inner corner wraps the same way, so a run can go
 // floor -> inner corner -> wall -> over the top edge to a lamp.
-import { FACE_LIST, faceNormal, ARM_NAMES, worldOffset } from "./surfaceFrame.js";
+import { faceNormal, worldOffset, vecEquals } from "./surfaceFrame.js";
+import { FACE_LIST, ARM_NAMES } from "./constants.js";
 import { facesOfPair, oppositeFace, externalArms, tangentFaces } from "./innerCorner.js";
 
-const equal = (a, b) => a.every((value, i) => value === b[i]);
 const dot = (a, b) => a.reduce((sum, value, i) => sum + value * b[i], 0);
 
 export function outerCornerOffset(fromFace, toFace) {
@@ -19,10 +19,10 @@ export function outerCornerContact(from, to, delta, fromPort, toPort) {
     if (from?.kind !== "cable" || to?.kind !== "cable" ||
         !from.mountFace || !to.mountFace) return false;
     const expected = outerCornerOffset(from.mountFace, to.mountFace);
-    if (!expected || !equal(expected, delta)) return false;
+    if (!expected || !vecEquals(expected, delta)) return false;
     const a = faceNormal(from.mountFace), b = faceNormal(to.mountFace);
     // Each arm must actually point toward the shared outside edge.
-    return equal(fromPort, b) && equal(toPort, a);
+    return vecEquals(fromPort, b) && vecEquals(toPort, a);
 }
 
 // The surfaces a conductor can carry around an outside edge. Full blocks
@@ -39,7 +39,7 @@ export function outerWrap(from, to, delta) {
     const fromFaces = wrapFaces(from), toFaces = wrapFaces(to);
     for (const fromFace of fromFaces) for (const toFace of toFaces) {
         const expected = outerCornerOffset(fromFace, toFace);
-        if (!expected || !equal(expected, delta)) continue;
+        if (!expected || !vecEquals(expected, delta)) continue;
         if (from.kind === "inner-corner" && fromFaces.includes(oppositeFace(toFace))) continue;
         if (to.kind === "inner-corner" && toFaces.includes(oppositeFace(fromFace))) continue;
         return { fromFace, toFace };
@@ -49,7 +49,7 @@ export function outerWrap(from, to, delta) {
 
 // Diagonal offsets a conductor may reach through its arm toward `armDir`.
 export function outerOffsets(descriptor, armDir) {
-    const edgeFace = FACE_LIST.find(face => equal(faceNormal(face), armDir));
+    const edgeFace = FACE_LIST.find(face => vecEquals(faceNormal(face), armDir));
     if (!edgeFace) return [];
     const faces = wrapFaces(descriptor);
     return faces.filter(face => dot(faceNormal(face), armDir) === 0 &&
@@ -64,7 +64,7 @@ export function outerArmMask(face, diagonalAt) {
     let mask = 0;
     ARM_NAMES.forEach((arm, bit) => {
         const toward = worldOffset(face, arm);
-        const edgeFace = FACE_LIST.find(candidate => equal(faceNormal(candidate), toward));
+        const edgeFace = FACE_LIST.find(candidate => vecEquals(faceNormal(candidate), toward));
         const offset = outerCornerOffset(face, edgeFace);
         const wrap = offset && outerWrap({ kind: "cable", mountFace: face }, diagonalAt(offset), offset);
         if (wrap?.toFace === edgeFace) mask |= 1 << bit;

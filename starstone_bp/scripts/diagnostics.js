@@ -26,7 +26,8 @@ import { chunkStats } from "./chunkController.js";
 import { adapterStats } from "./redstoneAdapters.js";
 import { powerStats } from "./powerPropagation.js";
 import { message } from "./messages.js";
-import { ARM_NAMES, isValidFace, worldOffset } from "./surfaceFrame.js";
+import { isValidFace, worldOffset } from "./surfaceFrame.js";
+import { ARM_NAMES } from "./constants.js";
 
 const TAG = "[Starstone]";
 

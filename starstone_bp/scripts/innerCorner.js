@@ -1,9 +1,8 @@
-import { FACE_LIST, faceNormal, supportOffset } from "./surfaceFrame.js";
+import { faceNormal, supportOffset, negate, vecEquals } from "./surfaceFrame.js";
+import { FACE_LIST } from "./constants.js";
 import { worldDirOfPort } from "./portDirections.js";
 
-const same=(a,b)=>a.every((value,i)=>value===b[i]);
 const dot=(a,b)=>a.reduce((sum,value,i)=>sum+value*b[i],0);
-const negate=v=>v.map(value=>-value||0);
 // Keep the original two-face state names stable for existing placed corners.
 // Any set containing a perpendicular pair may share one joined conductor.
 export const INNER_PAIRS=[];
@@ -48,7 +47,7 @@ export function innerNeighborAllowed(corner,other,dir) {
     if (corner?.kind!=="inner-corner" || !other) return false;
     const neighborFaces=other.kind==="inner-corner" ? facesOfPair(other.facePair) :
         other.mountFace ? [other.mountFace] : undefined;
-    return innerRoutes(corner.facePair).some(route=>same(route.direction,dir) &&
+    return innerRoutes(corner.facePair).some(route=>vecEquals(route.direction,dir) &&
         (neighborFaces ? neighborFaces.includes(route.neighborFace) : FULL_KINDS.has(other.kind)));
 }
 export function innerSupports(location,pair) {
@@ -78,7 +77,7 @@ export const ARM_BIT={
     west:{up:4,down:1,north:2,south:6}
 };
 export function oppositeFace(face) {
-    return FACE_LIST.find(other=>same(faceNormal(other),negate(faceNormal(face))));
+    return FACE_LIST.find(other=>vecEquals(faceNormal(other),negate(faceNormal(face))));
 }
 export function tangentFaces(face) {
     return FACE_LIST.filter(other=>dot(faceNormal(face),faceNormal(other))===0);
@@ -108,7 +107,7 @@ export function neighborContactsFace(neighbor,face,toward) {
     if (!neighbor.mountFace && !FULL_KINDS.has(neighbor.kind)) return false;
     return neighbor.lanes.some(lane=>[...(lane?.ports||[])].some(port=>{
         const direction=worldDirOfPort(neighbor.mountFace,port);
-        return direction && same(direction,back);
+        return direction && vecEquals(direction,back);
     }));
 }
 // neighborAt(face) returns the descriptor of the block one step along that

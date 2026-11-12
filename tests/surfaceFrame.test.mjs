@@ -3,9 +3,8 @@
 // Run: node tests/surfaceFrame.test.mjs
 // Exits nonzero on the first failed assertion.
 
+import { FACE_LIST, ARM_NAMES } from "../starstone_bp/scripts/constants.js";
 import {
-  FACE_LIST,
-  ARM_NAMES,
   supportOffset,
   arms,
   frameForFace,

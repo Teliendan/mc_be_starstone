@@ -3,9 +3,9 @@
 import { world } from "@minecraft/server";
 import { descriptorForBlock } from "./electricalBlocks.js";
 import { worldDirOfPort } from "./portDirections.js";
-import { ARM_NAMES } from "./constants.js";
+import { ARM_NAMES, FACE_LIST } from "./constants.js";
 import { nodeRef, chunkOf } from "./blockKeys.js";
-import { FACE_LIST, faceNormal } from "./surfaceFrame.js";
+import { faceNormal, negate, vecEquals } from "./surfaceFrame.js";
 import { outerCornerOffset, outerOffsets, outerWrap, wrapFaces } from "./cornerTopology.js";
 import { innerNeighborAllowed, facesOfPair } from "./innerCorner.js";
 
@@ -19,8 +19,6 @@ const DIMENSION = /^[a-z0-9_.-]+:[a-z0-9_./-]+$/;
 const INTEGER = /^(?:0|[1-9]\d*|-[1-9]\d*)$/;
 const KINDS = new Set(["cable", "inner-corner", "bridge", "conduit", "source", "consumer", "adapter-in", "adapter-out"]);
 const FACES = new Set(["up", "down", "north", "south", "east", "west"]);
-const same = (a, b) => a.every((value, i) => value === b[i]);
-const negate = dir => dir.map(value => -value);
 
 export function parseSegmentNodeRef(ref) {
     if (typeof ref !== "string") return undefined;
@@ -74,7 +72,7 @@ function allowedContact(a, b, dir) {
     // Potential back contacts cannot join two surface elements, or an unrelated
     // full block. Tangent surface contacts still use the ordinary rules.
     for (const [surface, other, towardOther] of [[a, b, dir], [b, a, negate(dir)]]) {
-        if (surface.mountFace && same(worldDirOfPort(surface.mountFace, "back"), towardOther) &&
+        if (surface.mountFace && vecEquals(worldDirOfPort(surface.mountFace, "back"), towardOther) &&
             (other.mountFace || (other.kind !== "conduit" && other.kind !== "source"))) return false;
     }
     return true;
@@ -115,7 +113,7 @@ export function buildChunkSegments(dimensionId, cx, cz, entries) {
                 continue;
             }
             for (const neighbor of byPosition.get(`${nx}|${ny}|${nz}`) || []) {
-                if (allowedContact(item.descriptor, neighbor.descriptor, dir) && neighbor.directions.some(other => same(other, negate(dir)))) {
+                if (allowedContact(item.descriptor, neighbor.descriptor, dir) && neighbor.directions.some(other => vecEquals(other, negate(dir)))) {
                     item.neighbors.add(neighbor.ref);
                 }
             }
@@ -202,8 +200,8 @@ export function validateChunkSegments(snapshot) {
                 (port.mountFace !== null && !FACES.has(port.mountFace))) return false;
             const p = parseSegmentNodeRef(port.ref), [dx, , dz] = port.direction;
             const destination = [chunkOf(p.x + dx), chunkOf(p.z + dz)];
-            if (!same(destination, port.destination) || (destination[0] === snapshot.cx && destination[1] === snapshot.cz)) return false;
-            if (port.kind === "bridge" && (p.lane === "main" || !port.mountFace || same(worldDirOfPort(port.mountFace, "back"), port.direction))) return false;
+            if (!vecEquals(destination, port.destination) || (destination[0] === snapshot.cx && destination[1] === snapshot.cz)) return false;
+            if (port.kind === "bridge" && (p.lane === "main" || !port.mountFace || vecEquals(worldDirOfPort(port.mountFace, "back"), port.direction))) return false;
             if (port.kind !== "bridge" && p.lane !== "main") return false;
             const diagonal = port.direction.reduce((n,v)=>n+Math.abs(v),0) === 2;
             if (port.kind === "inner-corner" &&
@@ -213,7 +211,7 @@ export function validateChunkSegments(snapshot) {
             if (["cable", "bridge", "consumer", "adapter-in", "adapter-out"].includes(port.kind) && !port.mountFace) return false;
             if (diagonal && !wrapFaces(port).some(from => FACE_LIST.some(face => {
                     const offset = outerCornerOffset(from,face);
-                    return offset && same(offset,port.direction);
+                    return offset && vecEquals(offset,port.direction);
                 }))) return false;
             if (port.kind === "conduit" && port.mountFace) return false;
             if (port.kind === "bridge") {
@@ -221,7 +219,7 @@ export function validateChunkSegments(snapshot) {
                 // A diagonal port leaves through the arm toward the wrapped edge.
                 const normal = faceNormal(port.mountFace);
                 const armDir = diagonal ? port.direction.map((v, i) => v + normal[i]) : port.direction;
-                if (!arms.some(arm => same(worldDirOfPort(port.mountFace, arm), armDir))) return false;
+                if (!arms.some(arm => vecEquals(worldDirOfPort(port.mountFace, arm), armDir))) return false;
             }
             const key = `${port.ref}|${port.direction.join(",")}`;
             if (seenBoundaries.has(key)) return false;

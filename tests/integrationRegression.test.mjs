@@ -7,6 +7,7 @@ const graph = await import('../starstone_bp/scripts/networkGraph.js');
 const power = await import('../starstone_bp/scripts/powerPropagation.js');
 const runtime = (await import('../starstone_bp/scripts/networkRuntime.js')).default;
 const frame = await import('../starstone_bp/scripts/surfaceFrame.js');
+const { FACE_LIST } = await import('../starstone_bp/scripts/constants.js');
 const definitions = new Map();
 mc.system.beforeEvents = { startup: { subscribe(cb) { cb({ blockComponentRegistry: { registerCustomComponent(id, component) { definitions.set(id,component); } } }); } } };
 cable.registerCableComponent();
@@ -16,7 +17,7 @@ for (const name of ['cable','bridge','lamp','conduit','generator']) {
     const block = JSON.parse(readFileSync(new URL(`../starstone_bp/blocks/${name}.json`,import.meta.url),'utf8'))['minecraft:block'];
     for (const id of Object.keys(block.components).filter(id => !id.startsWith('minecraft:'))) assert.ok(definitions.has(id),`unregistered ${id}`);
 }
-for (const face of frame.FACE_LIST) {
+for (const face of FACE_LIST) {
     for (const id of ['starstone:lamp','starstone:bridge','starstone:generator']) {
         const f = fixture();
         const seed = f.put('starstone:cable',0,0,0,{ 'minecraft:block_face':face });

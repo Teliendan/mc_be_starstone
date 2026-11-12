@@ -54,6 +54,9 @@ export const FACE_EAST = "east";
 export const FACE_WEST = "west";
 export const FACE_LIST = [FACE_UP, FACE_DOWN, FACE_NORTH, FACE_SOUTH, FACE_EAST, FACE_WEST];
 
+// Block ids that mount on a support face (everything with a mount face).
+export const SURFACE_IDS = new Set([CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID]);
+
 // Local cable arms and their connection bits (plan section 5.2).
 export const ARM_NAMES = ["local_n", "local_e", "local_s", "local_w"];
 export const ARM_BITS = {

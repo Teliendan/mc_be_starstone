@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {fixture,drain} from './runtimeFixture.mjs';
-import {FACE_LIST,ARM_NAMES,worldOffset} from '../starstone_bp/scripts/surfaceFrame.js';
+import {worldOffset} from '../starstone_bp/scripts/surfaceFrame.js';
+import {FACE_LIST,ARM_NAMES} from '../starstone_bp/scripts/constants.js';
 const {refreshAdapterVisuals,redstoneContactMask}=await import('../starstone_bp/scripts/redstoneAdapters.js');
 const {applyPower}=await import('../starstone_bp/scripts/powerPropagation.js');
 

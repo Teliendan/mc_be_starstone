@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { blockKey, nodeRef, parseBlockKey, parseNodeRef, laneRef, chunkOf, LANE_IDS, NEIGHBOR_OFFSETS_18 } from '../starstone_bp/scripts/blockKeys.js';
+import { blockKey, nodeRef, parseBlockKey, parseNodeRef, laneRef, readBlock, chunkOf, LANE_IDS, NEIGHBOR_OFFSETS_18 } from '../starstone_bp/scripts/blockKeys.js';
 const p = { x:-17,y:-64,z:16 };
 assert.equal(blockKey('minecraft:overworld',p),'minecraft:overworld|-17|-64|16');
 assert.equal(nodeRef('minecraft:overworld',p),'minecraft:overworld|-17|-64|16#main');
@@ -12,3 +12,9 @@ assert.deepEqual([chunkOf(0),chunkOf(15),chunkOf(16),chunkOf(-1),chunkOf(-16),ch
 assert.equal(NEIGHBOR_OFFSETS_18.length, 18);
 assert.equal(new Set(NEIGHBOR_OFFSETS_18.map(o => o.join())).size, 18);
 assert.ok(NEIGHBOR_OFFSETS_18.every(o => o.some(v => v) && o.every(v => Math.abs(v) <= 1) && o.filter(v => v).length <= 2));
+// readBlock: unloaded chunk and a throwing getBlock both read as undefined.
+const blk = { id: 'b' };
+const dim = (loaded, fail) => ({ isChunkLoaded: () => loaded, getBlock: () => { if (fail) throw new Error('range'); return blk; } });
+assert.equal(readBlock(dim(true, false), p), blk);
+assert.equal(readBlock(dim(false, false), p), undefined);
+assert.equal(readBlock(dim(true, true), p), undefined);

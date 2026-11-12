@@ -4,29 +4,28 @@ import { system, world } from "@minecraft/server";
 import runtime from "./networkRuntime.js";
 import { placementIndex } from "./persistence.js";
 import { descriptorForBlock } from "./electricalBlocks.js";
-import { discoverAndRegisterNetwork } from "./networkController.js";
+import { discoverAndRegisterNetwork, awaitResult } from "./networkController.js";
 import { computeCableMask, refreshCable, computeInnerCornerState } from "./cableComponent.js";
 import { isSupportValid, supportBlock } from "./support.js";
-import { KIND_BY_ID, CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID } from "./constants.js";
+import { KIND_BY_ID, CABLE_ID, INNER_CORNER_ID, REDSTONE_INPUT_ID, SURFACE_IDS } from "./constants.js";
 import { innerSupports, pairFromPermutation, armsFromPermutation } from "./innerCorner.js";
 import { pistonSupport } from "./pistonController.js";
 import { topologyChanged } from "./networkEvents.js";
-import { nodeRef, parseNodeRef, LANE_IDS } from "./blockKeys.js";
+import { nodeRef, parseNodeRef, readBlock, LANE_IDS } from "./blockKeys.js";
 
 export const VALIDATION_INTERVAL_TICKS = 100;
 export const VALIDATION_POSITION_BUDGET = 16;
 export const PISTON_POLICY = Object.freeze({ standalone: "push_pull", supported: "popped" });
-const SURFACES = new Set([CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID]);
 function unsupported(block) {
     if (pistonSupport.isPending(block.dimension, block.location)) return false;
     if (block.type.id === INNER_CORNER_ID) {
         const supports=innerSupports(block.location,pairFromPermutation(block.permutation));
         return Boolean(supports?.every(({position})=> {
             if (!block.dimension.isChunkLoaded(position)) return false;
-            return read(block.dimension,position)?.typeId !== "minecraft:moving_block";
+            return readBlock(block.dimension,position)?.typeId !== "minecraft:moving_block";
         })) && !isSupportValid(block);
     }
-    const support=SURFACES.has(block.type.id) ? supportBlock(block) : undefined;
+    const support=SURFACE_IDS.has(block.type.id) ? supportBlock(block) : undefined;
     return support?.isValid && support.typeId !== "minecraft:moving_block" && !isSupportValid(block);
 }
 const OFFSETS = [[0,0,0], [1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [0,0,1], [0,0,-1]];
@@ -36,7 +35,6 @@ let registered = false, scheduled = false, running = false;
 let cursor, batches = 0, lastChecked = 0;
 
 const keyOf = p => `${p.x}|${p.y}|${p.z}`;
-const read = (dimension, position) => { try { return dimension.getBlock(position); } catch { return undefined; } };
 const electrical = block => block?.isValid && KIND_BY_ID[block.type.id];
 function fingerprint(block) {
     const state = block.permutation;
@@ -113,7 +111,7 @@ function* reconcile(requests) {
                 runtime.removeNetwork(id);
             }
             for (const [key, position] of positions) {
-                const block = read(dimension, position);
+                const block = readBlock(dimension, position);
                 if (block?.isValid) {
                     if (!electrical(block)) {
                         placementIndex.remove(dimension.id, position);
@@ -135,26 +133,20 @@ function* reconcile(requests) {
             // Support removals may themselves change adjacent cable masks.
             // Complete those removals before the single mask-refresh pass.
             for (const position of positions.values()) {
-                const block = read(dimension, position);
+                const block = readBlock(dimension, position);
                 if (electrical(block)) refreshCable(block);
                 yield;
             }
             const seen = new Set();
             for (const [key, position] of positions) {
-                const laneIds = (descriptorForBlock(read(dimension, position))?.lanes || []).map(lane => lane.id);
+                const laneIds = (descriptorForBlock(readBlock(dimension, position))?.lanes || []).map(lane => lane.id);
                 for (const laneId of laneIds) {
                     const ref = nodeRef(dimension, position, laneId);
                     if (seen.has(ref)) continue;
-                    const block = read(dimension, position);
+                    const block = readBlock(dimension, position);
                     const lane = descriptorForBlock(block)?.lanes.find(candidate => candidate.id === laneId);
                     if (!lane) continue;
-                    let done = false, result, failure;
-                    discoverAndRegisterNetwork(block, lane).then(
-                        value => { result = value; done = true; },
-                        error => { failure = error; done = true; }
-                    );
-                    while (!done) yield;
-                    if (failure) throw failure;
+                    const result = yield* awaitResult(discoverAndRegisterNetwork(block, lane));
                     seen.add(ref);
                     for (const node of result?.nodes || []) { seen.add(node); yield; }
                 }
@@ -190,7 +182,7 @@ export function validateKnownPositions() {
             try { dimension = world.getDimension(dimensionId); } catch { continue; }
             lastChecked++;
             try { if (!dimension.isChunkLoaded(location)) continue; } catch { continue; }
-            const block = read(dimension, location);
+            const block = readBlock(dimension, location);
             if (!block?.isValid) continue; // Unloaded is not proof of removal.
             const key = `${dimensionId}|${keyOf(location)}`;
             if (!electrical(block)) { queueMutation(dimension, location); continue; }

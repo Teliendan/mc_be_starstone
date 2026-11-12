@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {fixture,drain} from './runtimeFixture.mjs';
-import {FACE_LIST,worldOffset,supportOffset} from '../starstone_bp/scripts/surfaceFrame.js';
+import {worldOffset,supportOffset} from '../starstone_bp/scripts/surfaceFrame.js';
+import {FACE_LIST} from '../starstone_bp/scripts/constants.js';
 const {recheckInputs,trackInput,adapterStats,registerRedstoneAdapters,reactToRedstoneUpdate}=await import('../starstone_bp/scripts/redstoneAdapters.js');
 const {discoverAndRegisterNetwork}=await import('../starstone_bp/scripts/networkController.js');
 const {applyPower}=await import('../starstone_bp/scripts/powerPropagation.js');

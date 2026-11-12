@@ -24,6 +24,14 @@ for (let axis = 0; axis < 3; axis++) for (let other = axis + 1; other < 3; other
     }
 }
 
+// The block at a position, or undefined when its chunk is unloaded or the position leaves the world.
+export function readBlock(dimension, location) {
+    try {
+        if (!dimension.isChunkLoaded(location)) return undefined;
+        return dimension.getBlock(location);
+    } catch { return undefined; }
+}
+
 // The ref of one lane of a block whose "<dimension>|<x>|<y>|<z>" key is already built.
 export const laneRef = (key, lane) => `${key}#${lane}`;
 

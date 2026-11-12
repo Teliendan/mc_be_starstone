@@ -20,7 +20,8 @@ import {
     matchingConduitAxis,
     descriptorForBlock
 } from "../starstone_bp/scripts/electricalBlocks.js";
-import { worldOffset, supportOffset, FACE_LIST, NORMALS, ARM_NAMES } from "../starstone_bp/scripts/surfaceFrame.js";
+import { worldOffset, supportOffset, NORMALS } from "../starstone_bp/scripts/surfaceFrame.js";
+import { FACE_LIST, ARM_NAMES } from "../starstone_bp/scripts/constants.js";
 import { ARM_BITS } from "../starstone_bp/scripts/constants.js";
 
 let failures = 0;

@@ -16,12 +16,14 @@
 // - local_n and local_s are one opposite pair; local_e and local_w are the other.
 // - The frame is right-handed: local_e x local_n == normal for every face.
 
+import { FACE_LIST, ARM_NAMES } from "./constants.js";
+
 // World axes (Bedrock convention): +X east, +Y up, +Z south.
 const WORLD_UP = [0, 1, 0];
 
-export const FACE_LIST = ["up", "down", "north", "south", "east", "west"];
-
-export const ARM_NAMES = ["local_n", "local_e", "local_s", "local_w"];
+// Shared 3-vector helpers (also used for 2-element chunk offsets). negate never returns -0.
+export const negate = v => [-v[0] || 0, -v[1] || 0, -v[2] || 0];
+export const vecEquals = (a, b) => a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
 
 // Outward face normals as unit world vectors.
 export const NORMALS = {
@@ -39,10 +41,6 @@ function cross(a, b) {
     a[2] * b[0] - a[0] * b[2],
     a[0] * b[1] - a[1] * b[0]
   ];
-}
-
-function negate(v) {
-  return [-v[0], -v[1], -v[2]];
 }
 
 // The horizontal tangent of a face: the tangent lying in the XZ plane.
@@ -128,8 +126,6 @@ export function worldOffset(face, arm) {
 }
 
 export default {
-  FACE_LIST,
-  ARM_NAMES,
   NORMALS,
   isValidFace,
   faceNormal,

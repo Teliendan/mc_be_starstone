@@ -15,7 +15,7 @@ import { system } from "@minecraft/server";
 import runtime from "./networkRuntime.js";
 import { descriptorForBlock } from "./electricalBlocks.js";
 import { worldDirOfPort, WORLD_PORTS } from "./portDirections.js";
-import { faceNormal } from "./surfaceFrame.js";
+import { faceNormal, negate, vecEquals } from "./surfaceFrame.js";
 import { laneRef, chunkOf } from "./blockKeys.js";
 import { outerOffsets, outerWrap } from "./cornerTopology.js";
 import { innerNeighborAllowed } from "./innerCorner.js";
@@ -49,13 +49,6 @@ function emptyNetwork() {
 // world_* ports resolve the same whether or not a descriptor has a mount face,
 // so the generator's six absolute contacts keep working.
 
-function vecEquals(a, b) {
-    return a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
-}
-
-function negate(v) {
-    return [-v[0], -v[1], -v[2]];
-}
 
 // The lane of a neighbour that exposes a port pointing back along -targetDir.
 // Undefined when the neighbour has no reciprocal port, so the two nodes are not

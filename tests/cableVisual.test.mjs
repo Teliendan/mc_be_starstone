@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { FACE_LIST, ARM_NAMES, worldOffset, faceNormal } from '../starstone_bp/scripts/surfaceFrame.js';
+import { worldOffset, faceNormal } from '../starstone_bp/scripts/surfaceFrame.js';
+import { FACE_LIST, ARM_NAMES } from '../starstone_bp/scripts/constants.js';
 
 const block = JSON.parse(readFileSync('starstone_bp/blocks/cable.json','utf8'))['minecraft:block'];
 const geometry = JSON.parse(readFileSync('starstone_rp/models/blocks/starstone_cable.geo.json','utf8'))['minecraft:geometry'][0];

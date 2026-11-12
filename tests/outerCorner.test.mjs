@@ -7,7 +7,8 @@ const { buildSegmentGraph } = await import('../starstone_bp/scripts/segmentGraph
 const { captureRemovedNetworks, removeAndSplitNetwork } = await import('../starstone_bp/scripts/networkController.js');
 const runtime = (await import('../starstone_bp/scripts/networkRuntime.js')).default;
 const { outerCornerOffset, outerCornerContact } = await import('../starstone_bp/scripts/cornerTopology.js');
-const { FACE_LIST, faceNormal } = await import('../starstone_bp/scripts/surfaceFrame.js');
+const { faceNormal } = await import('../starstone_bp/scripts/surfaceFrame.js');
+const { FACE_LIST } = await import('../starstone_bp/scripts/constants.js');
 
 const f=fixture(); f.dim.id='test:outer-corner';
 const source=f.put('starstone:generator',14,1,0);

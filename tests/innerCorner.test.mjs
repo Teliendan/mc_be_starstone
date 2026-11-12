@@ -3,7 +3,8 @@ import { readFileSync } from 'node:fs';
 import { mc, fixture, drain, player } from './runtimeFixture.mjs';
 import { INNER_PAIRS, ARM_BIT, innerRoutes, stateOfFaces, facesOfPair, pairFromPermutation,
     armsFromPermutation, externalArms, oppositeFace, tangentFaces } from '../starstone_bp/scripts/innerCorner.js';
-import { FACE_LIST, ARM_NAMES, faceNormal, worldOffset } from '../starstone_bp/scripts/surfaceFrame.js';
+import { faceNormal, worldOffset } from '../starstone_bp/scripts/surfaceFrame.js';
+import { FACE_LIST, ARM_NAMES } from '../starstone_bp/scripts/constants.js';
 const { registerCableComponent, computeCableMask, computeInnerCornerState, scheduleAffected, flushPending } =
     await import('../starstone_bp/scripts/cableComponent.js');
 const { isSupportValid } = await import('../starstone_bp/scripts/support.js');

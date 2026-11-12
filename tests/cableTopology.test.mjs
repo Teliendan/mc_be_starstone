@@ -5,9 +5,9 @@
 
 import {
     cableConnectionMask,
-    hasReciprocalPort,
-    ARM_BITS
+    hasReciprocalPort
 } from "../starstone_bp/scripts/cableTopology.js";
+import { ARM_BITS } from "../starstone_bp/scripts/constants.js";
 
 let failures = 0;
 const failuresByCategory = new Map();

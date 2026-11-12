@@ -55,6 +55,19 @@ export async function discoverAndRegisterNetwork(seed, lane) {
     return registerAndApplyNetwork(discovered, powered, seed.dimension);
 }
 
+// Wait for a promise inside a runJob generator: yields once per job step until it settles,
+// then returns its value or throws its error. `onWait` runs before every yield.
+export function* awaitResult(promise, onWait) {
+    let done = false, result, failure;
+    promise.then(
+        value => { result = value; done = true; },
+        error => { failure = error; done = true; }
+    );
+    while (!done) { onWait?.(); yield; }
+    if (failure) throw failure;
+    return result;
+}
+
 // Placement of a bridge must discover both isolated lanes.
 export async function discoverAllLanes(seed) {
     const descriptor = descriptorForBlock(seed);
@@ -285,6 +298,7 @@ export async function removeAndSplitNetwork(capture) {
 export { anySourceOn, captureRemovedNetworks };
 export default {
     discoverAndRegisterNetwork,
+    awaitResult,
     registerAndApplyNetwork,
     removeAndSplitNetwork,
     captureRemovedNetworks,

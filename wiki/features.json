@@ -513,15 +513,15 @@
       "evidence": [
         {
           "path": "starstone_bp/scripts/blockKeys.js",
-          "sha256": "0e1fe0bc507f24b6f83574676ebafac308831ddb1451c6627a55a25ed9493d2c"
+          "sha256": "dad73d035e6ea2f4773a3a144383f71e8d494bc69c1f56b35f25a2d36b9d34f2"
         },
         {
           "path": "starstone_bp/scripts/cableComponent.js",
-          "sha256": "8413436a7fa4031cffcc32ead7539bf68e9b9eda58c04865f990c25962182b8f"
+          "sha256": "3bd70c74d42eb88bcc532b563ac91e624af7747d9a65b78a502413fa17ff2c36"
         },
         {
           "path": "starstone_bp/scripts/cableTopology.js",
-          "sha256": "3216fd50ce23d95341846b4805dfe341f6daf4effc8268520ebb5381c253eb38"
+          "sha256": "35d668f19cfa29ea3e596d5d4ee85090cc609bb4353f8652f5bdc76e02457e45"
         },
         {
           "path": "starstone_bp/scripts/chunkController.js",
@@ -529,19 +529,19 @@
         },
         {
           "path": "starstone_bp/scripts/chunkIndex.js",
-          "sha256": "27bf89f9855440d5a714bbf66a11076475b61f3b8170e05e39cf0f9ee7fcbfde"
+          "sha256": "13fc03a42ba8bf8db57d185164c8cb42294a7e0d1938ae8d0db461d96bf0b52d"
         },
         {
           "path": "starstone_bp/scripts/constants.js",
-          "sha256": "36a7c4b6e66cfdcf6edeb14fffb253278f8af03fdc286e8b9d56a95bd8bd1b9d"
+          "sha256": "5b07e5bc1e592eb32b748dc9bca4b6c59b816ef1e4316149dff68c75f46a8c95"
         },
         {
           "path": "starstone_bp/scripts/cornerTopology.js",
-          "sha256": "efa475e6b0e59e078fc71c937b19152f163913af6e85d91cdeb17fee1d9ea266"
+          "sha256": "1c2eca2f2f60666ac4d257e8e914b164fdb7cf4497d27d9611a7dd6588b2194e"
         },
         {
           "path": "starstone_bp/scripts/diagnostics.js",
-          "sha256": "006e5f68ec4c2548a31e8255b5077fdbfba3e3ddd371688000f2c7cd408fe977"
+          "sha256": "6b74fc0b3f0047b89f4e09703f1ee60341628b1124d575f1824bef603881a4be"
         },
         {
           "path": "starstone_bp/scripts/electricalBlocks.js",
@@ -561,7 +561,7 @@
         },
         {
           "path": "starstone_bp/scripts/innerCorner.js",
-          "sha256": "108549a11859dffdf1234231e17969452d213c59a1f16b359381c3acd0d83e06"
+          "sha256": "01fd9f9274d770e0f9e2abbe4b1e762daeb72f114bac1cc5537b77ee6a1f99db"
         },
         {
           "path": "starstone_bp/scripts/main.js",
@@ -573,11 +573,11 @@
         },
         {
           "path": "starstone_bp/scripts/mutationController.js",
-          "sha256": "69637e2b25f1dc5721763a176c534e19ad2b6c51d86344087a42e87a60414d79"
+          "sha256": "0d288acc65363264751c4f76926052494f87a8a92f1398e352204cd959866855"
         },
         {
           "path": "starstone_bp/scripts/networkController.js",
-          "sha256": "89ea2a2ce489229f3a020446c34ca2283ab662c91339e69cf81686704a5c42d7"
+          "sha256": "ce596baf37857bcd81c66286e1d0c8a4f1437f06da3765119c94af2b79e1f36f"
         },
         {
           "path": "starstone_bp/scripts/networkEvents.js",
@@ -585,7 +585,7 @@
         },
         {
           "path": "starstone_bp/scripts/networkGraph.js",
-          "sha256": "69135bdf725da26788015a109588206064729e8be58db0d0e869ffc82b799c25"
+          "sha256": "e78d9323f36eccf7c20081495ef2a45065a9dd2a8dc0214ef9969595fa76104c"
         },
         {
           "path": "starstone_bp/scripts/networkRuntime.js",
@@ -613,11 +613,11 @@
         },
         {
           "path": "starstone_bp/scripts/redstoneAdapters.js",
-          "sha256": "b822093cc560cce072cbcc7e4bee92f195845b2dcc14b06dd2c33ad4b7c66f5b"
+          "sha256": "debc3168db8812c99cde19c0d8b06eed03c3d2bd07e54b261ecd2365cd944209"
         },
         {
           "path": "starstone_bp/scripts/repair.js",
-          "sha256": "b2a897903ac43838ddabb57552d2c6bc871ee207dd04ee3abf4dfce39bbaf9e2"
+          "sha256": "9ea8dec8b9c9c58aea4a14ec01d9ead17bb91cfae9743880a7d9b23956bdd800"
         },
         {
           "path": "starstone_bp/scripts/segmentGraph.js",
@@ -637,7 +637,7 @@
         },
         {
           "path": "starstone_bp/scripts/surfaceFrame.js",
-          "sha256": "d51bfb6556c07b4e6887d00207fa83eec72fe5fe3c567216cf1ca5de563a17ab"
+          "sha256": "af9bb4764a3f6c426daeeea70fa97adfe5bd9991241f1b36591ce76fa39b49e3"
         }
       ],
       "id": "starstone:network",

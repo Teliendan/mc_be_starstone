@@ -2,13 +2,13 @@
 // All world access is deferred until a command or an initial-spawn callback.
 import { system, world, BlockVolume } from "@minecraft/server";
 import { descriptorForBlock } from "./electricalBlocks.js";
-import { discoverAndRegisterNetwork } from "./networkController.js";
+import { discoverAndRegisterNetwork, awaitResult } from "./networkController.js";
 import { topologyChanged } from "./networkEvents.js";
 import { refreshCable } from "./cableComponent.js";
 import { KIND_BY_ID } from "./constants.js";
 import { placementIndex } from "./persistence.js";
 import { message } from "./messages.js";
-import { nodeRef, parseNodeRef, chunkOf } from "./blockKeys.js";
+import { nodeRef, parseNodeRef, readBlock, chunkOf } from "./blockKeys.js";
 
 export const REBUILD_RADIUS = 8;
 export const REBUILD_HEIGHT = 4;
@@ -26,9 +26,6 @@ export function recoveryStats() {
 
 function requirePlayer(player) {
     if (!player?.isValid) throw new Error("Recovery player disconnected");
-}
-function read(dimension, location) {
-    try { return dimension.getBlock(location); } catch { return undefined; }
 }
 function electrical(block) {
     return block?.isValid && KIND_BY_ID[block.type.id];
@@ -78,7 +75,7 @@ function* rebuild(request) {
         for (const { x, y, z } of found.getBlockLocationIterator()) {
             requirePlayer(player);
             const location = { x, y, z };
-            const block = read(dimension, location);
+            const block = readBlock(dimension, location);
             if (electrical(block)) {
                 refreshCable(block);
                 recordBlock(block);
@@ -89,23 +86,17 @@ function* rebuild(request) {
         }
         for (const location of seeds) {
             requirePlayer(player);
-            const descriptor = descriptorForBlock(read(dimension, location));
+            const descriptor = descriptorForBlock(readBlock(dimension, location));
             const laneIds = (descriptor?.lanes || []).map(lane => lane.id);
             for (const laneId of laneIds) {
                 requirePlayer(player);
                 const ref = nodeRef(dimension, location, laneId);
                 if (seen.has(ref)) continue;
                 // A previous traversal yielded: do not retain Block or lane state.
-                const block = read(dimension, location);
+                const block = readBlock(dimension, location);
                 const lane = descriptorForBlock(block)?.lanes.find(item => item.id === laneId);
                 if (!lane) continue;
-                let done = false, record, failure;
-                discoverAndRegisterNetwork(block, lane).then(
-                    result => { record = result; done = true; },
-                    error => { failure = error; done = true; }
-                );
-                while (!done) { requirePlayer(player); yield; }
-                if (failure) throw failure;
+                const record = yield* awaitResult(discoverAndRegisterNetwork(block, lane), () => requirePlayer(player));
                 seen.add(ref);
                 if (record) {
                     components++;
@@ -116,7 +107,7 @@ function* rebuild(request) {
                         const { dimensionId, x: nx, y: ny, z: nz } = parseNodeRef(node);
                         const posKey = `${nx},${ny},${nz}`;
                         if (dimensionId === dimension.id && !indexed.has(posKey)) {
-                            const current = read(dimension, { x: nx, y: ny, z: nz });
+                            const current = readBlock(dimension, { x: nx, y: ny, z: nz });
                             if (electrical(current)) recordBlock(current);
                             indexed.add(posKey);
                         }

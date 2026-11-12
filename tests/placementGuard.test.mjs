@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { mc, fixture } from './runtimeFixture.mjs';
-import { FACE_LIST, supportOffset } from '../starstone_bp/scripts/surfaceFrame.js';
+import { supportOffset } from '../starstone_bp/scripts/surfaceFrame.js';
+import { FACE_LIST } from '../starstone_bp/scripts/constants.js';
 const definitions = new Map();
 mc.system.beforeEvents = {startup:{subscribe(callback) {
     callback({blockComponentRegistry:{registerCustomComponent(id,component) {definitions.set(id,component);}}});

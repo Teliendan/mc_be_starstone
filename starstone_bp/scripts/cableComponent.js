@@ -1,27 +1,21 @@
 import { message } from "./messages.js";
 import { world, system } from "@minecraft/server";
 import { isSupportValid, isFaceSupportValid, dropAndClear, mountFace } from "./support.js";
-import { worldOffset, ARM_NAMES, supportOffset, FACE_LIST, faceNormal } from "./surfaceFrame.js";
+import { worldOffset, supportOffset, faceNormal } from "./surfaceFrame.js";
 import { cableConnectionMask } from "./cableTopology.js";
 import { outerArmMask, innerOuterArmBits, outerContactedFaces } from "./cornerTopology.js";
 import { innerSupports, stateOfFaces, facesOfPair, pairFromPermutation, withFacePair,
     armsFromPermutation, withArms, innerArmBits, contactedFaces } from "./innerCorner.js";
 import { descriptorForBlock, cableDescriptor } from "./electricalBlocks.js";
 import { extendFromPlacement, captureRemovedNetworks, removeAndSplitNetwork } from "./networkController.js";
-import { CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID, KIND_BY_ID } from "./constants.js";
+import { CABLE_ID, INNER_CORNER_ID, KIND_BY_ID, SURFACE_IDS, ARM_NAMES, FACE_LIST } from "./constants.js";
 import { placementIndex } from "./persistence.js";
 import { trackInput, refreshAdapterVisuals, reactToRedstoneUpdate } from "./redstoneAdapters.js";
 import { queueMutation } from "./mutationController.js";
 import { pistonSupport } from "./pistonController.js";
 import { topologyChanged } from "./networkEvents.js";
+import { readBlock, NEIGHBOR_OFFSETS_18 } from "./blockKeys.js";
 
-const SURFACES = new Set([CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID]);
-const OFFSETS = [[1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [0,0,1], [0,0,-1]];
-for (let axis=0; axis<3; axis++) for (let other=axis+1; other<3; other++) {
-    for (const a of [-1,1]) for (const b of [-1,1]) {
-        const offset=[0,0,0]; offset[axis]=a; offset[other]=b; OFFSETS.push(offset);
-    }
-}
 const pending = new Map();
 const discoveries = new Map();
 let flushScheduled = false;
@@ -30,12 +24,6 @@ function scheduleFlush() {
     flushScheduled = true;
     system.run(() => { flushScheduled = false; flushPending(); });
 }
-function read(dim, location) {
-    try {
-        if (dim.isChunkLoaded?.(location) === false) return undefined;
-        return dim.getBlock(location);
-    } catch { return undefined; }
-}
 function queue(map, dim, location) {
     if (!map.has(dim)) map.set(dim, new Set());
     map.get(dim).add(`${location.x},${location.y},${location.z}`);
@@ -43,7 +31,7 @@ function queue(map, dim, location) {
 export function scheduleAffected(block) {
     const { dimension, location } = block;
     queue(pending, dimension, location);
-    for (const [dx,dy,dz] of OFFSETS) {
+    for (const [dx,dy,dz] of NEIGHBOR_OFFSETS_18) {
         queue(pending, dimension, { x: location.x + dx, y: location.y + dy, z: location.z + dz });
     }
     scheduleFlush();
@@ -69,7 +57,7 @@ export function computeCableMask(block) {
     for (const arm of ARM_NAMES) {
         const [dx,dy,dz] = worldOffset(face, arm);
         const { x,y,z } = block.location;
-        const nb = read(block.dimension, { x: x+dx, y: y+dy, z: z+dz });
+        const nb = readBlock(block.dimension, { x: x+dx, y: y+dy, z: z+dz });
         if (!nb?.isValid) continue;
         neighbors[arm] = nb.type.id === CABLE_ID
             ? cableDescriptor({ mountFace: mountFace(nb), connections: 15 })
@@ -95,7 +83,7 @@ function removeUnsupported(block) {
 // The descriptor seen from a neighboring surface. A cable exposes its potential
 // arms regardless of its old mask, so contacts are symmetric on first sight.
 function contactDescriptor(dimension, location) {
-    const nb = read(dimension, location);
+    const nb = readBlock(dimension, location);
     if (!nb?.isValid) return undefined;
     return nb.type.id === CABLE_ID
         ? cableDescriptor({ mountFace: mountFace(nb), connections: 15 })
@@ -105,7 +93,7 @@ function supportedFaces(dimension, location) {
     const result = [];
     for (const face of FACE_LIST) {
         const [dx,dy,dz] = supportOffset(face);
-        const support = read(dimension, { x: location.x+dx, y: location.y+dy, z: location.z+dz });
+        const support = readBlock(dimension, { x: location.x+dx, y: location.y+dy, z: location.z+dz });
         if (support && isFaceSupportValid(support, face)) result.push(face);
     }
     return result;
@@ -137,7 +125,7 @@ export function computeInnerCornerState(block) {
     const { dimension, location } = block;
     const active = facesOfPair(pairFromPermutation(block.permutation)) || [];
     for (const { position } of innerSupports(location, stateOfFaces(active)) || []) {
-        const support=read(dimension, position);
+        const support=readBlock(dimension, position);
         if (!support || support.typeId === "minecraft:moving_block") return null;
     }
     const supported = supportedFaces(dimension, location);
@@ -192,7 +180,7 @@ function refreshSurface(dim, block, x, y, z) {
         }
         // An unavailable support is not proof it was destroyed.
         if (!supports || supports.some(({position})=> {
-            const support=read(dim,position);
+            const support=readBlock(dim,position);
             return !support || support.typeId === "minecraft:moving_block";
         })) return;
         if (!isSupportValid(block)) removeUnsupported(block);
@@ -210,14 +198,14 @@ export function flushPending() {
     const others = [];
     for (const [dim, positions] of work) for (const key of positions) {
         const [x,y,z] = key.split(",").map(Number);
-        const block = read(dim, { x,y,z });
-        if (!block?.isValid || !SURFACES.has(block.type.id)) continue;
+        const block = readBlock(dim, { x,y,z });
+        if (!block?.isValid || !SURFACE_IDS.has(block.type.id)) continue;
         if (block.type.id === INNER_CORNER_ID) refreshSurface(dim, block, x, y, z);
         else others.push([dim, x, y, z]);
     }
     for (const [dim, x, y, z] of others) {
-        const block = read(dim, { x,y,z });
-        if (block?.isValid && SURFACES.has(block.type.id) && block.type.id !== INNER_CORNER_ID) {
+        const block = readBlock(dim, { x,y,z });
+        if (block?.isValid && SURFACE_IDS.has(block.type.id) && block.type.id !== INNER_CORNER_ID) {
             refreshSurface(dim, block, x, y, z);
         }
     }
@@ -226,9 +214,9 @@ export function flushPending() {
     for (const [dim, positions] of seeds) {
         for (const key of positions) {
             const [x,y,z] = key.split(",").map(Number);
-            const block = read(dim, { x,y,z });
+            const block = readBlock(dim, { x,y,z });
             if (!block?.isValid || !KIND_BY_ID[block.type.id]) continue;
-            if (SURFACES.has(block.type.id) && !isSupportValid(block)) continue;
+            if (SURFACE_IDS.has(block.type.id) && !isSupportValid(block)) continue;
             extendFromPlacement(block).catch(err => console.warn(`[Starstone] Placement discovery: ${err.message}`));
         }
     }

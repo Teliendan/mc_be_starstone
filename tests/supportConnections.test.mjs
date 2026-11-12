@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { fixture, drain } from './runtimeFixture.mjs';
-import { FACE_LIST, supportOffset, worldOffset } from '../starstone_bp/scripts/surfaceFrame.js';
+import { supportOffset, worldOffset } from '../starstone_bp/scripts/surfaceFrame.js';
+import { FACE_LIST } from '../starstone_bp/scripts/constants.js';
 import { supportMountAllowed, SUPPORT_SHAPE } from '../starstone_bp/scripts/supportPolicy.js';
 const { isSupportValid } = await import('../starstone_bp/scripts/support.js');
 const { reactToRedstoneUpdate } = await import('../starstone_bp/scripts/redstoneAdapters.js');

@@ -1,6 +1,7 @@
 import { system } from "@minecraft/server";
 import { REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID, STATE_POWERED, STATE_CONNECTIONS } from "./constants.js";
-import { ARM_NAMES, worldOffset } from "./surfaceFrame.js";
+import { worldOffset } from "./surfaceFrame.js";
+import { ARM_NAMES } from "./constants.js";
 import { cableConnectionMask } from "./cableTopology.js";
 import { outerArmMask } from "./cornerTopology.js";
 import { descriptorForBlock, cableDescriptor } from "./electricalBlocks.js";
