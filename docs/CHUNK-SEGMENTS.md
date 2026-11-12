@@ -119,7 +119,11 @@ head write is the sole commit point. A failed page or head write preserves the
 previous complete bank. Readers use only the bank/count named by the head, verify
 length/checksum and validate the complete schema and shard membership, and never
 admit a partial chunk. Read/write API failures propagate rather than being
-treated as empty data. Identical snapshots do not write. Corrupt chunks warn once
+treated as empty data. Identical snapshots do not write: the index keeps the committed
+text beside each cached snapshot, so an unchanged `writeChunk` compares one string and reads
+no property (SS-06, 2026-11-12). `writeChunk(snapshot, { trusted: true })` skips schema
+validation; only `updateSource` uses it (its input is a validated cached snapshot with one
+sorted array replaced). Corrupt chunks warn once
 per index instance and do not hide other chunks. A complete new authoritative
 snapshot can repair corrupt segment storage.
 

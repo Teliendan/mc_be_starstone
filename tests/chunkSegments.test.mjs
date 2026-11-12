@@ -98,6 +98,24 @@ assert.equal(warnings.length,1,'the lazy scan does not repeat a corrupt-chunk wa
     assert.equal(index.updateSource(`${dim}|0|0|0#main`,false),true);
     assert.deepEqual(index.readChunk(dim,0,0).segments[0].activeSources,[]);
     assert.deepEqual(index.readChunk(dim,0,0),createChunkIndex(disk).readChunk(dim,0,0),'updateSource commits a copy');
+    // An unchanged write costs no property read (SS-06): the committed text is cached.
+    {
+        const current = index.readChunk(dim,0,0);
+        reads = 0;
+        assert.deepEqual(index.writeChunk(current),{changed:false});
+        assert.deepEqual(index.writeChunk(JSON.parse(JSON.stringify(current))),{changed:false});
+        assert.equal(reads,0,'an unchanged write reads no dynamic property');
+        const fresh = createChunkIndex(disk);
+        assert.deepEqual(fresh.readChunk(dim,0,0),current);
+        reads = 0;
+        assert.deepEqual(fresh.writeChunk(current),{changed:false});
+        assert.equal(reads,0,'after a load the unchanged write reads nothing either');
+        assert.deepEqual(createChunkIndex(disk).writeChunk(current),{changed:false},'a fresh index recognises an unchanged snapshot');
+        // The patched source summary after a write equals what a fresh index reads back.
+        assert.equal(index.updateSource(`${dim}|0|0|0#main`,true),true);
+        assert.deepEqual(index.readChunk(dim,0,0),createChunkIndex(disk).readChunk(dim,0,0),'trusted updateSource matches a fresh read');
+        assert.deepEqual(index.writeChunk(index.readChunk(dim,0,0)),{changed:false});
+    }
     assert.equal(scans,1,'no further id scans after the first chunks()');
 }
 

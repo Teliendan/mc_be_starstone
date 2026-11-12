@@ -264,8 +264,10 @@ function deepFreeze(value) {
 
 // Only writeChunk writes these properties, so RAM mirrors disk after one lazy
 // scan. known: property base -> frozen snapshot, or undefined (absent/corrupt).
+// texts: property base -> the committed (escaped) JSON text beside each cached
+// snapshot, so an unchanged write is recognised without any property read.
 export function createChunkIndex(storage, { warn = message => console.warn(message) } = {}) {
-    const warned = new Set(), known = new Map();
+    const warned = new Set(), known = new Map(), texts = new Map();
     let scanned = false;
     function corrupt(key) {
         if (warned.has(key)) return;
@@ -289,6 +291,7 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
             if (checksum(text) !== head.checksum) throw new Error("Segment checksum mismatch");
             const snapshot = JSON.parse(text);
             if (!validateChunkSegments(snapshot) || snapshot.dimensionId !== dimensionId || snapshot.cx !== cx || snapshot.cz !== cz) throw new Error("Invalid segment snapshot");
+            texts.set(base, text);
             return deepFreeze(snapshot);
         } catch { corrupt(base); return undefined; }
     }
@@ -298,19 +301,23 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         if (!known.has(base)) known.set(base, load(base, dimensionId, cx, cz));
         return known.get(base);
     }
-    function writeChunk(snapshot) {
-        if (!validateChunkSegments(snapshot)) throw new Error("Invalid segment snapshot");
+    // `trusted`: the caller built the snapshot from a validated cached one
+    // (updateSource), so the schema check is skipped.
+    function writeChunk(snapshot, { trusted = false } = {}) {
+        if (!trusted && !validateChunkSegments(snapshot)) throw new Error("Invalid segment snapshot");
         const base = propertyBase(snapshot.dimensionId, snapshot.cx, snapshot.cz);
         const text = JSON.stringify(snapshot).replace(/[\u007f-\uffff]/g, char => `\\u${char.charCodeAt(0).toString(16).padStart(4, "0")}`);
         const pages = Math.ceil(text.length / CHUNK_PAGE_BYTES);
         if (pages > CHUNK_MAX_PAGES) throw new Error("Segment chunk exceeds page limit");
+        // Unchanged: compare with the committed text before reading anything.
+        if (known.get(base) !== undefined && texts.get(base) === text) return { changed: false };
         const rawHead = storage.getDynamicProperty(`${base}:head`);
         let oldHead;
         if (rawHead !== undefined) {
             try { oldHead = parseHead(rawHead); } catch { corrupt(base); }
         }
         const previous = readChunk(snapshot.dimensionId, snapshot.cx, snapshot.cz);
-        if (previous && JSON.stringify(previous) === JSON.stringify(snapshot)) return { changed: false };
+        if (previous && texts.get(base) === text) return { changed: false };
         const bank = oldHead ? 1 - oldHead.bank : 0;
         for (let i = 0; i < pages; i++) storage.setDynamicProperty(`${base}:${bank}:${i}`, text.slice(i * CHUNK_PAGE_BYTES, (i + 1) * CHUNK_PAGE_BYTES));
         // The sole commit point. Until this succeeds all readers retain the
@@ -318,6 +325,7 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         storage.setDynamicProperty(`${base}:head`, JSON.stringify({ v: CHUNK_SCHEMA_VERSION, bank, pages, length: text.length, checksum: checksum(text) }));
         // Cache what a disk read would now return, never the caller's object.
         known.set(base, deepFreeze(JSON.parse(text)));
+        texts.set(base, text);
         return { changed: true };
     }
     function* chunks() {
@@ -344,7 +352,7 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         if (on) active.add(ref); else active.delete(ref);
         // Cached snapshots are frozen: write a changed copy.
         const changed = { ...segment, activeSources: [...active].sort() };
-        writeChunk({ ...snapshot, segments: snapshot.segments.map(s => s === segment ? changed : s) });
+        writeChunk({ ...snapshot, segments: snapshot.segments.map(s => s === segment ? changed : s) }, { trusted: true });
         return true;
     }
     return { readChunk, writeChunk, chunks, updateSource };
