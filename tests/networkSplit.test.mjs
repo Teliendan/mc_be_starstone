@@ -415,7 +415,7 @@ console.log("main.js: the removal filter keys on the broken permutation");
     const otherRef = nodeRef("overworld3", 0, 0, 0, "main");
 
     const invalidEvent = {
-        block: undefined,
+        block: other.blocks.get("1,0,0"),
         brokenBlockPermutation: { type: { id: "minecraft:stone" } },
         dimension: other.dim,
         location: { x: 1, y: 0, z: 0 }

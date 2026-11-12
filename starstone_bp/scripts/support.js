@@ -28,7 +28,7 @@ export function supportBlock(block) {
         z: Math.floor(l.z) + off[2]
     };
     try {
-        if (block.dimension.isChunkLoaded?.(location) === false) return undefined;
+        if (!block.dimension.isChunkLoaded(location)) return undefined;
         return block.dimension.getBlock(location);
     } catch { return undefined; }
 }
@@ -127,7 +127,7 @@ export function isSupportValid(block) {
         // supported faces still form a bend; the refresh then drops that face.
         const kept=supports.filter(({face,position})=>{
             try {
-                if (block.dimension.isChunkLoaded?.(position) === false) return false;
+                if (!block.dimension.isChunkLoaded(position)) return false;
                 return isFaceSupportValid(block.dimension.getBlock(position),face);
             } catch { return false; }
         }).map(({face})=>face);

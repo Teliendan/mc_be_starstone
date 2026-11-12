@@ -36,17 +36,11 @@ world.afterEvents.worldLoad.subscribe(() => {
 // it can safely update surviving blocks. Non-Starstone removals are
 // skipped.
 function handleElectricalBreak(event) {
-    const removed = event.brokenBlockPermutation;
-    if (!removed || !removed.type || removed.type.id === undefined) {
-        return;
-    }
-    if (KIND_BY_ID[removed.type.id] === undefined) {
+    if (KIND_BY_ID[event.brokenBlockPermutation.type.id] === undefined) {
         return;
     }
     const dimension = event.dimension;
-    const x = Math.floor(event.block.location.x);
-    const y = Math.floor(event.block.location.y);
-    const z = Math.floor(event.block.location.z);
+    const { x, y, z } = event.block.location;
     try {
         placementIndex.remove(dimension.id, { x, y, z });
     } catch (err) {
@@ -66,7 +60,7 @@ function handleElectricalBreak(event) {
 world.afterEvents.playerBreakBlock.subscribe(handleElectricalBreak, { blockTypes: ELECTRICAL_IDS });
 
 // The only gated block is the ore, which is not electrical but may support a cable.
-registerHarvestGate(({ block }) => { if (block) scheduleAffected(block); });
+registerHarvestGate(({ block }) => scheduleAffected(block));
 registerOreExperience();
 
 registerCableComponent();

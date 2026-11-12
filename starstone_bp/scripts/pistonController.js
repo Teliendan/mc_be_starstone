@@ -19,7 +19,7 @@ export const PISTON_AXES = Object.freeze([
 ]);
 export function readPistonBlock(dimension, position) {
     try {
-        if (dimension.isChunkLoaded?.(position) === false) return undefined;
+        if (!dimension.isChunkLoaded(position)) return undefined;
         const block = dimension.getBlock(position);
         return block?.isValid ? block : undefined;
     } catch { return undefined; }

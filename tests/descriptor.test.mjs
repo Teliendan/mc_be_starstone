@@ -157,7 +157,7 @@ const standIn = {
     isValid: true,
     type: { id: "starstone:cable" },
     location: { x: 1, y: 2, z: 3 },
-    dimension: { getBlock: () => undefined },
+    dimension: { isChunkLoaded: () => true, getBlock: () => undefined },
     permutation: {
         getState: (name) => ({
             "minecraft:block_face": "up",
@@ -176,6 +176,7 @@ const withConduit = {
     type: { id: "starstone:lamp" },
     location: { x: 1, y: 2, z: 3 },
     dimension: {
+        isChunkLoaded: () => true,
         getBlock: () => ({
             isValid: true,
             permutation: { getState: (name) => ("starstone:axis" === name ? "y" : undefined) }
@@ -196,6 +197,7 @@ const withoutConduit = {
     type: { id: "starstone:lamp" },
     location: { x: 1, y: 2, z: 3 },
     dimension: {
+        isChunkLoaded: () => true,
         getBlock: () => ({
             isValid: true,
             permutation: { getState: (name) => ("starstone:axis" === name ? "x" : undefined) }
@@ -270,7 +272,7 @@ const genStandIn = {
     isValid: true,
     type: { id: "starstone:generator" },
     location: { x: 0, y: 0, z: 0 },
-    dimension: { getBlock: () => undefined },
+    dimension: { isChunkLoaded: () => true, getBlock: () => undefined },
     permutation: { getState: (name) => ("starstone:enabled" === name ? true : undefined) }
 };
 const genBlockDesc = descriptorForBlock(genStandIn);
@@ -284,14 +286,14 @@ const genBlock = {
     isValid: true,
     type: { id: "starstone:generator" },
     location: { x: 0, y: 0, z: 0 },
-    dimension: { getBlock: () => genBlock },
+    dimension: { isChunkLoaded: () => true, getBlock: () => genBlock },
     permutation: { getState: () => undefined }
 };
 const backedCableStandIn = {
     isValid: true,
     type: { id: "starstone:cable" },
     location: { x: 0, y: 0, z: 0 },
-    dimension: { getBlock: () => genBlock },
+    dimension: { isChunkLoaded: () => true, getBlock: () => genBlock },
     permutation: { getState: (name) => ("minecraft:block_face" === name ? "up" : undefined) }
 };
 const backedCableDesc = descriptorForBlock(backedCableStandIn);

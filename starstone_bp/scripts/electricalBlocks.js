@@ -175,7 +175,7 @@ function supportBlock(block, mountFace) {
             y: Math.floor(block.location.y) + off[1],
             z: Math.floor(block.location.z) + off[2]
         };
-        if (block.dimension.isChunkLoaded?.(location) === false) return undefined;
+        if (!block.dimension.isChunkLoaded(location)) return undefined;
         return block.dimension.getBlock(location);
     } catch {
         return undefined;

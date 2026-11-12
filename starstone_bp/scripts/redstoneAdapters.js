@@ -59,7 +59,7 @@ const REDSTONE_CONTACTS = new Set([
 function isRedstoneContact(block) {
     if (!block?.isValid || block.typeId?.startsWith("starstone:")) return false;
     if (REDSTONE_CONTACTS.has(block.typeId)) return true;
-    try { return (block.getRedstonePower?.() ?? 0) > 0; } catch { return false; }
+    try { return (block.getRedstonePower() ?? 0) > 0; } catch { return false; }
 }
 export function redstoneContactMask(block) {
     const face = block?.permutation?.getState("minecraft:block_face");
@@ -70,7 +70,7 @@ export function redstoneContactMask(block) {
         const { x,y,z } = block.location;
         const position = { x:x+dx, y:y+dy, z:z+dz };
         try {
-            if (block.dimension.isChunkLoaded?.(position) === false) continue;
+            if (!block.dimension.isChunkLoaded(position)) continue;
             if (isRedstoneContact(block.dimension.getBlock(position))) mask |= 1 << i;
         } catch { /* Unknown neighbor is not a visual contact. */ }
     }
@@ -85,7 +85,7 @@ export function refreshAdapterVisuals(block) {
         const {x,y,z} = block.location;
         const position = {x:x+dx,y:y+dy,z:z+dz};
         try {
-            if (block.dimension.isChunkLoaded?.(position) === false) continue;
+            if (!block.dimension.isChunkLoaded(position)) continue;
             const adjacent = block.dimension.getBlock(position);
             if (!adjacent?.isValid) continue;
             neighbors[arm] = adjacent.typeId === CABLE_ID
@@ -97,7 +97,7 @@ export function refreshAdapterVisuals(block) {
     const blue = cableConnectionMask(face,neighbors) | outerArmMask(face,([dx,dy,dz]) => {
         const position = {x:x+dx,y:y+dy,z:z+dz};
         try {
-            if (block.dimension.isChunkLoaded?.(position) === false) return undefined;
+            if (!block.dimension.isChunkLoaded(position)) return undefined;
             const other = block.dimension.getBlock(position);
             if (!other?.isValid) return undefined;
             return other.typeId === CABLE_ID

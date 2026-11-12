@@ -291,7 +291,7 @@
       },
       {
         "path": "starstone_bp/scripts/cableComponent.js",
-        "sha256": "3bd70c74d42eb88bcc532b563ac91e624af7747d9a65b78a502413fa17ff2c36"
+        "sha256": "0d68126514061d9ebe74f4c9471bad0de88c8f3fed3d8871cb98448959033515"
       },
       {
         "path": "starstone_bp/scripts/cableTopology.js",
@@ -319,7 +319,7 @@
       },
       {
         "path": "starstone_bp/scripts/electricalBlocks.js",
-        "sha256": "8b285e78c9cf85514e265b8e2b6b3c451493e8161b39fe364f12758a24b9986d"
+        "sha256": "759575cd7a0628f076f6338bb18247e8db67fdab25d27f2df007a04c448bd9c1"
       },
       {
         "path": "starstone_bp/scripts/generatorComponent.js",
@@ -339,7 +339,7 @@
       },
       {
         "path": "starstone_bp/scripts/main.js",
-        "sha256": "34a7de66cd81794aef136a2928f9ac330df87049f8cb1d34f0339ff919867034"
+        "sha256": "afa5d78c57e05507b07bef9852568fb977ebbab79447e4c54858b1e429a4fec1"
       },
       {
         "path": "starstone_bp/scripts/messages.js",
@@ -375,7 +375,7 @@
       },
       {
         "path": "starstone_bp/scripts/pistonController.js",
-        "sha256": "bd4f3bc6390e1b76c3f2c2a5f16e6adb701b1df77e9a128c3883e2338b5382df"
+        "sha256": "33b2b8e6dd7f750a88fbde3ece355e661fc8ea0c0fecfb457c38218136924aa8"
       },
       {
         "path": "starstone_bp/scripts/portDirections.js",
@@ -387,7 +387,7 @@
       },
       {
         "path": "starstone_bp/scripts/redstoneAdapters.js",
-        "sha256": "debc3168db8812c99cde19c0d8b06eed03c3d2bd07e54b261ecd2365cd944209"
+        "sha256": "437e44c6ca1f74ccc361c1c80776c653fb859373fe0fefb7ac9136691cc3de07"
       },
       {
         "path": "starstone_bp/scripts/repair.js",
@@ -399,7 +399,7 @@
       },
       {
         "path": "starstone_bp/scripts/support.js",
-        "sha256": "a01fc793f51ee369094cc0243b7a94932dc2eeff7e7ba05f7839b19bfa7aaf43"
+        "sha256": "d497ad99b1bc838b78c694c7736c1cb9355e411b173c7e03676428fb826ba3cd"
       },
       {
         "path": "starstone_bp/scripts/supportPolicy.js",
@@ -422,7 +422,7 @@
     "evidence": [
       {
         "path": "starstone_bp/scripts/electricalBlocks.js",
-        "sha256": "8b285e78c9cf85514e265b8e2b6b3c451493e8161b39fe364f12758a24b9986d"
+        "sha256": "759575cd7a0628f076f6338bb18247e8db67fdab25d27f2df007a04c448bd9c1"
       },
       {
         "path": "starstone_bp/scripts/generatorComponent.js",
@@ -437,7 +437,7 @@
     "evidence": [
       {
         "path": "starstone_bp/scripts/electricalBlocks.js",
-        "sha256": "8b285e78c9cf85514e265b8e2b6b3c451493e8161b39fe364f12758a24b9986d"
+        "sha256": "759575cd7a0628f076f6338bb18247e8db67fdab25d27f2df007a04c448bd9c1"
       },
       {
         "path": "starstone_bp/scripts/cableTopology.js",
@@ -456,7 +456,7 @@
     "evidence": [
       {
         "path": "starstone_bp/scripts/electricalBlocks.js",
-        "sha256": "8b285e78c9cf85514e265b8e2b6b3c451493e8161b39fe364f12758a24b9986d"
+        "sha256": "759575cd7a0628f076f6338bb18247e8db67fdab25d27f2df007a04c448bd9c1"
       },
       {
         "path": "starstone_bp/scripts/cableTopology.js",
@@ -464,7 +464,7 @@
       },
       {
         "path": "starstone_bp/scripts/support.js",
-        "sha256": "a01fc793f51ee369094cc0243b7a94932dc2eeff7e7ba05f7839b19bfa7aaf43"
+        "sha256": "d497ad99b1bc838b78c694c7736c1cb9355e411b173c7e03676428fb826ba3cd"
       }
     ],
     "featureId": "starstone:network",

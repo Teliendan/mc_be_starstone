@@ -242,7 +242,7 @@ export function registerCableComponent() {
                     const { x,y,z } = event.block.location;
                     const location = { x:x+dx, y:y+dy, z:z+dz };
                     const dimension = event.dimension;
-                    if (dimension.isChunkLoaded?.(location) === false) { event.cancel = true; return; }
+                    if (!dimension.isChunkLoaded(location)) { event.cancel = true; return; }
                     event.cancel = !isFaceSupportValid(dimension.getBlock(location), face);
                 } catch {
                     // An unreadable support is not a valid player placement.
@@ -313,9 +313,9 @@ export function registerCableComponent() {
         });
     });
     world.afterEvents.playerBreakBlock.subscribe(event => {
-        if (event.block) scheduleAffected(event.block);
+        scheduleAffected(event.block);
     });
-    world.afterEvents.playerPlaceBlock?.subscribe(event => {
-        if (event.block) scheduleAffected(event.block);
+    world.afterEvents.playerPlaceBlock.subscribe(event => {
+        scheduleAffected(event.block);
     });
 }
