@@ -124,6 +124,9 @@
     "visual-geometry": [
       "visualGeometry.test.mjs"
     ],
+    "walk-cache": [
+      "walkCache.test.mjs"
+    ],
     "ore-parity": [
       "oreExperience.test.mjs",
       "oreLoot.test.mjs",

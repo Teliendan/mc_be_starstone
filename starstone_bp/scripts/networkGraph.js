@@ -207,6 +207,22 @@ export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = n
         addNode(net, classifyNode(seedDesc), seedNode);
         queue.push({ ref: seedNode, laneId: seedLane.id, x: sx, y: sy, z: sz });
 
+        // One read per cell per walk: position key -> descriptor, null (not
+        // electrical/unreadable) or "unloaded".
+        const cells = new Map([[seedKey, seedDesc]]);
+        function cell(x, y, z) {
+            const key = locKey(dimension, x, y, z);
+            if (cells.has(key)) return cells.get(key);
+            let value = null, block;
+            try {
+                if (!dimension.isChunkLoaded({ x, y, z })) value = "unloaded";
+                else block = dimension.getBlock({ x, y, z });
+            } catch { block = undefined; }
+            // A descriptor failure still rejects the whole walk.
+            if (block?.isValid) value = descriptorForBlock(block) || null;
+            cells.set(key, value);
+            return value;
+        }
         function* drain() {
             try {
                 while (head < queue.length) {
@@ -215,14 +231,8 @@ export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = n
                         const item = queue[head++];
                         drained++;
 
-                        let block;
-                        try { block = dimension.getBlock({ x: item.x, y: item.y, z: item.z }); }
-                        catch { continue; }
-                        if (!block || !block.isValid) {
-                            continue;
-                        }
-                        const descriptor = descriptorForBlock(block);
-                        if (!descriptor) {
+                        const descriptor = cell(item.x, item.y, item.z);
+                        if (!descriptor || descriptor === "unloaded") {
                             continue;
                         }
 
@@ -232,10 +242,8 @@ export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = n
                             const ny = item.y + neighbor.dir[1];
                             const nz = item.z + neighbor.dir[2];
 
-                            let loaded = false;
-                            try { loaded = dimension.isChunkLoaded({ x: nx, y: ny, z: nz }); }
-                            catch { /* Outside the dimension or no longer loaded. */ }
-                            if (!loaded) {
+                            const nDesc = cell(nx, ny, nz);
+                            if (nDesc === "unloaded") {
                                 net.unresolvedBoundaries.add(
                                     boundaryKey(
                                         dimension,
@@ -250,13 +258,6 @@ export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = n
                                 continue;
                             }
 
-                            let nb;
-                            try { nb = dimension.getBlock({ x: nx, y: ny, z: nz }); }
-                            catch { continue; }
-                            if (!nb || !nb.isValid) {
-                                continue;
-                            }
-                            const nDesc = descriptorForBlock(nb);
                             if (!nDesc || !nDesc.lanes) {
                                 continue;
                             }

@@ -585,7 +585,7 @@
         },
         {
           "path": "starstone_bp/scripts/networkGraph.js",
-          "sha256": "0d5b33661dc70c08356474d7347303ed0239ed843fbbe9e9d8830d40d2dbd411"
+          "sha256": "0f711bb29de065dd82d820e9f8e943b333ae319a2beb1ed44604dcf3eab7e7e4"
         },
         {
           "path": "starstone_bp/scripts/networkRuntime.js",
