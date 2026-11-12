@@ -4,7 +4,7 @@
 // job per turn, so a turn equals a job step here.
 import assert from 'node:assert/strict';
 import { fixture, drain } from './runtimeFixture.mjs';
-const { applyPower, powerStats, pendingUnresolved } = await import('../starstone_bp/scripts/powerPropagation.js');
+const { applyPower, powerStats, pendingUnresolved, poweredStateForLane } = await import('../starstone_bp/scripts/powerPropagation.js');
 
 const f = fixture(), refs = new Set();
 for (let x=0;x<257;x++) {
@@ -121,4 +121,37 @@ await drain();
 assert.equal(powerStats().queued,0,'scheduler failure does not lock future writes');
 assert.equal(powered(0),false);
 globalThis.__mcRunJob=runJob;
+// Formerly powerPropagation.test.mjs: which state each lane owns, one write per changed
+// node, the generator never written, only the changed bridge lane written, and an input
+// adapter taking the blue conductor state rather than its redstone source value.
+assert.equal(poweredStateForLane('ns'),'starstone:powered_ns');
+assert.equal(poweredStateForLane('ew'),'starstone:powered_ew');
+assert.equal(poweredStateForLane('main'),'starstone:powered');
+{
+    const g=fixture(), id=x=>`${g.dim.id}|${x}|0|0#main`;
+    const cells=[g.put('starstone:generator',0,0,0),g.put('starstone:cable',1,0,0),g.put('starstone:cable',2,0,0),g.put('starstone:lamp',3,0,0)];
+    const result=applyPower({nodes:new Set([0,1,2,3].map(id)),powered:true},g.dim);
+    assert.equal(result.written,0,'nothing is written synchronously');
+    await drain();
+    assert.equal(result.written,3,'three changed nodes are written');
+    assert.equal(result.unresolved,0);
+    assert.equal(cells[0].writes,0,'the generator source is never written here');
+    assert.ok(cells.slice(1).every(block=>block.writes===1&&block.permutation.getState('starstone:powered')===true),'each block is written exactly once');
+    assert.equal(cells[0].permutation.getState('starstone:powered'),undefined);
+
+    const lanes=g.put('starstone:bridge',5,0,0);
+    const lane=name=>`${g.dim.id}|5|0|0#${name}`;
+    applyPower({nodes:new Set([lane('ns'),lane('ew')]),powered:true},g.dim); await drain();
+    applyPower({nodes:new Set([lane('ns')]),powered:false},g.dim); await drain();
+    assert.equal(lanes.permutation.getState('starstone:powered_ns'),false);
+    assert.equal(lanes.permutation.getState('starstone:powered_ew'),true,'the other lane keeps its state');
+    const before=lanes.writes;
+    applyPower({nodes:new Set([lane('ns'),lane('ew')]),powered:true},g.dim); await drain();
+    assert.equal(lanes.writes-before,1,'only the changed lane is written');
+
+    const input=g.put('starstone:redstone_input',6,0,0);
+    applyPower({nodes:new Set([id(6)]),powered:true},g.dim); await drain();
+    assert.equal(input.permutation.getState('starstone:star_powered'),true);
+    assert.equal(input.permutation.getState('starstone:powered'),false,'the redstone source value is independent');
+}
 console.log('power writer: one read and one write per job step, consumers first, no-op, superseding targets, unloaded nodes, bridge lanes and scheduler failure passed');

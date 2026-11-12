@@ -24,9 +24,9 @@ extended by later features.
 | Block component registered but not wired by main; startup, placement, interaction, break, script-command dispatch | `event-wiring` |
 | Cable masks and arms (16 masks, six mounting rotations, hub UV), powered/off art, lamp transparency, conduit face bindings, pack icons | `cable-visual`, `cable-direction-regression`, `visual-geometry`, `adapter-visual`, `pack-contract` |
 | Contacts: six faces, devices, generators, side contacts, outside and inside corners | `integration-regression`, `side-contacts`, `outer-corner`, `inner-corner`, `support-connections`, `port-directions`, `graph-neighbor`, `surface-frame`, `cable-topology`, `descriptor` |
-| Bridge lanes (discovery, isolation, short circuit) | `network-merge`, `network-split`, `descriptor`, `power-budget` |
+| Bridge lanes (discovery, isolation, short circuit) | `network-runtime`, `network-split`, `descriptor`, `power-budget` |
 | Support removal, drops, splits, placement guard | `support-policy`, `placement-guard`, `network-split`, `integration-regression` |
-| Rapid toggles, stale writes, unload between plan and write, 32-node planning, 16-write callbacks, backpressure | `power-propagation`, `power-budget`, `generator-toggle`, `integration-regression`, `dirty-queue` |
+| Rapid toggles, stale writes, unload between plan and write, 32-node planning, 16-write callbacks, backpressure | `power-budget`, `generator-toggle`, `integration-regression`, `dirty-queue` |
 | Placement hints, restart, corruption, oversized properties, failed writes | `persistence`, `repair` |
 | Chunk segments: reciprocity, paging, restart, corrupt pages, rollback; A-B-C metadata paths, stale metadata, revision rejection | `chunk-segments`, `segment-graph`, `chunk-controller`, `stale-metadata` |
 | Explosion batching, command replacement, bounded validation, pistons | `mutation`, `piston` |

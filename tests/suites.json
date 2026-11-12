@@ -61,9 +61,6 @@
     "mutation": [
       "mutation.test.mjs"
     ],
-    "network-merge": [
-      "networkMerge.test.mjs"
-    ],
     "network-runtime": [
       "networkRuntime.test.mjs"
     ],
@@ -99,9 +96,6 @@
     ],
     "power-budget": [
       "powerBudget.test.mjs"
-    ],
-    "power-propagation": [
-      "powerPropagation.test.mjs"
     ],
     "redstone-adapters": [
       "redstoneAdapters.test.mjs"
@@ -146,7 +140,6 @@
     "input-investigation": [
       "redstoneAdapters.test.mjs",
       "powerBudget.test.mjs",
-      "powerPropagation.test.mjs",
       "staleMetadata.test.mjs"
     ],
     "native-input": [
@@ -154,7 +147,6 @@
       "supportConnections.test.mjs",
       "eventWiring.test.mjs",
       "powerBudget.test.mjs",
-      "powerPropagation.test.mjs",
       "staleMetadata.test.mjs"
     ]
   },

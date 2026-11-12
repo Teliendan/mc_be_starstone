@@ -3,45 +3,22 @@
 // current block. Run with:
 // node tests/networkSplit.test.mjs
 //
-// Uses the existing minecraft-server loader shim and drives real production
-// modules (networkController, networkGraph, electricalBlocks, runtime) end to
-// end over a fake world. Fake blocks reference the actual fake dimension so
-// discovery reads them directly.
+// Drives real production modules (networkController, networkGraph, electricalBlocks,
+// runtime) end to end over the shared fixture world (runtimeFixture.mjs).
 
-import { register } from "node:module";
-import { pathToFileURL } from "node:url";
+import assert from 'node:assert/strict';
+import { mc, fixture, drain } from "./runtimeFixture.mjs";
 
-register(
-    "./minecraft-server-loader.mjs",
-    new URL("./shims/", import.meta.url)
-);
-
-// Grab the fake world/system so the test can install subscribe stubs and drain
-// the deferred system.run / system.runJob scheduling the production modules use.
-const mc = await import("./shims/minecraft-server.mjs");
-
-const runQueue = [];
-globalThis.__mcRun = (callback) => {
-    runQueue.push(callback);
-};
-async function drainRuns() {
-    while (runQueue.length > 0) {
-        await runQueue.shift()();
-        await Promise.resolve();
-    }
-}
-globalThis.__mcRunJob = (job) => {
-    while (!job.next().done) {
-        /* drain the discovery generator to completion */
-    }
-};
-globalThis.__mcRunInterval = () => {
-    /* intervals are not exercised here */
-};
-
-globalThis.__mcWorldSubscribers = {};
 mc.system.beforeEvents = { startup: { subscribe() {} } };
 await import("../starstone_bp/scripts/main.js");
+
+// Production discovery and splitting yield through system.runJob: run the call and the
+// fixture scheduler together, then return the call's result.
+async function settled(fn, ...args) {
+    const promise = fn(...args);
+    await drain();
+    return promise;
+}
 
 // Fire every registered playerBreakBlock subscriber against one event, exactly
 // as Minecraft would dispatch it to main.js and cableComponent.
@@ -59,9 +36,7 @@ const {
     BRIDGE_ID,
     ARM_BITS,
     STATE_CONNECTIONS,
-    STATE_ENABLED,
-    STATE_BLOCK_FACE,
-    STATE_POWERED
+    STATE_ENABLED
 } = await import(
     "../starstone_bp/scripts/constants.js"
 );
@@ -76,70 +51,23 @@ const {
     "../starstone_bp/scripts/networkController.js"
 );
 
-let failures = 0;
-function check(name, condition) {
-    if (condition) return;
-    failures += 1;
-    console.error(`  FAIL: ${name}`);
-}
-function eq(a, b, label) {
-    check(label || `${a} == ${b}`, a === b);
-}
-
-function makeBlock({ id, location, dimension, connections = 0, mountFace = "up", enabled = true, powered = false }) {
-    const perm = {
-        getState(name) {
-            switch (name) {
-                case STATE_CONNECTIONS: return connections;
-                case STATE_BLOCK_FACE: return mountFace;
-                case STATE_POWERED: return powered;
-                case STATE_ENABLED: return enabled;
-                default: return undefined;
-            }
-        },
-        withState() { return perm; }
-    };
-    return {
-        isValid: true,
-        type: { id },
-        location,
-        dimension,
-        permutation: perm,
-        setPermutation() { /* no-op in tests */ }
-    };
-}
-
-function makeDimension(id, blocks, unloadSet = new Set()) {
-    return {
-        id,
-        getBlock({ x, y, z }) {
-            return blocks.get(`${x},${y},${z}`);
-        },
-        isChunkLoaded({ x, y, z }) {
-            return !unloadSet.has(`${x},${y},${z}`);
-        }
-    };
-}
-
 // Build a straight line of blocks along the +x axis, mounted "up". A cell with
 // no explicit connections is a full cable (east + west tangent arms set).
 function buildLine(dimId, cells, unloadSet = new Set()) {
-    const blocks = new Map();
-    const dim = makeDimension(dimId, blocks, unloadSet);
+    const f = fixture();
+    f.dim.id = dimId;
+    for (const k of unloadSet) f.unloaded.add(k);
     for (const c of cells) {
         const connections = c.connections !== undefined
             ? c.connections
             : ARM_BITS.local_e + ARM_BITS.local_w;
-        const b = makeBlock({
-            id: c.id,
-            location: { x: c.x, y: c.y, z: c.z },
-            dimension: dim,
-            connections,
-            enabled: c.enabled !== false
+        if (c.id !== GENERATOR_ID) f.put("minecraft:stone", c.x, c.y - 1, c.z);
+        f.put(c.id, c.x, c.y, c.z, {
+            [STATE_CONNECTIONS]: connections,
+            ...(c.id === GENERATOR_ID ? { [STATE_ENABLED]: c.enabled !== false } : {})
         });
-        blocks.set(`${c.x},${c.y},${c.z}`, b);
     }
-    return { dim, blocks };
+    return { dim: f.dim, blocks: f.store };
 }
 
 function nodeRef(dimId, x, y, z, lane) {
@@ -167,28 +95,28 @@ console.log("networkSplit: breaking the middle of a line splits into two");
         { x: 3, y: 0, z: 0, id: CABLE_ID },
         { x: 4, y: 0, z: 0, id: LAMP_ID }
     ]);
-    await discoverAndRegisterNetwork(blocks.get("0,0,0"));
-    await drainRuns();
+    await settled(discoverAndRegisterNetwork, blocks.get("0,0,0"));
+    await drain();
 
     const before = runtime.default.networkIdOf(nodeRef("overworld", 2, 0, 0, "main"));
-    check("the broken block is cached before removal", typeof before === "number");
+    assert.ok(typeof before === "number", "the broken block is cached before removal");
 
     const capture = captureRemovedNetworks(dim, 2, 0, 0);
-    check("capture records the removed #main ref", capture.removedRefs.has(nodeRef("overworld", 2, 0, 0, "main")));
+    assert.ok(capture.removedRefs.has(nodeRef("overworld", 2, 0, 0, "main")), "capture records the removed #main ref");
     removeBlock({ blocks }, 2, 0, 0);
-    const registered = await removeAndSplitNetwork(capture);
-    await drainRuns();
+    const registered = await settled(removeAndSplitNetwork, capture);
+    await drain();
 
-    check("exactly two networks result", registered.length === 2);
-    check("the removed node is no longer cached", runtime.default.networkIdOf(nodeRef("overworld", 2, 0, 0, "main")) === undefined);
+    assert.ok(registered.length === 2, "exactly two networks result");
+    assert.ok(runtime.default.networkIdOf(nodeRef("overworld", 2, 0, 0, "main")) === undefined, "the removed node is no longer cached");
 
     const genNet = findNet(registered, nodeRef("overworld", 0, 0, 0, "main"));
     const lampNet = findNet(registered, nodeRef("overworld", 4, 0, 0, "main"));
-    check("source side keeps its generator", genNet !== undefined);
-    check("source side is on", genNet && genNet.powered === true);
-    check("lamp side is on its own", lampNet !== undefined);
-    check("lamp side is off", lampNet && lampNet.powered === false);
-    check("runtime invariant holds", runtime.default.invariantHolds());
+    assert.ok(genNet !== undefined, "source side keeps its generator");
+    assert.ok(genNet && genNet.powered === true, "source side is on");
+    assert.ok(lampNet !== undefined, "lamp side is on its own");
+    assert.ok(lampNet && lampNet.powered === false, "lamp side is off");
+    assert.ok(runtime.default.invariantHolds(), "runtime invariant holds");
 }
 
 console.log("networkSplit: breaking a block in a loop keeps it one network");
@@ -201,19 +129,19 @@ console.log("networkSplit: breaking a block in a loop keeps it one network");
         { x: 1, y: 0, z: 1, id: CABLE_ID, connections: ARM_BITS.local_n + ARM_BITS.local_w },
         { x: 0, y: 0, z: 1, id: CABLE_ID, connections: ARM_BITS.local_e + ARM_BITS.local_n }
     ]);
-    await discoverAndRegisterNetwork(blocks.get("0,0,0"));
-    await drainRuns();
+    await settled(discoverAndRegisterNetwork, blocks.get("0,0,0"));
+    await drain();
 
     const beforeCount = runtime.default.networkCount();
     const capture = captureRemovedNetworks(dim, 1, 0, 0);
-    const registered = await removeAndSplitNetwork(capture);
-    await drainRuns();
+    const registered = await settled(removeAndSplitNetwork, capture);
+    await drain();
 
-    check("one network was cached before the break", beforeCount === 1);
-    eq(registered.length, 1, "one network remains after the break");
-    check("the loop is still one cached network", runtime.default.networkCount() === 1);
-    check("the removed node is gone", runtime.default.networkIdOf(nodeRef("overworld", 1, 0, 0, "main")) === undefined);
-    check("runtime invariant holds", runtime.default.invariantHolds());
+    assert.ok(beforeCount === 1, "one network was cached before the break");
+    assert.equal(registered.length, 1, "one network remains after the break");
+    assert.ok(runtime.default.networkCount() === 1, "the loop is still one cached network");
+    assert.ok(runtime.default.networkIdOf(nodeRef("overworld", 1, 0, 0, "main")) === undefined, "the removed node is gone");
+    assert.ok(runtime.default.invariantHolds(), "runtime invariant holds");
 }
 
 console.log("networkSplit: removing a bridge processes both of its lane networks");
@@ -226,32 +154,30 @@ console.log("networkSplit: removing a bridge processes both of its lane networks
         { x: 1, y: 0, z: -1, id: GENERATOR_ID },      // gen_ns
         { x: 1, y: 0, z: 1, id: LAMP_ID }             // lamp_ns
     ]);
-    await discoverAndRegisterNetwork(blocks.get("0,0,0"));
-    await discoverAndRegisterNetwork(blocks.get("1,0,-1"));
-    await drainRuns();
+    await settled(discoverAndRegisterNetwork, blocks.get("0,0,0"));
+    await settled(discoverAndRegisterNetwork, blocks.get("1,0,-1"));
+    await drain();
 
     const nsId = runtime.default.networkIdOf(nodeRef("overworld", 1, 0, 0, "ns"));
     const ewId = runtime.default.networkIdOf(nodeRef("overworld", 1, 0, 0, "ew"));
-    check("the bridge has two distinct cached networks", nsId !== ewId);
+    assert.ok(nsId !== ewId, "the bridge has two distinct cached networks");
 
     const capture = captureRemovedNetworks(dim, 1, 0, 0);
-    check("capture saw both bridge lanes",
-        capture.removedRefs.has(nodeRef("overworld", 1, 0, 0, "ns")) &&
-        capture.removedRefs.has(nodeRef("overworld", 1, 0, 0, "ew")));
+    assert.ok(capture.removedRefs.has(nodeRef("overworld", 1, 0, 0, "ns")) &&
+        capture.removedRefs.has(nodeRef("overworld", 1, 0, 0, "ew")), "capture saw both bridge lanes");
     // The bridge block is gone from the world by the time the split runs.
     removeBlock({ blocks }, 1, 0, 0);
-    const registered = await removeAndSplitNetwork(capture);
-    await drainRuns();
+    const registered = await settled(removeAndSplitNetwork, capture);
+    await drain();
 
-    check("no bridge lane remains cached",
-        runtime.default.networkIdOf(nodeRef("overworld", 1, 0, 0, "ns")) === undefined &&
-        runtime.default.networkIdOf(nodeRef("overworld", 1, 0, 0, "ew")) === undefined);
-    check("both lanes were rediscovered (4 single-block networks)", registered.length === 4);
+    assert.ok(runtime.default.networkIdOf(nodeRef("overworld", 1, 0, 0, "ns")) === undefined &&
+        runtime.default.networkIdOf(nodeRef("overworld", 1, 0, 0, "ew")) === undefined, "no bridge lane remains cached");
+    assert.ok(registered.length === 4, "both lanes were rediscovered (4 single-block networks)");
     const genNetEw = findNet(registered, nodeRef("overworld", 0, 0, 0, "main"));
     const genNetNs = findNet(registered, nodeRef("overworld", 1, 0, -1, "main"));
-    check("the east-west generator side is on", genNetEw && genNetEw.powered === true);
-    check("the north-south generator side is on", genNetNs && genNetNs.powered === true);
-    check("runtime invariant holds", runtime.default.invariantHolds());
+    assert.ok(genNetEw && genNetEw.powered === true, "the east-west generator side is on");
+    assert.ok(genNetNs && genNetNs.powered === true, "the north-south generator side is on");
+    assert.ok(runtime.default.invariantHolds(), "runtime invariant holds");
 }
 
 console.log("networkSplit: a surviving bridge ew seed stays on ew");
@@ -264,22 +190,20 @@ console.log("networkSplit: a surviving bridge ew seed stays on ew");
         { x: 3, y: 0, z: 0, id: CABLE_ID },
         { x: 4, y: 0, z: 0, id: LAMP_ID }
     ]);
-    await discoverAndRegisterNetwork(blocks.get("0,0,0"));
-    await drainRuns();
+    await settled(discoverAndRegisterNetwork, blocks.get("0,0,0"));
+    await drain();
 
     const capture = captureRemovedNetworks(dim, 1, 0, 0);
-    const registered = await removeAndSplitNetwork(capture);
-    await drainRuns();
+    const registered = await settled(removeAndSplitNetwork, capture);
+    await drain();
 
     const ewOwned = runtime.default.networkIdOf(nodeRef("overworld", 2, 0, 0, "ew"));
-    check("the bridge ew lane was rediscovered onto its own lane", ewOwned !== undefined);
+    assert.ok(ewOwned !== undefined, "the bridge ew lane was rediscovered onto its own lane");
     const ewNet = findNet(registered, nodeRef("overworld", 2, 0, 0, "ew"));
-    check("the ew seed followed the ew line (cable + lamp present)",
-        ewNet && ewNet.nodes.has(nodeRef("overworld", 3, 0, 0, "main")) &&
-        ewNet.nodes.has(nodeRef("overworld", 4, 0, 0, "main")));
-    check("the bridge ns lane was not pulled into any network",
-        runtime.default.networkIdOf(nodeRef("overworld", 2, 0, 0, "ns")) === undefined);
-    check("runtime invariant holds", runtime.default.invariantHolds());
+    assert.ok(ewNet && ewNet.nodes.has(nodeRef("overworld", 3, 0, 0, "main")) &&
+        ewNet.nodes.has(nodeRef("overworld", 4, 0, 0, "main")), "the ew seed followed the ew line (cable + lamp present)");
+    assert.ok(runtime.default.networkIdOf(nodeRef("overworld", 2, 0, 0, "ns")) === undefined, "the bridge ns lane was not pulled into any network");
+    assert.ok(runtime.default.invariantHolds(), "runtime invariant holds");
 }
 
 console.log("networkSplit: an unrelated cached network is left unchanged");
@@ -297,9 +221,9 @@ console.log("networkSplit: an unrelated cached network is left unchanged");
         { x: 3, y: 0, z: 0, id: CABLE_ID },
         { x: 4, y: 0, z: 0, id: LAMP_ID }
     ]);
-    await discoverAndRegisterNetwork(unrelated.blocks.get("100,0,0"));
-    await discoverAndRegisterNetwork(working.blocks.get("0,0,0"));
-    await drainRuns();
+    await settled(discoverAndRegisterNetwork, unrelated.blocks.get("100,0,0"));
+    await settled(discoverAndRegisterNetwork, working.blocks.get("0,0,0"));
+    await drain();
 
     const genRef = nodeRef("overworld", 100, 0, 0, "main");
     const lampRef = nodeRef("overworld", 102, 0, 0, "main");
@@ -307,15 +231,15 @@ console.log("networkSplit: an unrelated cached network is left unchanged");
     const beforePowered = runtime.default.snapshot().find((n) => n.nodes.has(genRef))?.powered;
 
     const capture = captureRemovedNetworks(working.dim, 2, 0, 0);
-    await removeAndSplitNetwork(capture);
-    await drainRuns();
+    await settled(removeAndSplitNetwork, capture);
+    await drain();
 
-    check("the unrelated generator keeps its id", runtime.default.networkIdOf(genRef) === beforeId);
-    check("the unrelated lamp still maps to that id", runtime.default.networkIdOf(lampRef) === beforeId);
+    assert.ok(runtime.default.networkIdOf(genRef) === beforeId, "the unrelated generator keeps its id");
+    assert.ok(runtime.default.networkIdOf(lampRef) === beforeId, "the unrelated lamp still maps to that id");
     const still = runtime.default.snapshot().find((n) => n.nodes.has(genRef));
-    check("the unrelated network keeps its powered flag", still && still.powered === beforePowered);
-    check("the unrelated network still exists", typeof runtime.default.networkIdOf(lampRef) === "number");
-    check("runtime invariant holds", runtime.default.invariantHolds());
+    assert.ok(still && still.powered === beforePowered, "the unrelated network keeps its powered flag");
+    assert.ok(typeof runtime.default.networkIdOf(lampRef) === "number", "the unrelated network still exists");
+    assert.ok(runtime.default.invariantHolds(), "runtime invariant holds");
 }
 
 console.log("networkSplit: a disabled generator reports off, an enabled one reports on");
@@ -326,8 +250,8 @@ console.log("networkSplit: a disabled generator reports off, an enabled one repo
         { x: 1, y: 0, z: 0, id: CABLE_ID },
         { x: 2, y: 0, z: 0, id: LAMP_ID }
     ]);
-    const offNet = await discoverAndRegisterNetwork(disabled.blocks.get("0,0,0"));
-    await drainRuns();
+    const offNet = await settled(discoverAndRegisterNetwork, disabled.blocks.get("0,0,0"));
+    await drain();
 
     runtime.default.clearNetworks();
     const enabled = buildLine("overworld2", [
@@ -335,12 +259,12 @@ console.log("networkSplit: a disabled generator reports off, an enabled one repo
         { x: 1, y: 0, z: 0, id: CABLE_ID },
         { x: 2, y: 0, z: 0, id: LAMP_ID }
     ]);
-    const onNet = await discoverAndRegisterNetwork(enabled.blocks.get("0,0,0"));
-    await drainRuns();
+    const onNet = await settled(discoverAndRegisterNetwork, enabled.blocks.get("0,0,0"));
+    await drain();
 
-    check("a disabled generator produces an off network", offNet.powered === false);
-    check("an enabled generator produces an on network", onNet.powered === true);
-    check("runtime invariant holds", runtime.default.invariantHolds());
+    assert.ok(offNet.powered === false, "a disabled generator produces an off network");
+    assert.ok(onNet.powered === true, "an enabled generator produces an on network");
+    assert.ok(runtime.default.invariantHolds(), "runtime invariant holds");
 }
 
 console.log("networkSplit: an unavailable neighbour chunk is guarded, not crashed");
@@ -354,22 +278,22 @@ console.log("networkSplit: an unavailable neighbour chunk is guarded, not crashe
         { x: 3, y: 0, z: 0, id: CABLE_ID },
         { x: 4, y: 0, z: 0, id: LAMP_ID }
     ], unload);
-    await discoverAndRegisterNetwork(blocks.get("0,0,0"));
-    await drainRuns();
+    await settled(discoverAndRegisterNetwork, blocks.get("0,0,0"));
+    await drain();
 
     let threw = false;
     const capture = captureRemovedNetworks(dim, 2, 0, 0);
     let registered = [];
     try {
-        registered = await removeAndSplitNetwork(capture);
+        registered = await settled(removeAndSplitNetwork, capture);
     } catch {
         threw = true;
     }
-    await drainRuns();
-    check("removal did not throw through the unloaded neighbour", !threw);
+    await drain();
+    assert.ok(!threw, "removal did not throw through the unloaded neighbour");
     const genNet = findNet(registered, nodeRef("overworld", 0, 0, 0, "main"));
-    check("the reachable source side is still processed", genNet && genNet.powered === true);
-    check("runtime invariant holds", runtime.default.invariantHolds());
+    assert.ok(genNet && genNet.powered === true, "the reachable source side is still processed");
+    assert.ok(runtime.default.invariantHolds(), "runtime invariant holds");
 }
 
 console.log("main.js: the removal filter keys on the broken permutation");
@@ -383,8 +307,8 @@ console.log("main.js: the removal filter keys on the broken permutation");
         { x: 3, y: 0, z: 0, id: CABLE_ID },
         { x: 4, y: 0, z: 0, id: LAMP_ID }
     ]);
-    await discoverAndRegisterNetwork(working.blocks.get("0,0,0"));
-    await drainRuns();
+    await settled(discoverAndRegisterNetwork, working.blocks.get("0,0,0"));
+    await drain();
     const beforeCount = runtime.default.networkCount();
 
     const breakEvent = {
@@ -396,11 +320,10 @@ console.log("main.js: the removal filter keys on the broken permutation");
     removeBlock(working, 2, 0, 0);
     fireBreak(breakEvent);
 
-    await drainRuns();
+    await drain();
 
-    check("a valid removal split into two", runtime.default.networkCount() === 2);
-    check("the source side is on via the real handler",
-        runtime.default.networkIdOf(nodeRef("overworld", 0, 0, 0, "main")) !== undefined);
+    assert.ok(runtime.default.networkCount() === 2, "a valid removal split into two");
+    assert.ok(runtime.default.networkIdOf(nodeRef("overworld", 0, 0, 0, "main")) !== undefined, "the source side is on via the real handler");
 
     // Invalid removal: a non-Starstone block must be skipped without splitting.
     runtime.default.clearNetworks();
@@ -409,8 +332,8 @@ console.log("main.js: the removal filter keys on the broken permutation");
         { x: 1, y: 0, z: 0, id: CABLE_ID },
         { x: 2, y: 0, z: 0, id: LAMP_ID }
     ]);
-    await discoverAndRegisterNetwork(other.blocks.get("0,0,0"));
-    await drainRuns();
+    await settled(discoverAndRegisterNetwork, other.blocks.get("0,0,0"));
+    await drain();
     const otherCount = runtime.default.networkCount();
     const otherRef = nodeRef("overworld3", 0, 0, 0, "main");
 
@@ -421,15 +344,11 @@ console.log("main.js: the removal filter keys on the broken permutation");
         location: { x: 1, y: 0, z: 0 }
     };
     fireBreak(invalidEvent);
-    await drainRuns();
+    await drain();
 
-    check("a non-Starstone removal queues no split work", runtime.default.networkCount() === otherCount);
-    check("the unrelated network is untouched", runtime.default.networkIdOf(otherRef) !== undefined);
-    check("runtime invariant holds", runtime.default.invariantHolds());
+    assert.ok(runtime.default.networkCount() === otherCount, "a non-Starstone removal queues no split work");
+    assert.ok(runtime.default.networkIdOf(otherRef) !== undefined, "the unrelated network is untouched");
+    assert.ok(runtime.default.invariantHolds(), "runtime invariant holds");
 }
 
-if (failures > 0) {
-    console.error(`\nnetworkSplit: ${failures} failure(s).`);
-    process.exit(1);
-}
 console.log("networkSplit: all checks passed");

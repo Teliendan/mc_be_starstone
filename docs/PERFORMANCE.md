@@ -124,9 +124,9 @@ of 4,096 positions in one chunk.
 `powerBudget.test.mjs` verifies that nothing is read synchronously, one read and at most one
 write per job step, consumers first, the unchanged-network no-op, superseding targets
 (large off, large on, small off), unloaded-node avoidance and later write, bridge lane
-isolation and that a failing scheduler does not lock the writer. `powerPropagation.test.mjs`
-covers one write per changed node, the generator skipped, adapter state and job pacing on the
-shared fixture; `integrationRegression.test.mjs` retains rapid-toggle and unloading checks.
+isolation and that a failing scheduler does not lock the writer. It also covers one write per
+changed node, the generator skipped, only the changed bridge lane written and adapter state;
+`integrationRegression.test.mjs` retains rapid-toggle and unloading checks.
 
 Enqueuing targets remains O(network members) synchronous work without world reads. Chunk
 JSON serialization, metadata graph computation, and the pure local component builder remain
