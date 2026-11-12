@@ -100,6 +100,9 @@ assert.equal(warnings.length,1,'the lazy scan does not repeat a corrupt-chunk wa
     assert.deepEqual(index.readChunk(dim,0,0),createChunkIndex(disk).readChunk(dim,0,0),'updateSource commits a copy');
     // An unchanged write costs no property read (SS-06): the committed text is cached.
     {
+        // The rebuild commit of the same topology folds the source overlay in.
+        assert.deepEqual(index.writeChunk(changed),{changed:true},'a rebuild whose block state differs from the overlay reports a change');
+        assert.deepEqual(index.writeChunk(changed),{changed:false});
         const current = index.readChunk(dim,0,0);
         reads = 0;
         assert.deepEqual(index.writeChunk(current),{changed:false});

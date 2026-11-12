@@ -36,7 +36,7 @@ unloaded-middle game test are separate tasks.
   `chunks()` scans property ids once). Only a successful head write updates the cache. `writeChunk(snapshot)` validates and durably commits a snapshot.
   `chunks()` lazily yields valid committed snapshots and isolates corrupt ones.
   `updateSource(nodeRef,on)` patches a known source summary without any block
-  reads; returns `false` for an unknown source and `true` for durable success,
+  reads (it writes the source overlay below, not the snapshot); returns `false` for an unknown source and `true` for durable success,
   including no-op. Storage exceptions propagate from all methods.
 - `buildSegmentGraph(chunks)` consumes snapshots only. Returns
   `{networks,nodeToNetwork,segmentToNetwork}`; both Maps point to network objects.
@@ -137,6 +137,27 @@ The persisted source summaries are sufficient to recompute logical power
 without reading unloaded blocks. They describe the last observed source state;
 external edits in unloaded chunks become authoritative when subsequently
 observed. Graph evaluation itself has no world reads or writes.
+
+## Source overlay (SS-06, owner choice C, 2026-11-12)
+
+A source toggle used to rewrite the whole chunk snapshot (about 26 KB for a full floor chunk). It
+now writes `starstone:sources:<encodeURIComponent(dimensionId)>|<cx>|<cz>` =
+`{"v":1,"base":"<head checksum>","on":["<sorted active source refs>"]}` (about 30-100 bytes;
+`CHUNK_SOURCES_PREFIX`, at most `CHUNK_MAX_OVERLAY_SOURCES`=256 active refs; a chunk with more
+active sources falls back to the full write). The snapshot schema stays v1 and is not migrated.
+
+- `readChunk` and `chunks()` return the snapshot with each segment's `activeSources` taken from the
+  overlay (filtered to that segment's `sources`); RAM keeps the committed snapshot and the view.
+- A rebuild commit writes the full snapshot (its `activeSources` come from block state), then
+  deletes the overlay. A rebuild whose topology text is unchanged still clears a differing overlay
+  (block state wins) and reports `changed:true`. The `base` checksum makes a leftover overlay of an
+  older snapshot inert (a crash or failed delete between head commit and cleanup is harmless).
+- Toggling back to the committed state deletes the overlay. A failed overlay write leaves RAM at the
+  previous view. A corrupt overlay warns once and is ignored (the snapshot's value wins). The lazy
+  id scan also lists overlay keys, so a load reads an overlay property only where one exists.
+- Older mod versions ignore the property and see the last rebuilt source state (the persisted
+  topology and head/pages are byte-for-byte what they read before). A v1 fixture test
+  (`chunkOverlay.test.mjs`) guards existing worlds.
 
 ## Live result versus saved metadata
 

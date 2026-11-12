@@ -10,6 +10,8 @@ import { innerNeighborAllowed, facesOfPair } from "./innerCorner.js";
 
 export const CHUNK_SCHEMA_VERSION = 1;
 export const CHUNK_PROPERTY_PREFIX = "starstone:segments:";
+export const CHUNK_SOURCES_PREFIX = "starstone:sources:";
+export const CHUNK_MAX_OVERLAY_SOURCES = 256;
 export const CHUNK_PAGE_BYTES = 24000;
 export const CHUNK_MAX_PAGES = 4096;
 const DIMENSION = /^[a-z0-9_.-]+:[a-z0-9_./-]+$/;
@@ -262,18 +264,30 @@ function deepFreeze(value) {
     return value;
 }
 
-// Only writeChunk writes these properties, so RAM mirrors disk after one lazy
-// scan. known: property base -> frozen snapshot, or undefined (absent/corrupt).
-// texts: property base -> the committed (escaped) JSON text beside each cached
-// snapshot, so an unchanged write is recognised without any property read.
+// Only writeChunk and updateSource write these properties, so RAM mirrors disk after
+// one lazy scan. known: property base -> frozen committed snapshot, or undefined
+// (absent/corrupt). texts: base -> the committed (escaped) JSON text, so an unchanged
+// write is recognised without any property read. checksums: base -> that text's checksum.
+//
+// Source overlay (schema v1 unchanged): a toggle writes only
+//   starstone:sources:<encoded dimension>|cx|cz = {"v":1,"base":<head checksum>,"on":[sorted refs]}
+// and readChunk/chunks() return the snapshot with every segment's activeSources taken from
+// it (filtered to that segment's sources). A rebuild commit writes the full snapshot (its
+// activeSources come from block state) and deletes the overlay; the `base` checksum makes a
+// leftover overlay of an older snapshot inert. An older mod version ignores the overlay and
+// sees the last rebuilt source state. overlays: base -> Set of active refs; views: base ->
+// frozen snapshot with the overlay applied (only where it differs from the committed one).
 export function createChunkIndex(storage, { warn = message => console.warn(message) } = {}) {
-    const warned = new Set(), known = new Map(), texts = new Map();
-    let scanned = false;
+    const warned = new Set(), known = new Map(), texts = new Map(), checksums = new Map();
+    const overlays = new Map(), views = new Map();
+    let scanned = false, overlayIds; // overlayIds: overlay keys seen by the scan, kept current
     function corrupt(key) {
         if (warned.has(key)) return;
         warned.add(key);
         try { warn(`[Starstone] Ignoring corrupt segment chunk ${key}`); } catch { /* Diagnostic only. */ }
     }
+    const overlayKey = base => `${CHUNK_SOURCES_PREFIX}${base.slice(CHUNK_PROPERTY_PREFIX.length)}`;
+    const visible = base => views.get(base) ?? known.get(base);
     function load(base, dimensionId, cx, cz) {
         const rawHead = storage.getDynamicProperty(`${base}:head`);
         if (rawHead === undefined) return undefined;
@@ -292,45 +306,103 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
             const snapshot = JSON.parse(text);
             if (!validateChunkSegments(snapshot) || snapshot.dimensionId !== dimensionId || snapshot.cx !== cx || snapshot.cz !== cz) throw new Error("Invalid segment snapshot");
             texts.set(base, text);
+            checksums.set(base, head.checksum);
             return deepFreeze(snapshot);
         } catch { corrupt(base); return undefined; }
     }
+    // The saved overlay of a chunk, applied to its freshly loaded snapshot. A corrupt
+    // overlay warns once and is ignored: the snapshot's own value wins. An overlay of an
+    // older snapshot (different base checksum) is inert, not corrupt.
+    function loadOverlay(base) {
+        const key = overlayKey(base);
+        if (overlayIds && !overlayIds.has(key)) return;
+        const raw = storage.getDynamicProperty(key);
+        if (raw === undefined) return;
+        try {
+            const value = JSON.parse(raw);
+            if (!value || value.v !== 1 || typeof value.base !== "string" || !Array.isArray(value.on) ||
+                value.on.length > CHUNK_MAX_OVERLAY_SOURCES || value.on.some(ref => !parseSegmentNodeRef(ref))) throw new Error("Invalid source overlay");
+            if (value.base !== checksums.get(base)) return;
+            setOverlay(base, new Set(value.on));
+        } catch { corrupt(key); }
+    }
+    function applyOverlay(snapshot, on) {
+        let differs = false;
+        const segments = snapshot.segments.map(segment => {
+            const wanted = segment.sources.filter(ref => on.has(ref)).sort();
+            if (wanted.length === segment.activeSources.length && wanted.every((ref, i) => ref === segment.activeSources[i])) return segment;
+            differs = true;
+            return { ...segment, activeSources: wanted };
+        });
+        return differs ? deepFreeze({ ...snapshot, segments }) : snapshot;
+    }
+    function setOverlay(base, on) {
+        const view = applyOverlay(known.get(base), on);
+        overlays.set(base, on);
+        if (view === known.get(base)) views.delete(base); else views.set(base, view);
+    }
+    function dropOverlay(base) { overlays.delete(base); views.delete(base); }
     function readChunk(dimensionId, cx, cz) {
         const base = propertyBase(dimensionId, cx, cz);
         // Storage exceptions propagate and leave nothing cached.
-        if (!known.has(base)) known.set(base, load(base, dimensionId, cx, cz));
-        return known.get(base);
+        if (!known.has(base)) {
+            known.set(base, load(base, dimensionId, cx, cz));
+            if (known.get(base)) loadOverlay(base);
+        }
+        return visible(base);
     }
     // `trusted`: the caller built the snapshot from a validated cached one
     // (updateSource), so the schema check is skipped.
     function writeChunk(snapshot, { trusted = false } = {}) {
         if (!trusted && !validateChunkSegments(snapshot)) throw new Error("Invalid segment snapshot");
         const base = propertyBase(snapshot.dimensionId, snapshot.cx, snapshot.cz);
-        const text = JSON.stringify(snapshot).replace(/[\u007f-\uffff]/g, char => `\\u${char.charCodeAt(0).toString(16).padStart(4, "0")}`);
+        const text = JSON.stringify(snapshot).replace(/[\u007f-￿]/g, char => `\\u${char.charCodeAt(0).toString(16).padStart(4, "0")}`);
         const pages = Math.ceil(text.length / CHUNK_PAGE_BYTES);
         if (pages > CHUNK_MAX_PAGES) throw new Error("Segment chunk exceeds page limit");
+        const sameBase = () => known.get(base) !== undefined && texts.get(base) === text;
+        // Same topology text: nothing to rewrite, but a rebuild reads the block state, which
+        // wins over a pending source overlay (and clears it).
+        const settleUnchanged = () => {
+            if (!overlays.has(base)) return { changed: false };
+            const differs = views.has(base);
+            storage.setDynamicProperty(overlayKey(base), undefined);
+            overlayIds?.delete(overlayKey(base));
+            dropOverlay(base);
+            return { changed: differs };
+        };
         // Unchanged: compare with the committed text before reading anything.
-        if (known.get(base) !== undefined && texts.get(base) === text) return { changed: false };
+        if (sameBase()) return settleUnchanged();
         const rawHead = storage.getDynamicProperty(`${base}:head`);
         let oldHead;
         if (rawHead !== undefined) {
             try { oldHead = parseHead(rawHead); } catch { corrupt(base); }
         }
-        const previous = readChunk(snapshot.dimensionId, snapshot.cx, snapshot.cz);
-        if (previous && texts.get(base) === text) return { changed: false };
+        readChunk(snapshot.dimensionId, snapshot.cx, snapshot.cz);
+        if (sameBase()) return settleUnchanged();
         const bank = oldHead ? 1 - oldHead.bank : 0;
         for (let i = 0; i < pages; i++) storage.setDynamicProperty(`${base}:${bank}:${i}`, text.slice(i * CHUNK_PAGE_BYTES, (i + 1) * CHUNK_PAGE_BYTES));
         // The sole commit point. Until this succeeds all readers retain the
         // previous complete bank. Exceptions propagate; no RAM state is advanced.
-        storage.setDynamicProperty(`${base}:head`, JSON.stringify({ v: CHUNK_SCHEMA_VERSION, bank, pages, length: text.length, checksum: checksum(text) }));
+        const sum = checksum(text);
+        storage.setDynamicProperty(`${base}:head`, JSON.stringify({ v: CHUNK_SCHEMA_VERSION, bank, pages, length: text.length, checksum: sum }));
         // Cache what a disk read would now return, never the caller's object.
         known.set(base, deepFreeze(JSON.parse(text)));
         texts.set(base, text);
+        checksums.set(base, sum);
+        dropOverlay(base);
+        // The new head already makes an old overlay inert (its base differs); deleting it is cleanup.
+        const key = overlayKey(base);
+        if (!overlayIds || overlayIds.has(key)) {
+            try { storage.setDynamicProperty(key, undefined); overlayIds?.delete(key); }
+            catch (error) { try { warn(`[Starstone] Could not delete source overlay ${key}: ${error.message}`); } catch { /* Diagnostic only. */ } }
+        }
         return { changed: true };
     }
     function* chunks() {
         if (!scanned) {
-            for (const key of storage.getDynamicPropertyIds()) {
+            const ids = [...storage.getDynamicPropertyIds()];
+            overlayIds = new Set(ids.filter(key => typeof key === "string" && key.startsWith(CHUNK_SOURCES_PREFIX)));
+            for (const key of ids) {
                 if (typeof key !== "string" || !key.startsWith(CHUNK_PROPERTY_PREFIX) || !key.endsWith(":head")) continue;
                 const parts = key.slice(CHUNK_PROPERTY_PREFIX.length, -5).split("|");
                 let dimensionId;
@@ -340,19 +412,39 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
             }
             scanned = true;
         }
-        for (const snapshot of [...known.values()]) if (snapshot) yield snapshot;
+        for (const base of [...known.keys()]) { const snapshot = visible(base); if (snapshot) yield snapshot; }
     }
+    // Patch a known source's on/off summary without any block read. Writes only the
+    // small overlay property; a chunk with very many sources falls back to a full write.
     function updateSource(ref, on) {
         const p = parseSegmentNodeRef(ref);
         if (!p || typeof on !== "boolean") return false;
         const snapshot = readChunk(p.dimensionId, chunk(p.x), chunk(p.z));
         const segment = snapshot?.segments.find(s => s.sources.includes(ref));
         if (!segment) return false;
-        const active = new Set(segment.activeSources);
+        const base = propertyBase(p.dimensionId, chunk(p.x), chunk(p.z));
+        const active = new Set(snapshot.segments.flatMap(s => s.activeSources));
+        if (active.has(ref) === on) return true;
         if (on) active.add(ref); else active.delete(ref);
-        // Cached snapshots are frozen: write a changed copy.
-        const changed = { ...segment, activeSources: [...active].sort() };
-        writeChunk({ ...snapshot, segments: snapshot.segments.map(s => s === segment ? changed : s) }, { trusted: true });
+        if (active.size > CHUNK_MAX_OVERLAY_SOURCES) {
+            // Cached snapshots are frozen: write a changed copy.
+            const next = new Set(segment.activeSources);
+            if (on) next.add(ref); else next.delete(ref);
+            const changed = { ...segment, activeSources: [...next].sort() };
+            writeChunk({ ...snapshot, segments: snapshot.segments.map(s => s === segment ? changed : s) }, { trusted: true });
+            return true;
+        }
+        const key = overlayKey(base);
+        const committed = new Set(known.get(base).segments.flatMap(s => s.activeSources));
+        if (active.size === committed.size && [...active].every(item => committed.has(item))) {
+            // Back at the committed state: no overlay needed.
+            if (overlays.has(base)) { storage.setDynamicProperty(key, undefined); overlayIds?.delete(key); }
+            dropOverlay(base);
+        } else {
+            storage.setDynamicProperty(key, JSON.stringify({ v: 1, base: checksums.get(base), on: [...active].sort() }));
+            overlayIds?.add(key);
+            setOverlay(base, active);
+        }
         return true;
     }
     return { readChunk, writeChunk, chunks, updateSource };
