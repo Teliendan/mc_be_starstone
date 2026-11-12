@@ -1,7 +1,7 @@
 // SS-01 steps 1-3: an edit rebuilds only the chunk it changed; in-place state
 // changes at an indexed position still reach the chunk snapshot.
 import assert from 'node:assert/strict';
-import { mc, fixture, drain } from './runtimeFixture.mjs';
+import { mc, fixture, drain, worldProperties } from './runtimeFixture.mjs';
 const controller = await import('../starstone_bp/scripts/chunkController.js');
 const cable = await import('../starstone_bp/scripts/cableComponent.js');
 const mutation = await import('../starstone_bp/scripts/mutationController.js');
@@ -9,10 +9,7 @@ const { placementIndex } = await import('../starstone_bp/scripts/persistence.js'
 const { chunkIndex, buildIndexedChunkSegments, buildChunkSegments } = await import('../starstone_bp/scripts/chunkIndex.js');
 const { descriptorForBlock } = await import('../starstone_bp/scripts/electricalBlocks.js');
 const runtime = (await import('../starstone_bp/scripts/networkRuntime.js')).default;
-const props = new Map();
-mc.world.getDynamicProperty = key => props.get(key);
-mc.world.getDynamicPropertyIds = () => [...props.keys()];
-mc.world.setDynamicProperty = (key, value) => value === undefined ? props.delete(key) : props.set(key, value);
+const props = worldProperties();
 globalThis.__mcDimensions = new Map();
 controller.registerChunkController();
 mutation.registerMutationController();

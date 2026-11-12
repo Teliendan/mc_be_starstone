@@ -4,7 +4,7 @@
 // darkens the cut-off part at once, and reconnecting lights it without a flash
 // back to off.
 import assert from 'node:assert/strict';
-import { mc, fixture, player, drain } from './runtimeFixture.mjs';
+import { mc, fixture, player, drain, worldProperties } from './runtimeFixture.mjs';
 const controller = await import('../starstone_bp/scripts/chunkController.js');
 const { placementIndex } = await import('../starstone_bp/scripts/persistence.js');
 const { chunkIndex } = await import('../starstone_bp/scripts/chunkIndex.js');
@@ -13,10 +13,7 @@ const { schedulePlaced, flushPending } = await import('../starstone_bp/scripts/c
 const { reactToGeneratorToggle } = await import('../starstone_bp/scripts/generatorComponent.js');
 const repair = await import('../starstone_bp/scripts/repair.js');
 
-const props = new Map();
-mc.world.getDynamicProperty = key => props.get(key);
-mc.world.getDynamicPropertyIds = () => [...props.keys()];
-mc.world.setDynamicProperty = (key,value) => value === undefined ? props.delete(key) : props.set(key,value);
+const props = worldProperties();
 globalThis.__mcDimensions = new Map();
 const f = fixture(); f.dim.id = 'test:stale';
 globalThis.__mcDimensions.set(f.dim.id, f.dim);

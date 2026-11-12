@@ -1,15 +1,12 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { mc, fixture, player, drain } from './runtimeFixture.mjs';
+import { mc, fixture, player, drain, worldProperties } from './runtimeFixture.mjs';
 const mutation = await import('../starstone_bp/scripts/mutationController.js');
 const repair = await import('../starstone_bp/scripts/repair.js');
 const { placementIndex } = await import('../starstone_bp/scripts/persistence.js');
 const runtime = (await import('../starstone_bp/scripts/networkRuntime.js')).default;
 globalThis.__mcDimensions = new Map();
-const props = new Map();
-mc.world.getDynamicProperty = key => props.get(key);
-mc.world.getDynamicPropertyIds = () => [...props.keys()];
-mc.world.setDynamicProperty = (key, value) => value === undefined ? props.delete(key) : props.set(key, value);
+const props = worldProperties();
 function world(id) {
     const f = fixture(); f.dim.id = id;
     globalThis.__mcDimensions.set(id, f.dim);

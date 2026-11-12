@@ -114,6 +114,14 @@ export function fixture() {
     }
     return { dim, put, store, unloaded };
 }
+// A dynamic-property store on the fake world (undefined deletes, as the engine does).
+export function worldProperties() {
+    const props = new Map();
+    mc.world.getDynamicProperty = key => props.get(key);
+    mc.world.getDynamicPropertyIds = () => [...props.keys()];
+    mc.world.setDynamicProperty = (key, value) => value === undefined ? props.delete(key) : props.set(key, value);
+    return props;
+}
 export function player(dim, target) {
     return {
         typeId: 'minecraft:player', isValid: true, dimension: dim, location: { x:0,y:0,z:0 }, messages: [], rawMessages: [],

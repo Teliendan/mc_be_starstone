@@ -2,7 +2,7 @@
 // re-walking the whole network. The oracle in miniature compares every runtime
 // network with a full rediscovery after each placement.
 import assert from 'node:assert/strict';
-import { mc, fixture, drain } from './runtimeFixture.mjs';
+import { mc, fixture, drain, worldProperties } from './runtimeFixture.mjs';
 const cable = await import('../starstone_bp/scripts/cableComponent.js');
 const controller = await import('../starstone_bp/scripts/chunkController.js');
 const { discoverNetwork } = await import('../starstone_bp/scripts/networkGraph.js');
@@ -11,10 +11,7 @@ const runtime = (await import('../starstone_bp/scripts/networkRuntime.js')).defa
 const { anySourceOn } = await import('../starstone_bp/scripts/networkController.js');
 const { chunkIndex, buildIndexedChunkSegments } = await import('../starstone_bp/scripts/chunkIndex.js');
 const { placementIndex } = await import('../starstone_bp/scripts/persistence.js');
-const props = new Map();
-mc.world.getDynamicProperty = key => props.get(key);
-mc.world.getDynamicPropertyIds = () => [...props.keys()];
-mc.world.setDynamicProperty = (key, value) => value === undefined ? props.delete(key) : props.set(key, value);
+const props = worldProperties();
 globalThis.__mcDimensions = new Map();
 controller.registerChunkController();
 let counter = 0;

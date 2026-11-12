@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mc, fixture, player, drain } from './runtimeFixture.mjs';
+import { mc, fixture, player, drain, worldProperties } from './runtimeFixture.mjs';
 const controller = await import('../starstone_bp/scripts/chunkController.js');
 const { placementIndex } = await import('../starstone_bp/scripts/persistence.js');
 const { chunkIndex } = await import('../starstone_bp/scripts/chunkIndex.js');
@@ -7,10 +7,7 @@ const { reactToGeneratorToggle } = await import('../starstone_bp/scripts/generat
 const { sourceChanged, notifyNetworkDiscovered } = await import('../starstone_bp/scripts/networkEvents.js');
 const repair = await import('../starstone_bp/scripts/repair.js');
 const runtime = (await import('../starstone_bp/scripts/networkRuntime.js')).default;
-const props = new Map();
-mc.world.getDynamicProperty = key => props.get(key);
-mc.world.getDynamicPropertyIds = () => [...props.keys()];
-mc.world.setDynamicProperty = (key,value) => value === undefined ? props.delete(key) : props.set(key,value);
+const props = worldProperties();
 // Keys of the removed write-only families, present in an old world save.
 props.set('starstone:source_state:old|0|0|0%23main',true);
 props.set('starstone:logical_power:old%7C0',false);
