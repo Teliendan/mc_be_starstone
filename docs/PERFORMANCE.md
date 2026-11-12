@@ -5,9 +5,10 @@ safe in-game network limit is claimed. Real 1k/5k/10k tick budgets are an open i
 ([TEST-WORLD.md](TEST-WORLD.md) item 23). Retired: `docs/SCRIPT_PERFORMANCE.md` and
 `docs/STRESS.md` in git `1492493`.
 
-Summary of the budgets in force: power planning reads at most 32 nodes per callback, power
-writes at most 16 per callback (a deferred large request keeps at most 32 queued writes);
-recovery and cosmetic refresh handle at most 32 registered positions per deferred callback
+Summary of the budgets in force: power visuals are written by one engine-paced `system.runJob`
+generator (SS-09, 2026-11-12): each step reads one block and writes at most one permutation, then
+yields, so the engine's job budget sets the pace and a newer state for a node supersedes an unread
+one; recovery and cosmetic refresh handle at most 32 registered positions per deferred callback
 every 100 ticks; validation visits at most 16 indexed cursor entries every 100 ticks; the
 chunk observer checks at most 32 cached chunk candidates every 100 ticks.
 
@@ -35,8 +36,8 @@ values. Undefined/unavailable reads retain state. The timer starts with the firs
 tracked input and stops after the last stale entry is removed. Unloaded entries
 are retained. This is a code bound, not a profiler/FPS result.
 
-The power planner/write queue retains its32-node/16-write budgets and newer-state
-coalescing. No unbounded pulse queue or replay/stretching service is introduced.
+Power writes use one engine-paced job with newer-state coalescing (see "Measured change"; the
+earlier 32-node/16-write budgets were removed 2026-11-12). No unbounded pulse queue or replay/stretching service is introduced.
 Actual short-pulse delivery in large networks remains a native acceptance check.
 
 Tests: `redstoneAdapters.test.mjs`, real `eventWiring.test.mjs`, support/contacts,
@@ -78,19 +79,18 @@ Before bounded planning, applying power read 1,001 / 5,001 / 10,001 world blocks
 in the calling stack, although permutation writes already drained 16 at a time.
 The concrete write queue peaked at 1,000 / 5,000 / 10,000 entries respectively.
 
-Power propagation now defers plans for networks above `PLAN_BATCH=32`. One
-planning callback reads at most 32 nodes, and concrete writes retain
-`WRITE_BATCH=16`. Backpressure limits a large request's concrete write backlog to
-32 entries. Pending plans retain only references, desired booleans, dimension
-handles, and progress records. New targets supersede old unread plans and queued
-writes per node/state; bridge lane state keys remain independent. Small networks
-still return exact immediate planned-write counts, preserving the existing API.
-
-Large `applyPower` calls return live `{written,unresolved,pending}` counters.
-`written` counts actual scheduled state changes, not candidate members. `pending`
-becomes zero after planning or supersession; writes may still be draining.
-`powerStats()` preserves `queued`, `peakQueued`, `appliedWrites`, `writeBudget`
-and adds `planning`, `peakPlanning`, `planningBudget`.
+2026-11-12 (SS-09, owner decision): the plan/write queues and their batch constants
+(`PLAN_BATCH=32`, `WRITE_BATCH=16`, backpressure 32) are gone. `applyPower` stores one target per
+node and lane (consumers first, a newer state deletes and re-inserts the entry) and starts one
+`system.runJob` generator that walks the live Map: per step it checks `isChunkLoaded` (unloaded ->
+`pendingReconciliation`), reads the block, and calls `setPermutation` only on a difference, then
+yields. One read and at most one write per step; the engine's per-tick job budget sets the pace
+(not measured in game; the owner checks a long wire on PC and tablet). Bridge lane keys stay
+independent. `applyPower` always returns live `{written,unresolved,pending}`: `written` counts
+actual state changes, `pending` reaches zero when every target was processed or superseded.
+`powerStats()` keeps `queued` (targets), `peakQueued`, `appliedWrites`; `planning` is 1 while the job
+runs. Fixture turns now equal job steps (one step per turn). The table below is the
+2026-09-28 run of the previous batching and is kept as history; its callback columns do not apply.
 
 Latest run on 2026-09-28, Node 22.14.0:
 
@@ -121,18 +121,15 @@ of 4,096 positions in one chunk.
 
 ## Regression coverage and limits
 
-`powerBudget.test.mjs` verifies deferred large-network reads, per-callback read
-and write budgets, backpressure, unchanged-network no-op behavior, superseding
-toggles and small splits, unloaded-block avoidance, and bridge lane isolation.
-The existing `powerPropagation.test.mjs` still verifies the pure planner and
-exact small-network return counts; `integrationRegression.test.mjs` retains
-rapid-toggle and unloading checks.
+`powerBudget.test.mjs` verifies that nothing is read synchronously, one read and at most one
+write per job step, consumers first, the unchanged-network no-op, superseding targets
+(large off, large on, small off), unloaded-node avoidance and later write, bridge lane
+isolation and that a failing scheduler does not lock the writer. `powerPropagation.test.mjs`
+covers one write per changed node, the generator skipped, adapter state and job pacing on the
+shared fixture; `integrationRegression.test.mjs` retains rapid-toggle and unloading checks.
 
-Enqueuing pending references remains O(network members) synchronous work without
-world reads. Multiple separate small calls can collectively schedule more than
-32 writes; the 32-entry backlog measurement applies to deferred large requests,
-while write callbacks still cap actual writes at 16. Chunk JSON serialization,
-metadata graph computation, and the pure local component builder remain
+Enqueuing targets remains O(network members) synchronous work without world reads. Chunk
+JSON serialization, metadata graph computation, and the pure local component builder remain
 synchronous CPU work and require real dense-chunk/game profiling. No claim of
 in-game compatibility, rendering performance, unloaded-middle continuity, or
 watchdog safety follows from these Node measurements.

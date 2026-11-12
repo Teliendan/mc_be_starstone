@@ -26,7 +26,8 @@ globalThis.__mcRun = (cb) => {
     runCalls.push(cb);
     if (invoke) cb();
 };
-globalThis.__mcRunJob = () => {};
+// Power writes run as one job: step it to completion in the same call.
+globalThis.__mcRunJob = (job) => { while (!job.next().done); };
 globalThis.__mcRunInterval = () => {};
 
 const runtime = await import(

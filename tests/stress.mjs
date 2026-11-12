@@ -22,17 +22,19 @@ for (const count of [1000,5000,10000]) {
     const source = f.put('starstone:generator',0,0,0);
     placements.record(source);
     for (let x=1; x<=count; x++) placements.record(f.put('starstone:cable',x,0,0,{'starstone:connections':10}));
-    let jobSteps = 0, callbacks = 0, reads=0, maxCallbackReads=0, peakQueued=0, peakPlanning=0;
+    let jobSteps = 0, reads=0, maxStepReads=0, peakQueued=0, peakPlanning=0, powerSteps=0, measuring=false;
     const getBlock=f.dim.getBlock;
     f.dim.getBlock=p=>{ reads++; return getBlock(p); };
-    const run = globalThis.__mcRun, job = globalThis.__mcRunJob;
-    globalThis.__mcRun = callback => run(() => {
-        callbacks++; const before=reads; callback();
-        maxCallbackReads=Math.max(maxCallbackReads,reads-before);
-        peakQueued=Math.max(peakQueued,powerStats().queued);
-        peakPlanning=Math.max(peakPlanning,powerStats().planning || 0);
-    });
-    globalThis.__mcRunJob = generator => job((function*() { while (true) { jobSteps++; const result=generator.next(); if (result.done) return result.value; yield result.value; } })());
+    const job = globalThis.__mcRunJob;
+    globalThis.__mcRunJob = generator => job((function*() {
+        while (true) {
+            jobSteps++; const before=reads;
+            const result=generator.next();
+            if (measuring) { powerSteps++; maxStepReads=Math.max(maxStepReads,reads-before); peakQueued=Math.max(peakQueued,powerStats().queued); }
+            if (result.done) return result.value;
+            yield result.value;
+        }
+    })());
     const start = performance.now();
     const discovery = discoverNetwork(source);
     await drain();
@@ -53,16 +55,18 @@ for (const count of [1000,5000,10000]) {
     assert.equal(logical.networks[0].powered,true);
     const segmentMs=performance.now()-segmentStart;
     const before=powerStats().appliedWrites;
-    callbacks=0;
+    measuring=true;
     const powerStart=performance.now();
     const beforeReads=reads;
     applyPower({...net,powered:true},f.dim);
     const synchronousPowerReads=reads-beforeReads;
-    peakQueued=powerStats().queued;
+    peakQueued=powerStats().peakQueued;
     peakPlanning=powerStats().planning || 0;
     await drain();
+    measuring=false;
     assert.equal(powerStats().appliedWrites-before,count);
+    assert.equal(maxStepReads,1,'one read per power job step');
     assert.equal(f.dim.getBlock({x:count,y:0,z:0}).permutation.getState('starstone:powered'),true);
-    console.log(JSON.stringify({cables:count,topologyJobSteps,topologyMs:Math.round(topologyMs),segmentSteps,segmentMs:Math.round(segmentMs),powerCallbacks:callbacks,powerMs:Math.round(performance.now()-powerStart),synchronousPowerReads,maxCallbackReads,peakQueued,peakPlanning,heapDeltaBytes:process.memoryUsage().heapUsed-heapStart,dynamicPropertyBytes:[...values.values()].reduce((sum,v)=>sum+Buffer.byteLength(v,'utf8'),0),maxPropertyBytes:Math.max(...[...values.values()].map(v=>Buffer.byteLength(v,'utf8'))),gameTicks:'not measured',watchdog:'not available in Node'}));
-    globalThis.__mcRun=run; globalThis.__mcRunJob=job;
+    console.log(JSON.stringify({cables:count,topologyJobSteps,topologyMs:Math.round(topologyMs),segmentSteps,segmentMs:Math.round(segmentMs),powerJobSteps:powerSteps,powerMs:Math.round(performance.now()-powerStart),synchronousPowerReads,maxStepReads,peakQueued,peakPlanning,heapDeltaBytes:process.memoryUsage().heapUsed-heapStart,dynamicPropertyBytes:[...values.values()].reduce((sum,v)=>sum+Buffer.byteLength(v,'utf8'),0),maxPropertyBytes:Math.max(...[...values.values()].map(v=>Buffer.byteLength(v,'utf8'))),gameTicks:'not measured',watchdog:'not available in Node'}));
+    globalThis.__mcRunJob=job;
 }

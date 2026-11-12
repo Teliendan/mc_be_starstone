@@ -609,7 +609,7 @@
         },
         {
           "path": "starstone_bp/scripts/powerPropagation.js",
-          "sha256": "078d92820eb87b3d005e99d858a32d66039f9dde959f18914092d3e726ebe6cd"
+          "sha256": "1b582ced6368d8c79f4523079962d866ec5bf8f678b4c13e4da47eabfe95ad69"
         },
         {
           "path": "starstone_bp/scripts/redstoneAdapters.js",

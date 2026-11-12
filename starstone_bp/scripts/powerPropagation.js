@@ -13,10 +13,12 @@
 // Only blocks whose applicable powered state actually changes are written, and
 // each such write changes just that one state through `block.permutation` so
 // every unrelated state (mounting face, connections, axis, enabled, light) is
-// preserved. Writes are deferred with `system.run(...)` because the triggering
-// callback may be in restricted execution, and they are spread over several
-// callbacks with bounded read/write budgets. Actual watchdog safety still needs
-// an in-game measurement. Locations whose chunk is unloaded are skipped and left in
+// preserved. Writes are deferred to one engine-paced `system.runJob` generator
+// (owner decision SS-09, 2026-11-12): each step reads one block and writes at
+// most one permutation, then yields, so the engine's per-tick job budget sets
+// the pace. A newer target for the same node and lane supersedes an older unread
+// one and moves to the end. Actual frame/tick safety still needs an in-game
+// measurement. Locations whose chunk is unloaded are skipped and left in
 // pendingReconciliation for a later reconcile pass (see Task 7.5); the block
 // is never touched while it cannot be reached.
 //
@@ -47,37 +49,19 @@ const TAG = "[Starstone]";
 // absent and never rewritten by this module.
 const POWERED_CAPABLE = new Set([CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, CONDUIT_ID, LAMP_ID, REDSTONE_INPUT_ID, REDSTONE_OUTPUT_ID]);
 
-// How many permutation writes one job tick may apply. Small and fixed so the
-// per-tick budget is predictable regardless of network size.
-const WRITE_BATCH = 16;
-// Large networks defer world reads as well as writes. The synchronous fast path
-// and each planning callback inspect at most this many nodes.
-export const PLAN_BATCH = 32;
-const MAX_QUEUED_WRITES = WRITE_BATCH * 2;
-
-// Deferred writes still to apply, each a plain record (no Block):
-//   { dimension, x, y, z, state, value }
-const queue = new Map();
-function writeKey(dimension, x, y, z, state) {
-    return `${dimension.id}|${x}|${y}|${z}|${state}`;
-}
-let busy = false;
+// Pending targets, one per node and lane, in application order (consumers first):
+//   { ref, dimension, x, y, z, lane, powered, progress }
+// The job deletes an entry before processing it; applyPower deletes and
+// re-inserts, so the live Map iterator below sees every newer state.
+const targets = new Map();
+let running = false;
 let peakQueued = 0;
 let appliedWrites = 0;
-const planning = new Map();
-let planningBusy = false;
-let peakPlanning = 0;
 export function powerStats() {
-    return { queued: queue.size, peakQueued, appliedWrites, writeBudget: WRITE_BATCH,
-        planning: planning.size, peakPlanning, planningBudget: PLAN_BATCH };
+    return { queued: targets.size, peakQueued, appliedWrites, planning: running ? 1 : 0 };
 }
-function planKey(dimension, x, y, z, lane) {
-    return writeKey(dimension, x, y, z, `plan:${lane}`);
-}
-function clearQueuedLane(dimension, x, y, z, lane) {
-    const states = lane === LANE_NS || lane === LANE_EW
-        ? [poweredStateForLane(lane)] : [STATE_POWERED, STATE_STAR_POWERED];
-    for (const state of states) queue.delete(writeKey(dimension, x, y, z, state));
+function targetKey(dimension, x, y, z, lane) {
+    return `${dimension.id}|${x}|${y}|${z}|plan:${lane}`;
 }
 
 // NodeRefs whose chunk was unloaded when power was computed. Left here so a
@@ -126,245 +110,96 @@ function parseNodeRef(nodeRef) {
     return { dim, x, y, z, lane };
 }
 
-// Read a node's current applicable powered value as the planner understands it:
-//
-//   { state, value }  the block is powered-capable and loaded; value is the
-//                      current boolean of that one block state
-//   "unloaded"        the chunk holding the block is not yet loaded
-//   "none"            the block is gone, invalid, malformed, or not a block
-//                      that owns a powered state (e.g. a generator)
-//
-// A failed read is treated as "none" rather than thrown, so one bad block can
-// never abort a whole network's power pass.
-export function makeCurrentPowered(dimension) {
-    return function currentPowered(nodeRef) {
-        const parsed = parseNodeRef(nodeRef);
-        if (!parsed) {
-            return "none";
-        }
-        try {
-            const location = { x: parsed.x, y: parsed.y, z: parsed.z };
-            if (!dimension.isChunkLoaded(location)) {
-                return "unloaded";
-            }
-            const block = dimension.getBlock(location);
-            if (!block || !block.isValid) {
-                return "none";
-            }
-            const typeId = block.type.id;
-            if (!POWERED_CAPABLE.has(typeId)) {
-                return "none";
-            }
-            const state = typeId === REDSTONE_INPUT_ID ? STATE_STAR_POWERED : poweredStateForLane(parsed.lane);
-            const current = block.permutation.getState(state);
-            if (current === undefined) return "none";
-            const pending = queue.get(writeKey(dimension, parsed.x, parsed.y, parsed.z, state));
-            return { state, value: pending ? pending.value : Boolean(current) };
-        } catch {
-            return "none";
-        }
-    };
+// The powered state a block owns for a lane, as { state, value }, or "none" when
+// the block cannot carry one (gone, not powered-capable, state missing).
+function currentOf(block, lane) {
+    if (!block || !block.isValid) return "none";
+    const typeId = block.type.id;
+    if (!POWERED_CAPABLE.has(typeId)) return "none";
+    const state = typeId === REDSTONE_INPUT_ID ? STATE_STAR_POWERED : poweredStateForLane(lane);
+    const current = block.permutation.getState(state);
+    if (current === undefined) return "none";
+    return { state, value: Boolean(current) };
 }
 
-// Decide which nodes change and which are still pending, without touching the
-// world. `currentPowered(nodeRef)` returns the shape documented above. Returns
-// { writes, unresolved } where each write is
-//   { ref, x, y, z, state, value }
-// This is the pure core shared by the runtime pass and the unit test.
-export function planPowerWrites(network, currentPowered) {
-    const writes = [];
-    const unresolved = [];
-    if (!network || !(network.nodes instanceof Set)) {
-        return { writes, unresolved };
-    }
-    const powered = Boolean(network.powered);
-    for (const ref of network.nodes) {
-        let current;
-        try {
-            current = currentPowered(ref);
-        } catch {
-            continue;
-        }
-        if (current === "unloaded") {
-            unresolved.push(ref);
-            continue;
-        }
-        if (current === "none") {
-            continue;
-        }
-        if (current.value === powered) {
-            continue;
-        }
-        const parsed = parseNodeRef(ref);
-        writes.push({
-            ref,
-            x: parsed.x,
-            y: parsed.y,
-            z: parsed.z,
-            state: current.state,
-            value: powered
-        });
-    }
-    return { writes, unresolved };
-}
-
-// Enqueue deferred writes and start draining them one batch per tick.
-function enqueueWrites(dimension, writes) {
-    for (const w of writes) {
-        queue.set(writeKey(dimension, w.x, w.y, w.z, w.state), {
-            ref: w.ref,
-            dimension,
-            x: w.x,
-            y: w.y,
-            z: w.z,
-            state: w.state,
-            value: w.value
-        });
-    }
-    peakQueued = Math.max(peakQueued, queue.size);
-    if (busy || queue.size === 0) {
-        return;
-    }
-    busy = true;
-    try { system.run(processNextBatch); }
-    catch (error) { busy = false; throw error; }
-}
-
-// Apply one batch of writes, then schedule the next batch. Each write re-reads
-// the block so a concurrent change is not clobbered, and skips when the state
-// already matches or the block is gone.
-function processNextBatch() {
-    const batch = [];
-    for (const entry of queue) {
-        batch.push(entry);
-        if (batch.length === WRITE_BATCH) break;
-    }
-    for (const [key, w] of batch) {
-        queue.delete(key);
-        try {
-            if (!w.dimension.isChunkLoaded(w)) {
-                pendingReconciliation.add(w.ref);
-                continue;
-            }
-            const block = w.dimension.getBlock({ x: w.x, y: w.y, z: w.z });
-            if (!block || !block.isValid) {
-                continue;
-            }
-            const current = block.permutation.getState(w.state);
-            if (!POWERED_CAPABLE.has(block.type.id) || current === undefined) continue;
-            pendingReconciliation.delete(w.ref);
-            if (Boolean(current) === w.value) {
-                continue;
-            }
-            block.setPermutation(block.permutation.withState(w.state, w.value));
-            appliedWrites++;
-        } catch (err) {
-            pendingReconciliation.add(w.ref);
-            console.warn(`${TAG} Could not set ${w.state}=${w.value}: ${err.message}`);
-        }
-    }
-    if (queue.size > 0) {
-        try { system.run(processNextBatch); }
-        catch (error) { busy = false; throw error; }
-    } else {
-        busy = false;
-    }
-}
-
-function cancelPlan(key) {
-    const old = planning.get(key);
-    if (old) {
-        old.progress.pending--;
-        planning.delete(key);
-    }
-}
-
-function schedulePlanning() {
-    if (planningBusy || planning.size === 0) return;
-    planningBusy = true;
-    try { system.run(processPlanningBatch); }
-    catch (error) { planningBusy = false; throw error; }
-}
-
-function processPlanningBatch() {
-    // Backpressure prevents a faster planner from accumulating thousands of
-    // concrete block writes while the write queue drains at 16 per callback.
-    const budget = Math.min(PLAN_BATCH, Math.max(0, MAX_QUEUED_WRITES - queue.size));
-    let inspected = 0;
+// One job step: read the block, write at most one state. Unreachable or failing
+// nodes go to pendingReconciliation; the block is never touched while unloaded.
+function applyTarget(target) {
+    const { ref, dimension, x, y, z, lane, powered, progress } = target;
     try {
-        for (const [key, task] of planning) {
-            if (inspected >= budget) break;
-            inspected++;
-            planning.delete(key);
-            task.progress.pending--;
-            const { writes, unresolved } = planPowerWrites(
-                { nodes: new Set([task.ref]), powered: task.powered },
-                makeCurrentPowered(task.dimension)
-            );
-            task.progress.written += writes.length;
-            task.progress.unresolved += unresolved.length;
-            for (const ref of unresolved) pendingReconciliation.add(ref);
-            enqueueWrites(task.dimension, writes);
+        if (!dimension.isChunkLoaded({ x, y, z })) {
+            pendingReconciliation.add(ref);
+            progress.unresolved++;
+            return;
+        }
+        const block = dimension.getBlock({ x, y, z });
+        const current = currentOf(block, lane);
+        if (current === "none") return;
+        pendingReconciliation.delete(ref);
+        if (current.value === powered) return;
+        block.setPermutation(block.permutation.withState(current.state, powered));
+        appliedWrites++;
+        progress.written++;
+    } catch (err) {
+        pendingReconciliation.add(ref);
+        console.warn(`${TAG} Could not set power for ${ref}: ${err.message}`);
+    }
+}
+
+function* writer() {
+    try {
+        for (const [key, target] of targets) {
+            targets.delete(key);
+            target.progress.pending--;
+            applyTarget(target);
+            yield;
         }
     } finally {
-        // A failed scheduler call must not permanently lock later retries.
-        planningBusy = false;
+        running = false;
+        // Targets added while the last step yielded are normally seen by the
+        // live iterator; this covers an interrupted job.
+        if (targets.size > 0) {
+            try { startJob(); } catch (error) { console.warn(`${TAG} Could not restart power writer: ${error.message}`); }
+        }
     }
-    schedulePlanning();
 }
 
-// Apply a network's power to every loaded cable, bridge lane, conduit and lamp.
-// For <= PLAN_BATCH nodes, returns exact { written, unresolved } immediately.
-// Larger calls return live { written, unresolved, pending } progress: counts
-// advance as bounded planning callbacks run. pending includes only unread plans,
-// and reaches zero when planned (or superseded), not when visuals finish writing.
+function startJob() {
+    if (running || targets.size === 0) return;
+    running = true;
+    try { system.runJob(writer()); }
+    catch (error) { running = false; throw error; }
+}
+
+// Set the power of every node of a network: consumers first (the visible result
+// of a circuit, so a distant lamp does not wait behind every cable), then the
+// rest. Returns live { written, unresolved, pending } progress: written counts
+// actual state changes, pending reaches zero when every target was processed or
+// superseded. Nothing is read or written synchronously.
 export function applyPower(network, dimension) {
     if (!network || !(network.nodes instanceof Set) || !dimension) {
-        return { written: 0, unresolved: 0 };
+        return { written: 0, unresolved: 0, pending: 0 };
     }
-    if (network.nodes.size > PLAN_BATCH) {
-        const progress = { written: 0, unresolved: 0, pending: 0 };
-        // Consumers are the visible result of a circuit. On a long run the
-        // bounded planner would otherwise reach a distant lamp only after
-        // reading and writing every cable before it (one batch per tick).
-        // Plan consumers first while retaining the same per-tick budgets.
-        const consumers = network.consumers instanceof Set ? network.consumers : new Set();
-        for (const refs of [consumers, network.nodes]) for (const ref of refs) {
-            if ((refs === consumers && !network.nodes.has(ref)) ||
-                (refs === network.nodes && consumers.has(ref))) continue;
-            const parsed = parseNodeRef(ref);
-            if (!parsed) continue;
-            const key = planKey(dimension, parsed.x, parsed.y, parsed.z, parsed.lane);
-            cancelPlan(key);
-            // A newer logical result supersedes both an older unread plan and
-            // a queued visual write. Its eventual read sees actual block state.
-            clearQueuedLane(dimension, parsed.x, parsed.y, parsed.z, parsed.lane);
-            planning.set(key, { ref, dimension, powered: Boolean(network.powered), progress });
-            progress.pending++;
-        }
-        peakPlanning = Math.max(peakPlanning, planning.size);
-        schedulePlanning();
-        return progress;
-    }
-    // A small split/toggle can supersede part of a large outstanding pass.
-    for (const ref of network.nodes) {
+    const progress = { written: 0, unresolved: 0, pending: 0 };
+    const consumers = network.consumers instanceof Set ? network.consumers : new Set();
+    const powered = Boolean(network.powered);
+    for (const refs of [consumers, network.nodes]) for (const ref of refs) {
+        if ((refs === consumers && !network.nodes.has(ref)) ||
+            (refs === network.nodes && consumers.has(ref))) continue;
         const parsed = parseNodeRef(ref);
-        if (parsed) cancelPlan(planKey(dimension, parsed.x, parsed.y, parsed.z, parsed.lane));
+        if (!parsed) continue;
+        const key = targetKey(dimension, parsed.x, parsed.y, parsed.z, parsed.lane);
+        const old = targets.get(key);
+        if (old) { old.progress.pending--; targets.delete(key); }
+        targets.set(key, { ref, dimension, x: parsed.x, y: parsed.y, z: parsed.z, lane: parsed.lane, powered, progress });
+        progress.pending++;
     }
-    const { writes, unresolved } = planPowerWrites(
-        network,
-        makeCurrentPowered(dimension)
-    );
-    enqueueWrites(dimension, writes);
-    for (const ref of unresolved) {
-        pendingReconciliation.add(ref);
-    }
-    return { written: writes.length, unresolved: unresolved.length };
+    peakQueued = Math.max(peakQueued, targets.size);
+    startJob();
+    return progress;
 }
 
 // The nodeRefs still waiting on an unloaded chunk, for a later reconcile pass.
 export function pendingUnresolved() {
     return pendingReconciliation;
 }
-
-export { WRITE_BATCH };
