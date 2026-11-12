@@ -15,7 +15,7 @@ import { system } from "@minecraft/server";
 import runtime, { isCompleteNetwork } from "./networkRuntime.js";
 import { anySourceOn } from "./networkController.js";
 import { applyPower } from "./powerPropagation.js";
-import { GENERATOR_ID, STATE_ENABLED } from "./constants.js";
+import { STATE_ENABLED } from "./constants.js";
 import { nodeRef } from "./blockKeys.js";
 import { sourceChanged } from "./networkEvents.js";
 import { schedulePlaced } from "./cableComponent.js";
@@ -65,7 +65,6 @@ export function registerGeneratorController() {
         event.blockComponentRegistry.registerCustomComponent("starstone:generator", {
             onPlace({ block }) { schedulePlaced(block); },
             onPlayerInteract({ block }) {
-                if (!block || !block.isValid || block.type.id !== GENERATOR_ID) return;
                 try {
                     const enabled = Boolean(block.permutation.getState(STATE_ENABLED));
                     block.setPermutation(block.permutation.withState(STATE_ENABLED, !enabled));

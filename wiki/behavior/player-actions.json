@@ -323,7 +323,7 @@
       },
       {
         "path": "starstone_bp/scripts/generatorComponent.js",
-        "sha256": "7927e1add140d840c3bd87010806a63ff9e2b8b68674378cc3adcbfe450ad383"
+        "sha256": "b7462daf1c5de420d938162c4b892ac88e2bfa7432aad56fb96dddfc16d5ddb7"
       },
       {
         "path": "starstone_bp/scripts/harvestGate.js",
@@ -375,7 +375,7 @@
       },
       {
         "path": "starstone_bp/scripts/pistonController.js",
-        "sha256": "33b2b8e6dd7f750a88fbde3ece355e661fc8ea0c0fecfb457c38218136924aa8"
+        "sha256": "0b25bb0bc0f0dd2b144e0dc19b3e8f7645adef0da1b78f70e5e2b03d9527a333"
       },
       {
         "path": "starstone_bp/scripts/portDirections.js",
@@ -426,7 +426,7 @@
       },
       {
         "path": "starstone_bp/scripts/generatorComponent.js",
-        "sha256": "7927e1add140d840c3bd87010806a63ff9e2b8b68674378cc3adcbfe450ad383"
+        "sha256": "b7462daf1c5de420d938162c4b892ac88e2bfa7432aad56fb96dddfc16d5ddb7"
       }
     ],
     "featureId": "starstone:network",

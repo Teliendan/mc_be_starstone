@@ -103,7 +103,6 @@ export function registerPistonController() {
     });
     for (const name of ["playerPlaceBlock", "playerBreakBlock", "blockExplode"]) {
         world.afterEvents[name].subscribe(event => {
-            if (!event.block) return;
             const dimension = event.dimension || event.block.dimension;
             pistonSupport.invalidate(dimension, event.block.location);
             if (name === "playerPlaceBlock") pistonSupport.observe(event.block, {reset:true});
