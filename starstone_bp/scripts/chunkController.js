@@ -6,7 +6,7 @@ import { chunkIndex, buildIndexedChunkSegments } from "./chunkIndex.js";
 import { buildSegmentGraph, updateSegmentGraph } from "./segmentGraph.js";
 import { applyPower } from "./powerPropagation.js";
 import runtime, { isCompleteNetwork } from "./networkRuntime.js";
-import { parseNodeRef, nodeRef } from "./blockKeys.js";
+import { parseNodeRef, nodeRef, chunkOf } from "./blockKeys.js";
 import { configureNetworkPersistence, subscribeNetworkDiscovery, notifyNetworkDiscovered } from "./networkEvents.js";
 import { KIND_BY_ID } from "./constants.js";
 
@@ -23,7 +23,6 @@ let observerCandidates = new Map(), candidateList;
 let graph, registered = false, running = false, scheduled = false;
 let builds = 0, commits = 0, staleBuilds = 0, pollOffset = 0;
 const keyOf = (id, cx, cz) => `${id}|${cx}|${cz}`;
-const chunkOf = value => Math.floor(value / 16);
 const dimensionFor = id => { try { return world.getDimension(id); } catch { return knownDimensions.get(id); } };
 function loaded(dimension, position) {
     try { return Boolean(dimension?.isChunkLoaded(position)); } catch { return false; }
@@ -85,8 +84,7 @@ function reapplyChunkNetworks(snapshot) {
         networks.add(network);
     }
     for (const network of networks) {
-        const first = parseNodeRef(network.nodes.values().next().value);
-        const dimension = first && dimensionFor(first.dimensionId);
+        const dimension = dimensionFor(parseNodeRef(network.nodes.values().next().value).dimensionId);
         if (!dimension) continue;
         applyLogical(network, dimension);
         notifyNetworkDiscovered(network, dimension);
@@ -94,8 +92,7 @@ function reapplyChunkNetworks(snapshot) {
     return true;
 }
 function applyAndNotify(network) {
-    const first = parseNodeRef(network.nodes.values().next().value);
-    const dimension = first && dimensionFor(first.dimensionId);
+    const dimension = dimensionFor(parseNodeRef(network.nodes.values().next().value).dimensionId);
     if (!dimension) return;
     applyLogical(network, dimension);
     notifyNetworkDiscovered(network, dimension);
@@ -230,7 +227,7 @@ function discovered(network, dimension) {
         try {
             for (const ref of network.nodes) {
                 const position = parseNodeRef(ref);
-                if (!position || position.dimensionId !== dimension.id) continue;
+                if (position.dimensionId !== dimension.id) continue;
                 const cx = chunkOf(position.x), cz = chunkOf(position.z);
                 const key = keyOf(dimension.id,cx,cz);
                 // Saved and not awaiting a rebuild: its position is indexed.
@@ -259,7 +256,7 @@ function discovered(network, dimension) {
     catch (error) {
         for (const ref of network.nodes) {
             const position = parseNodeRef(ref);
-            if (position && position.dimensionId === dimension.id) discoveryRetries.set(ref, {
+            if (position.dimensionId === dimension.id) discoveryRetries.set(ref, {
                 dimension, position, key:keyOf(dimension.id,chunkOf(position.x),chunkOf(position.z))
             });
         }
@@ -278,12 +275,11 @@ function rememberCandidate(request) {
 function cacheSnapshotCandidates(snapshot) {
     const dimension = dimensionFor(snapshot.dimensionId);
     if (!dimension) return;
-    const first = parseNodeRef(snapshot.segments[0]?.members[0]);
-    const y = first?.y || 0;
+    const y = snapshot.segments.length ? parseNodeRef(snapshot.segments[0].members[0]).y : 0;
     rememberCandidate({dimension,cx:snapshot.cx,cz:snapshot.cz,y});
     for (const segment of snapshot.segments) for (const boundary of segment.boundaries) {
         const [cx,cz] = boundary.destination;
-        rememberCandidate({dimension,cx,cz,y:parseNodeRef(boundary.ref)?.y || y});
+        rememberCandidate({dimension,cx,cz,y:parseNodeRef(boundary.ref).y || y});
     }
 }
 function cacheCandidates(snapshots) {

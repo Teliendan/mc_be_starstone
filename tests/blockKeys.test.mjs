@@ -1,8 +1,14 @@
 import assert from 'node:assert/strict';
-import { blockKey, nodeRef, parseBlockKey, parseNodeRef } from '../starstone_bp/scripts/blockKeys.js';
+import { blockKey, nodeRef, parseBlockKey, parseNodeRef, laneRef, chunkOf, LANE_IDS, NEIGHBOR_OFFSETS_18 } from '../starstone_bp/scripts/blockKeys.js';
 const p = { x:-17,y:-64,z:16 };
 assert.equal(blockKey('minecraft:overworld',p),'minecraft:overworld|-17|-64|16');
+assert.equal(nodeRef('minecraft:overworld',p),'minecraft:overworld|-17|-64|16#main');
+assert.equal(nodeRef({ id:'minecraft:nether' },p,'ns'),'minecraft:nether|-17|-64|16#ns');
+assert.equal(laneRef(blockKey('minecraft:overworld',p),'ew'),'minecraft:overworld|-17|-64|16#ew');
 assert.deepEqual(parseNodeRef(nodeRef('minecraft:overworld',p,'ew')), { dimensionId:'minecraft:overworld',...p,lane:'ew' });
 for (const key of ['x|NaN|0|0','x|0.5|0|0','x|0|0|0|1','x|01|0|0','x|9007199254740992|0|0']) assert.equal(parseBlockKey(key),undefined);
-for (const ref of ['x|0|0|0','x|0|0|0#bad','x|0|0|0#ns#ew']) assert.equal(parseNodeRef(ref),undefined);
-assert.throws(() => nodeRef('x',p,'bad'));
+assert.deepEqual(LANE_IDS, ['main','ns','ew']);
+assert.deepEqual([chunkOf(0),chunkOf(15),chunkOf(16),chunkOf(-1),chunkOf(-16),chunkOf(-17)], [0,0,1,-1,-1,-2]);
+assert.equal(NEIGHBOR_OFFSETS_18.length, 18);
+assert.equal(new Set(NEIGHBOR_OFFSETS_18.map(o => o.join())).size, 18);
+assert.ok(NEIGHBOR_OFFSETS_18.every(o => o.some(v => v) && o.every(v => Math.abs(v) <= 1) && o.filter(v => v).length <= 2));

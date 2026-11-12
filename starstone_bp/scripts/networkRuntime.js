@@ -28,6 +28,8 @@
 // against an isolated index, and the default export is the single instance the
 // pack shares for its lifetime.
 
+import { parseNodeRef, chunkOf } from "./blockKeys.js";
+
 // Each runtime owns its own indexes. Keeping them inside this factory prevents
 // a test runtime from resetting the pack's shared default runtime.
 function createRuntime() {
@@ -256,9 +258,8 @@ const runtime = createRuntime();
 // including a chunk that unloaded after discovery and hides a source.
 const chunkProbes = new WeakMap();
 function addProbe(byChunk, ref) {
-    const parts = ref.slice(0, ref.indexOf("#")).split("|");
-    const [x, y, z] = parts.slice(1, 4).map(Number);
-    const key = `${Math.floor(x / 16)},${Math.floor(z / 16)}`;
+    const { x, y, z } = parseNodeRef(ref);
+    const key = `${chunkOf(x)},${chunkOf(z)}`;
     if (!byChunk.has(key)) byChunk.set(key, { x, y, z });
 }
 function probesOf(network) {

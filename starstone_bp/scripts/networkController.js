@@ -13,6 +13,7 @@ import runtime, { isCompleteNetwork, mergeProbes } from "./networkRuntime.js";
 import { discoverNetwork } from "./networkGraph.js";
 import { descriptorForBlock } from "./electricalBlocks.js";
 import { applyPower } from "./powerPropagation.js";
+import { nodeRef, parseNodeRef, LANE_IDS, NEIGHBOR_OFFSETS_18 } from "./blockKeys.js";
 import { notifyNetworkDiscovered, resolveNetworkPower } from "./networkEvents.js";
 
 // True when at least one source node in the discovered network is currently on.
@@ -20,21 +21,10 @@ import { notifyNetworkDiscovered, resolveNetworkPower } from "./networkEvents.js
 // ref resolves through that one dimension. A source ref is "<dim>|<x>|<y>|<z>#<lane>".
 function anySourceOn(discovered, dimension) {
     for (const ref of discovered.sources) {
-        const hashIndex = ref.indexOf("#");
-        if (hashIndex === -1) {
-            continue;
-        }
-        const key = ref.slice(0, hashIndex);
-        const parts = key.split("|");
-        if (parts.length < 4) {
-            continue;
-        }
-        const x = Number(parts[1]);
-        const y = Number(parts[2]);
-        const z = Number(parts[3]);
+        const { x, y, z } = parseNodeRef(ref);
         let block;
         try {
-            if (dimension.isChunkLoaded && !dimension.isChunkLoaded({ x, y, z })) continue;
+            if (!dimension.isChunkLoaded({ x, y, z })) continue;
             block = dimension.getBlock({ x, y, z });
         }
         catch { continue; }
@@ -71,8 +61,7 @@ export async function discoverAllLanes(seed) {
     const seen = new Set();
     const records = [];
     for (const lane of descriptor?.lanes || []) {
-        const { x, y, z } = seed.location;
-        const ref = `${seed.dimension.id}|${x}|${y}|${z}#${lane.id}`;
+        const ref = nodeRef(seed.dimension, seed.location, lane.id);
         if (seen.has(ref)) continue;
         const network = await discoverAndRegisterNetwork(seed, lane);
         if (network) {
@@ -90,8 +79,7 @@ export async function extendFromPlacement(seed) {
     const records = [];
     const seen = new Set();
     for (const lane of descriptor?.lanes || []) {
-        const { x, y, z } = seed.location;
-        const ref = `${dimension.id}|${x}|${y}|${z}#${lane.id}`;
+        const ref = nodeRef(dimension, seed.location, lane.id);
         if (seen.has(ref)) continue;
         const full = async () => {
             const r = await discoverAndRegisterNetwork(seed, lane);
@@ -164,35 +152,12 @@ export function registerAndApplyNetwork(
     return registered;
 }
 
-// The six cardinal neighbor offsets of a block, each a still-valid rediscovery
-// origin when one of its lanes belonged to a freed old network.
-const NEIGHBOR_OFFSETS = [
-    [1, 0, 0],
-    [-1, 0, 0],
-    [0, 1, 0],
-    [0, -1, 0],
-    [0, 0, 1],
-    [0, 0, -1]
-];
-// Cables can also meet diagonally around the outside edge of one support cube.
-// Include those former neighbors when a broken cable fragments a cached graph.
-for (let axis=0; axis<3; axis++) for (let other=axis+1; other<3; other++) {
-    for (const a of [-1,1]) for (const b of [-1,1]) {
-        const offset=[0,0,0]; offset[axis]=a; offset[other]=b;
-        NEIGHBOR_OFFSETS.push(offset);
-    }
-}
-
-// The lane ids a Starstone block can contribute to the runtime index: the single
-// main lane of an ordinary block, plus the two isolated lanes of a bridge.
-const LANE_IDS = ["main", "ns", "ew"];
-
 // Capture everything a split needs from the runtime cache in the after-break event. Given the removed position, collect every cached network that
 // references that block's lanes, the block's own lane refs, and a copy of each
 // touched network's nodes. Returns the plain snapshot, or undefined when no
 // cached network references the block (so the removal cannot fragment anything).
 function captureRemovedNetworks(dimension, x, y, z) {
-    const laneRefs = LANE_IDS.map((lane) => `${dimension.id}|${x}|${y}|${z}#${lane}`);
+    const laneRefs = LANE_IDS.map((lane) => nodeRef(dimension, { x, y, z }, lane));
     const networkNodes = new Set();
     const removedRefs = new Set(laneRefs);
     const ids = new Set(laneRefs.map(ref => runtime.networkIdOf(ref)));
@@ -213,7 +178,7 @@ function captureRemovedNetworks(dimension, x, y, z) {
 // a surviving bridge lane is rediscovered on its own lane, never the first.
 function rediscoverySeeds(dimension, x, y, z, allowed, removedRefs) {
     const seeds = [];
-    for (const [dx, dy, dz] of NEIGHBOR_OFFSETS) {
+    for (const [dx, dy, dz] of NEIGHBOR_OFFSETS_18) {
         const nx = x + dx;
         const ny = y + dy;
         const nz = z + dz;
@@ -230,7 +195,7 @@ function rediscoverySeeds(dimension, x, y, z, allowed, removedRefs) {
             continue;
         }
         for (const lane of LANE_IDS) {
-            const ref = `${dimension.id}|${nx}|${ny}|${nz}#${lane}`;
+            const ref = nodeRef(dimension, { x: nx, y: ny, z: nz }, lane);
             if (!allowed.has(ref) || removedRefs.has(ref)) {
                 continue;
             }

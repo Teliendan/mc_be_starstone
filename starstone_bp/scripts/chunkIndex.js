@@ -4,6 +4,7 @@ import { world } from "@minecraft/server";
 import { descriptorForBlock } from "./electricalBlocks.js";
 import { worldDirOfPort } from "./portDirections.js";
 import { ARM_NAMES } from "./constants.js";
+import { nodeRef, chunkOf } from "./blockKeys.js";
 import { FACE_LIST, faceNormal } from "./surfaceFrame.js";
 import { outerCornerOffset, outerOffsets, outerWrap, wrapFaces } from "./cornerTopology.js";
 import { innerNeighborAllowed, facesOfPair } from "./innerCorner.js";
@@ -20,7 +21,6 @@ const KINDS = new Set(["cable", "inner-corner", "bridge", "conduit", "source", "
 const FACES = new Set(["up", "down", "north", "south", "east", "west"]);
 const same = (a, b) => a.every((value, i) => value === b[i]);
 const negate = dir => dir.map(value => -value);
-const chunk = value => Math.floor(value / 16);
 
 export function parseSegmentNodeRef(ref) {
     if (typeof ref !== "string") return undefined;
@@ -34,10 +34,6 @@ export function parseSegmentNodeRef(ref) {
 function validChunk(dimensionId, cx, cz) {
     return typeof dimensionId === "string" && DIMENSION.test(dimensionId) && Number.isSafeInteger(cx) && Number.isSafeInteger(cz) &&
         Math.abs(cx) <= 134217727 && Math.abs(cz) <= 134217727;
-}
-
-function nodeRef(dimensionId, location, lane) {
-    return `${dimensionId}|${location.x}|${location.y}|${location.z}#${lane}`;
 }
 
 // Shared by the local builder and metadata graph. Direction is from a to b.
@@ -96,7 +92,7 @@ export function buildChunkSegments(dimensionId, cx, cz, entries) {
         if (!descriptor) continue;
         for (const lane of descriptor.lanes) {
             const ref = nodeRef(dimensionId, location, lane.id);
-            if (!parseSegmentNodeRef(ref) || chunk(location.x) !== cx || chunk(location.z) !== cz || nodes.has(ref)) {
+            if (!parseSegmentNodeRef(ref) || chunkOf(location.x) !== cx || chunkOf(location.z) !== cz || nodes.has(ref)) {
                 throw new Error("Invalid or duplicate segment member");
             }
             const item = { ref, location, descriptor, lane, directions: directions(descriptor, lane), neighbors: new Set(), boundaries: [] };
@@ -110,9 +106,9 @@ export function buildChunkSegments(dimensionId, cx, cz, entries) {
         const { x, y, z } = item.location;
         for (const dir of item.directions) {
             const [nx, ny, nz] = [x + dir[0], y + dir[1], z + dir[2]];
-            if (chunk(nx) !== cx || chunk(nz) !== cz) {
+            if (chunkOf(nx) !== cx || chunkOf(nz) !== cz) {
                 item.boundaries.push({
-                    ref: item.ref, direction: [...dir], destination: [chunk(nx), chunk(nz)],
+                    ref: item.ref, direction: [...dir], destination: [chunkOf(nx), chunkOf(nz)],
                     kind: item.descriptor.kind, mountFace: item.descriptor.mountFace || null,
                     facePair: item.descriptor.facePair || null
                 });
@@ -189,7 +185,7 @@ export function validateChunkSegments(snapshot) {
         const members = new Set();
         for (const ref of segment.members) {
             const p = parseSegmentNodeRef(ref);
-            if (!p || p.dimensionId !== snapshot.dimensionId || chunk(p.x) !== snapshot.cx || chunk(p.z) !== snapshot.cz || allMembers.has(ref)) return false;
+            if (!p || p.dimensionId !== snapshot.dimensionId || chunkOf(p.x) !== snapshot.cx || chunkOf(p.z) !== snapshot.cz || allMembers.has(ref)) return false;
             members.add(ref); allMembers.add(ref);
         }
         if (segment.key !== [...members].sort()[0]) return false;
@@ -205,7 +201,7 @@ export function validateChunkSegments(snapshot) {
                 !Array.isArray(port.destination) || port.destination.length !== 2 || !KINDS.has(port.kind) ||
                 (port.mountFace !== null && !FACES.has(port.mountFace))) return false;
             const p = parseSegmentNodeRef(port.ref), [dx, , dz] = port.direction;
-            const destination = [chunk(p.x + dx), chunk(p.z + dz)];
+            const destination = [chunkOf(p.x + dx), chunkOf(p.z + dz)];
             if (!same(destination, port.destination) || (destination[0] === snapshot.cx && destination[1] === snapshot.cz)) return false;
             if (port.kind === "bridge" && (p.lane === "main" || !port.mountFace || same(worldDirOfPort(port.mountFace, "back"), port.direction))) return false;
             if (port.kind !== "bridge" && p.lane !== "main") return false;
@@ -419,10 +415,10 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
     function updateSource(ref, on) {
         const p = parseSegmentNodeRef(ref);
         if (!p || typeof on !== "boolean") return false;
-        const snapshot = readChunk(p.dimensionId, chunk(p.x), chunk(p.z));
+        const snapshot = readChunk(p.dimensionId, chunkOf(p.x), chunkOf(p.z));
         const segment = snapshot?.segments.find(s => s.sources.includes(ref));
         if (!segment) return false;
-        const base = propertyBase(p.dimensionId, chunk(p.x), chunk(p.z));
+        const base = propertyBase(p.dimensionId, chunkOf(p.x), chunkOf(p.z));
         const active = new Set(snapshot.segments.flatMap(s => s.activeSources));
         if (active.has(ref) === on) return true;
         if (on) active.add(ref); else active.delete(ref);

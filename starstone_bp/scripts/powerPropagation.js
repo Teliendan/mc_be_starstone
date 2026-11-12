@@ -26,6 +26,7 @@
 // separately, so a source block is never given a `powered` state here.
 
 import { system } from "@minecraft/server";
+import { parseNodeRef } from "./blockKeys.js";
 import {
     CABLE_ID,
     INNER_CORNER_ID,
@@ -77,37 +78,6 @@ export function poweredStateForLane(lane) {
         return STATE_POWERED_EW;
     }
     return STATE_POWERED;
-}
-
-// Parse a NodeRef "<dim>|<x>|<y>|<z>#<lane>". Returns a plain object or
-// undefined when the reference is malformed.
-function parseNodeRef(nodeRef) {
-    if (typeof nodeRef !== "string") {
-        return undefined;
-    }
-    const hash = nodeRef.indexOf("#");
-    if (hash === -1) {
-        return undefined;
-    }
-    const key = nodeRef.slice(0, hash);
-    const lane = nodeRef.slice(hash + 1);
-    const pipe = key.indexOf("|");
-    if (pipe === -1) {
-        return undefined;
-    }
-    const dim = key.slice(0, pipe);
-    const rest = key.slice(pipe + 1);
-    const parts = rest.split("|");
-    if (parts.length < 3) {
-        return undefined;
-    }
-    const x = Number(parts[0]);
-    const y = Number(parts[1]);
-    const z = Number(parts[2]);
-    if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) {
-        return undefined;
-    }
-    return { dim, x, y, z, lane };
 }
 
 // The powered state a block owns for a lane, as { state, value }, or "none" when
@@ -187,7 +157,6 @@ export function applyPower(network, dimension) {
         if ((refs === consumers && !network.nodes.has(ref)) ||
             (refs === network.nodes && consumers.has(ref))) continue;
         const parsed = parseNodeRef(ref);
-        if (!parsed) continue;
         const key = targetKey(dimension, parsed.x, parsed.y, parsed.z, parsed.lane);
         const old = targets.get(key);
         if (old) { old.progress.pending--; targets.delete(key); }

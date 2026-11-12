@@ -16,6 +16,7 @@ import runtime, { isCompleteNetwork } from "./networkRuntime.js";
 import { anySourceOn } from "./networkController.js";
 import { applyPower } from "./powerPropagation.js";
 import { GENERATOR_ID, STATE_ENABLED } from "./constants.js";
+import { nodeRef } from "./blockKeys.js";
 import { sourceChanged } from "./networkEvents.js";
 import { schedulePlaced } from "./cableComponent.js";
 
@@ -24,18 +25,13 @@ const TAG = "[Starstone]";
 // The generator exposes one joined source lane, #main.
 const GEN_LANE = "main";
 
-// The NodeRef a generator contributes to a network: its single main lane.
-function generatorNodeRef(dimension, x, y, z) {
-    return `${dimension.id}|${Math.floor(x)}|${Math.floor(y)}|${Math.floor(z)}#${GEN_LANE}`;
-}
-
 // Recompute the containing network's powered value after a generator toggle and
 // apply power only when it changed. The owning network is found from the runtime
 // index (networkIdOf), never by discovering, so this is an index lookup plus a
 // per-source state read — no graph walk. Returns { id, changed, powered } or
 // undefined when the generator owns no cached network.
 export function reactToGeneratorToggle(dimension, x, y, z) {
-    const ref = generatorNodeRef(dimension, x, y, z);
+    const ref = nodeRef(dimension, { x, y, z }, GEN_LANE);
     const id = runtime.networkIdOf(ref);
     const previous = id === undefined ? undefined : runtime.networkOf(id)?.powered;
     const block = dimension.getBlock({ x, y, z });
@@ -83,4 +79,3 @@ export function registerGeneratorController() {
     });
 }
 
-export { generatorNodeRef };

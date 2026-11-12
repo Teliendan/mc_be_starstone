@@ -16,6 +16,7 @@ import runtime from "./networkRuntime.js";
 import { descriptorForBlock } from "./electricalBlocks.js";
 import { worldDirOfPort, WORLD_PORTS } from "./portDirections.js";
 import { faceNormal } from "./surfaceFrame.js";
+import { laneRef, chunkOf } from "./blockKeys.js";
 import { outerOffsets, outerWrap } from "./cornerTopology.js";
 import { innerNeighborAllowed } from "./innerCorner.js";
 import {
@@ -77,10 +78,6 @@ function locKey(dim, x, y, z) {
     return `${dim.id}|${x}|${y}|${z}`;
 }
 
-function chunkOf(value) {
-    return Math.floor(value / 16);
-}
-
 // A boundary port that points into an unloaded chunk. Records the source node
 // position, the world direction into the void, and the destination chunk so a
 // later task can reconnect it once that chunk loads (plan section 7.1).
@@ -128,10 +125,10 @@ function outgoingPorts(descriptor, blockKey, laneId) {
             if (!dir) {
                 continue;
             }
-            out.push({ dir, laneId: lane.id, nodeRef: blockKey + "#" + lane.id });
+            out.push({ dir, laneId: lane.id, nodeRef: laneRef(blockKey, lane.id) });
             if (port !== "back") for (const corner of outerOffsets(descriptor, dir)) {
                 out.push({ dir: corner, armDir: dir, corner: true,
-                    laneId: lane.id, nodeRef: blockKey + "#" + lane.id });
+                    laneId: lane.id, nodeRef: laneRef(blockKey, lane.id) });
             }
         }
     }
@@ -202,7 +199,7 @@ export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = n
         }
 
         const seedLane = seedLaneOverride || seedDesc.lanes.find((lane) => lane && lane.id === "main") || seedDesc.lanes[0];
-        const seedNode = seedKey + "#" + seedLane.id;
+        const seedNode = laneRef(seedKey, seedLane.id);
         if (excluded.has(seedNode)) { resolve(net); return; }
         visited.add(seedNode);
         addNode(net, classifyNode(seedDesc), seedNode);
@@ -277,7 +274,7 @@ export function discoverNetwork(seed, restrictTo, seedLaneOverride, excluded = n
                                 continue;
                             }
                             const nKey = locKey(dimension, nx, ny, nz);
-                            const nRef = nKey + "#" + recipLane;
+                            const nRef = laneRef(nKey, recipLane);
                             if (excluded.has(nRef)) continue;
                             // Placement mode: an owned node ends the walk; its
                             // cached network is merged instead of re-walked.

@@ -8,6 +8,7 @@ import { refreshCable } from "./cableComponent.js";
 import { KIND_BY_ID } from "./constants.js";
 import { placementIndex } from "./persistence.js";
 import { message } from "./messages.js";
+import { nodeRef, parseNodeRef, chunkOf } from "./blockKeys.js";
 
 export const REBUILD_RADIUS = 8;
 export const REBUILD_HEIGHT = 4;
@@ -59,8 +60,8 @@ function* rebuild(request) {
     try {
         requirePlayer(player);
         if (typeof dimension.id === "string") {
-            for (let cx = Math.floor(bounds.minX / 16); cx <= Math.floor(bounds.maxX / 16); cx++) {
-                for (let cz = Math.floor(bounds.minZ / 16); cz <= Math.floor(bounds.maxZ / 16); cz++) {
+            for (let cx = chunkOf(bounds.minX); cx <= chunkOf(bounds.maxX); cx++) {
+                for (let cz = chunkOf(bounds.minZ); cz <= chunkOf(bounds.maxZ); cz++) {
                     yield* placementIndex.validateChunk(dimension, cx, cz);
                     requirePlayer(player);
                 }
@@ -92,8 +93,7 @@ function* rebuild(request) {
             const laneIds = (descriptor?.lanes || []).map(lane => lane.id);
             for (const laneId of laneIds) {
                 requirePlayer(player);
-                const { x, y, z } = location;
-                const ref = `${dimension.id}|${x}|${y}|${z}#${laneId}`;
+                const ref = nodeRef(dimension, location, laneId);
                 if (seen.has(ref)) continue;
                 // A previous traversal yielded: do not retain Block or lane state.
                 const block = read(dimension, location);
@@ -113,10 +113,10 @@ function* rebuild(request) {
                     for (const node of record.nodes) {
                         requirePlayer(player);
                         seen.add(node);
-                        const [id, nx, ny, nz] = node.slice(0, node.lastIndexOf("#")).split("|");
+                        const { dimensionId, x: nx, y: ny, z: nz } = parseNodeRef(node);
                         const posKey = `${nx},${ny},${nz}`;
-                        if (id === dimension.id && !indexed.has(posKey)) {
-                            const current = read(dimension, { x: Number(nx), y: Number(ny), z: Number(nz) });
+                        if (dimensionId === dimension.id && !indexed.has(posKey)) {
+                            const current = read(dimension, { x: nx, y: ny, z: nz });
                             if (electrical(current)) recordBlock(current);
                             indexed.add(posKey);
                         }

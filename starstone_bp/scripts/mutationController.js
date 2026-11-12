@@ -11,6 +11,7 @@ import { KIND_BY_ID, CABLE_ID, INNER_CORNER_ID, BRIDGE_ID, LAMP_ID, REDSTONE_INP
 import { innerSupports, pairFromPermutation, armsFromPermutation } from "./innerCorner.js";
 import { pistonSupport } from "./pistonController.js";
 import { topologyChanged } from "./networkEvents.js";
+import { nodeRef, parseNodeRef, LANE_IDS } from "./blockKeys.js";
 
 export const VALIDATION_INTERVAL_TICKS = 100;
 export const VALIDATION_POSITION_BUDGET = 16;
@@ -28,7 +29,6 @@ function unsupported(block) {
     const support=SURFACES.has(block.type.id) ? supportBlock(block) : undefined;
     return support?.isValid && support.typeId !== "minecraft:moving_block" && !isSupportValid(block);
 }
-const LANES = ["main", "ns", "ew"];
 const OFFSETS = [[0,0,0], [1,0,0], [-1,0,0], [0,1,0], [0,-1,0], [0,0,1], [0,0,-1]];
 const pending = new Map();
 const fingerprints = new Map();
@@ -90,9 +90,9 @@ function* reconcile(requests) {
         batches++;
         for (const { dimension, positions } of requests) {
             const ids = new Set();
-            for (const key of positions.keys()) {
-                for (const lane of LANES) {
-                    const owner = runtime.networkIdOf(`${dimension.id}|${key}#${lane}`);
+            for (const position of positions.values()) {
+                for (const lane of LANE_IDS) {
+                    const owner = runtime.networkIdOf(nodeRef(dimension, position, lane));
                     if (owner !== undefined) ids.add(owner);
                 }
                 yield;
@@ -103,9 +103,9 @@ function* reconcile(requests) {
                 const network = runtime.networkOf(id);
                 if (!network) continue;
                 for (const node of network.nodes) {
-                    const [dimensionId, x, y, z] = node.slice(0, node.lastIndexOf("#")).split("|");
+                    const { dimensionId, x, y, z } = parseNodeRef(node);
                     if (dimensionId === dimension.id) {
-                        const position = { x: Number(x), y: Number(y), z: Number(z) };
+                        const position = { x, y, z };
                         positions.set(keyOf(position), position);
                     }
                     yield;
@@ -143,7 +143,7 @@ function* reconcile(requests) {
             for (const [key, position] of positions) {
                 const laneIds = (descriptorForBlock(read(dimension, position))?.lanes || []).map(lane => lane.id);
                 for (const laneId of laneIds) {
-                    const ref = `${dimension.id}|${key}#${laneId}`;
+                    const ref = nodeRef(dimension, position, laneId);
                     if (seen.has(ref)) continue;
                     const block = read(dimension, position);
                     const lane = descriptorForBlock(block)?.lanes.find(candidate => candidate.id === laneId);
@@ -196,7 +196,7 @@ export function validateKnownPositions() {
             if (!electrical(block)) { queueMutation(dimension, location); continue; }
             const signature = fingerprint(block);
             const descriptor = descriptorForBlock(block);
-            const missing = descriptor?.lanes.some(lane => runtime.networkIdOf(`${key}#${lane.id}`) === undefined);
+            const missing = descriptor?.lanes.some(lane => runtime.networkIdOf(nodeRef(dimensionId, location, lane.id)) === undefined);
             const known = fingerprints.get(key);
             if ((known !== undefined && known !== signature) || missing ||
                 (block.type.id === CABLE_ID && block.permutation.getState("starstone:connections") !== computeCableMask(block)) ||

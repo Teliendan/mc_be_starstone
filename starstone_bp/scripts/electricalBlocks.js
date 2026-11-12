@@ -22,6 +22,7 @@ import {
 } from "./constants.js";
 
 import { worldOffset, supportOffset } from "./surfaceFrame.js";
+import { laneRef } from "./blockKeys.js";
 import { innerRoutes, facesOfPair, pairFromPermutation } from "./innerCorner.js";
 
 // Block ids and lane ids re-exported for callers that import them by name from
@@ -307,7 +308,7 @@ export const LANE_PORTS = {
 };
 
 export function bridgeNodeRefs(blockKey) {
-    return [`${blockKey}#${LANE_NS}`, `${blockKey}#${LANE_EW}`];
+    return [laneRef(blockKey, LANE_NS), laneRef(blockKey, LANE_EW)];
 }
 
 export function bridgeLaneAt(face, arm) {
@@ -330,7 +331,7 @@ export function buildBridgeEdges(blockKey, face, neighbors) {
             continue;
         }
         const lane = bridgeLaneAt(face, arm);
-        edges.push([`${neighbor.key}#${LANE_MAIN}`, `${blockKey}#${lane}`]);
+        edges.push([laneRef(neighbor.key, LANE_MAIN), laneRef(blockKey, lane)]);
     }
     return edges;
 }
