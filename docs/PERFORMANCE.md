@@ -47,7 +47,7 @@ longer list all world property ids or re-read saved chunks. Each index scans onc
 lazily, then keeps a RAM copy current from its own writes (the only writers of its
 prefix). Chunk snapshots are cached deep-frozen after the head commit; placement
 caches only shard keys and still reads shard contents. Tests: `chunkSegments`,
-`persistence`. `buildSegmentGraph` still re-validates every snapshot per refresh.
+`persistence`. A chunk commit now updates the logical graph incrementally (2026-11-12, `updateSegmentGraph`); `buildSegmentGraph` runs only cold.
 Memory cost (Node/V8 heap, `temp`-measured 2026-10-27): about 0.6 KB per cable, 0.7 MB at
 1k and 5.8 MB at 10k cables (stored text 0.3 / 3.3 MB). The old refresh built the same
 objects transiently, so peak use is unchanged; QuickJS in game may be somewhat larger.

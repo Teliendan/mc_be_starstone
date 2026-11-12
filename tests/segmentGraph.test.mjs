@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import './runtimeFixture.mjs'; // installs the @minecraft/server resolver for chunkIndex
 
 const { buildChunkSegments } = await import('../starstone_bp/scripts/chunkIndex.js');
-const { buildSegmentGraph } = await import('../starstone_bp/scripts/segmentGraph.js');
+const { buildSegmentGraph, updateSegmentGraph } = await import('../starstone_bp/scripts/segmentGraph.js');
 
 const DIMENSION = 'test:segments';
 const ref = (x, y, z, lane = 'main') => `${DIMENSION}|${x}|${y}|${z}#${lane}`;
@@ -160,6 +160,54 @@ assert.deepEqual(
     corrupt.segments[0].members.push(corrupt.segments[0].members[0]);
     assert.throws(() => buildSegmentGraph([corrupt]), /Invalid segment graph input/);
     assert.throws(() => buildSegmentGraph([a, structuredClone(a)]), /Duplicate segment chunk/);
+}
+
+// Incremental update: random chunk snapshot writes (add, change, remove, merge and
+// split networks) must leave the graph equal to a full build over the same
+// snapshots, and only the affected networks are returned.
+{
+    const normal = graph => ({
+        networks: [...graph.networkMap.values()].map(n => ({
+            id: n.id, powered: n.powered, segments: [...n.segments].sort(), nodes: [...n.nodes].sort(),
+            sources: [...n.sources].sort(), active: [...n.activeSources].sort(), consumers: [...n.consumers].sort(),
+            unresolved: [...n.unresolvedBoundaries].sort()
+        })).sort((x, y) => x.id < y.id ? -1 : 1),
+        nodeToNetwork: [...graph.nodeToNetwork].map(([k, n]) => [k, n.id]).sort(),
+        segmentToNetwork: [...graph.segmentToNetwork].map(([k, n]) => [k, n.id]).sort(),
+        adjacency: [...graph.adjacency].map(([k, v]) => [k, [...v].sort()]).sort(),
+        unresolved: [...graph.unresolved].map(([k, v]) => [k, [...v].sort()]).sort()
+    });
+    let state = 12345;
+    const rand = () => { state = (state * 1103515245 + 12345) % 2147483648; return state / 2147483648; };
+    const dim = 'test:incremental';
+    const grid = [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1]];
+    const world = new Map();
+    const graph = buildSegmentGraph([]);
+    let touched = 0, total = 0, checked = 0;
+    for (let step = 0; step < 220; step++) {
+        const [cx, cz] = grid[Math.floor(rand() * grid.length)];
+        const density = rand() < 0.15 ? 0 : 0.15 + rand() * 0.5;
+        const entries = [];
+        for (let x = 0; x < 16; x++) for (let z = 0; z < 16; z++) {
+            // Mostly the border band, so networks cross chunks often.
+            const border = x < 2 || x > 13 || z < 2 || z > 13;
+            if (rand() >= (border ? density : density / 8)) continue;
+            const r = rand();
+            const d = r < 0.08 ? source(['world_east', 'world_west', 'world_north', 'world_south'], rand() < 0.6)
+                : r < 0.2 ? flat('consumer', 'up', ['local_n', 'local_e', 'local_s', 'local_w']) : cable();
+            entries.push(entry(cx * 16 + x, 0, cz * 16 + z, d));
+        }
+        const snapshot = buildChunkSegments(dim, cx, cz, entries);
+        world.set(`${cx},${cz}`, snapshot);
+        const created = updateSegmentGraph(graph, snapshot);
+        const full = buildSegmentGraph([...world.values()]);
+        assert.deepEqual(normal(graph), normal(full), `incremental graph equals a full build after write ${step}`);
+        // Untouched networks keep their identity; returned ones are new objects.
+        for (const network of created) assert.equal(graph.networkMap.get(network.id), network);
+        touched += created.length; total += graph.networkCount; checked++;
+    }
+    assert.ok(touched < total, `update returns fewer networks than a full refresh (${touched} of ${total})`);
+    assert.ok(checked === 220 && graph.networkCount > 0);
 }
 
 console.log('segment graph: unloaded-middle, reciprocal boundaries, bridge lanes, plane/conduit isolation, sources and corrupt metadata passed');

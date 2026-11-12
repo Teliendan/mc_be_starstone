@@ -23,7 +23,7 @@
       },
       {
         "path": "starstone_bp/scripts/chunkController.js",
-        "sha256": "f5c55026ad34a53d42201add9639373fad88d468b4db3877a594a52fb7b1d735"
+        "sha256": "e48ac042f190060ef77ab25de6d7e77b95074740996ea057b5ab8728013c0f5c"
       },
       {
         "path": "starstone_bp/scripts/chunkIndex.js",
@@ -119,7 +119,7 @@
       },
       {
         "path": "starstone_bp/scripts/segmentGraph.js",
-        "sha256": "bb42721cd38fe33396d1d6000efb78249d2a703b73d2a1ed44e4121f818ca700"
+        "sha256": "13e81c262baf0e81ce770a2da93a5aa1f0757634554fa963cb14ba387455445b"
       },
       {
         "path": "starstone_bp/scripts/support.js",

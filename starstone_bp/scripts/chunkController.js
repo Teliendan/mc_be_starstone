@@ -3,7 +3,7 @@
 import { system, world } from "@minecraft/server";
 import { placementIndex } from "./persistence.js";
 import { chunkIndex, buildIndexedChunkSegments } from "./chunkIndex.js";
-import { buildSegmentGraph } from "./segmentGraph.js";
+import { buildSegmentGraph, updateSegmentGraph } from "./segmentGraph.js";
 import { applyPower } from "./powerPropagation.js";
 import runtime, { isCompleteNetwork } from "./networkRuntime.js";
 import { parseNodeRef, nodeRef } from "./blockKeys.js";
@@ -93,23 +93,40 @@ function reapplyChunkNetworks(snapshot) {
     }
     return true;
 }
+function applyAndNotify(network) {
+    const first = parseNodeRef(network.nodes.values().next().value);
+    const dimension = first && dimensionFor(first.dimensionId);
+    if (!dimension) return;
+    applyLogical(network, dimension);
+    notifyNetworkDiscovered(network, dimension);
+}
+// Full rebuild: cold start, an unknown source, or a failed incremental update.
 function refreshLogicalGraph() {
     const snapshots = [...chunkIndex.chunks()];
     const next = buildSegmentGraph(snapshots, { trusted: true });
     graph = next;
     cacheCandidates(snapshots);
-    for (const network of graph.networks) {
-        const first = parseNodeRef(network.nodes.values().next().value);
-        const dimension = first && dimensionFor(first.dimensionId);
-        if (!dimension) continue;
-        applyLogical(network, dimension);
-        notifyNetworkDiscovered(network, dimension);
+    for (const network of graph.networks) applyAndNotify(network);
+}
+// A committed snapshot changed: update only the components that touch its chunk
+// and re-apply only those networks. Any failure falls back to the full build
+// (a half-updated graph is never kept).
+function refreshLogicalChunk(snapshot) {
+    if (!graph) { refreshLogicalGraph(); return; }
+    let created;
+    try { created = updateSegmentGraph(graph, snapshot, { trusted: true }); }
+    catch (error) {
+        console.warn(`[Starstone] Incremental logical update failed, rebuilding: ${error.message}`);
+        refreshLogicalGraph();
+        return;
     }
+    cacheSnapshotCandidates(snapshot);
+    for (const network of created) applyAndNotify(network);
 }
 export function chunkStats() {
     return { running, queued: pending.size, retry: retry.size, observed: observed.size,
         discoveryRetry: discoveryRetries.size,
-        builds, commits, staleBuilds, logicalNetworks: graph?.networks.length || 0,
+        builds, commits, staleBuilds, logicalNetworks: graph?.networkCount || 0,
         pollBudget: CHUNK_OBSERVER_BUDGET, pollInterval: CHUNK_OBSERVER_INTERVAL_TICKS };
 }
 
@@ -168,7 +185,7 @@ function* rebuildPending() {
                     const block = dimension.getBlock(p);
                     if (block?.isValid && !KIND_BY_ID[block.typeId]) placementIndex.remove(dimension.id, p, { notify: false });
                 }
-                if (changed || !reapplyChunkNetworks(snapshot)) refreshLogicalGraph();
+                if (changed || !reapplyChunkNetworks(snapshot)) refreshLogicalChunk(snapshot);
             } catch (error) {
                 retry.set(key, request);
                 console.warn(`[Starstone] Chunk reconciliation failed: ${error.message}`);
@@ -258,21 +275,23 @@ function rememberCandidate(request) {
         candidateList = undefined;
     }
 }
+function cacheSnapshotCandidates(snapshot) {
+    const dimension = dimensionFor(snapshot.dimensionId);
+    if (!dimension) return;
+    const first = parseNodeRef(snapshot.segments[0]?.members[0]);
+    const y = first?.y || 0;
+    rememberCandidate({dimension,cx:snapshot.cx,cz:snapshot.cz,y});
+    for (const segment of snapshot.segments) for (const boundary of segment.boundaries) {
+        const [cx,cz] = boundary.destination;
+        rememberCandidate({dimension,cx,cz,y:parseNodeRef(boundary.ref)?.y || y});
+    }
+}
 function cacheCandidates(snapshots) {
-    // Replaced only when persisted topology changes, never on a standing poll.
+    // Replaced on a full rebuild; a committed chunk only adds its own entries.
+    // Never on a standing poll.
     observerCandidates = new Map();
     candidateList = undefined;
-    for (const snapshot of snapshots) {
-        const dimension = dimensionFor(snapshot.dimensionId);
-        if (!dimension) continue;
-        const first = parseNodeRef(snapshot.segments[0]?.members[0]);
-        const y = first?.y || 0;
-        rememberCandidate({dimension,cx:snapshot.cx,cz:snapshot.cz,y});
-        for (const segment of snapshot.segments) for (const boundary of segment.boundaries) {
-            const [cx,cz] = boundary.destination;
-            rememberCandidate({dimension,cx,cz,y:parseNodeRef(boundary.ref)?.y || y});
-        }
-    }
+    for (const snapshot of snapshots) cacheSnapshotCandidates(snapshot);
     for (const request of pending.values()) rememberCandidate(request);
     for (const request of retry.values()) rememberCandidate(request);
 }

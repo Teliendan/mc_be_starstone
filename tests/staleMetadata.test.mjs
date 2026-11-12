@@ -100,3 +100,35 @@ console.log('stale metadata: break, reconnect and toggles follow the complete li
         'a source in a chunk that unloaded after discovery still powers the network');
 }
 console.log('stale metadata: partly unloaded network keeps its hidden source');
+
+// A distant chunk commit re-applies only the networks that touch it: a network
+// with an unloaded part keeps its state and nothing is written to it.
+{
+    const g = fixture(); g.dim.id = 'test:distant_commit';
+    globalThis.__mcDimensions.set(g.dim.id, g.dim);
+    const hidden = new Set();
+    g.dim.isChunkLoaded = ({x}) => !hidden.has(Math.floor(x/16));
+    const left = [g.put('starstone:generator',0,0,0)];
+    for (let x=1;x<20;x++) { left.push(g.put('starstone:cable',x,0,0,{'starstone:connections':10})); g.put('minecraft:stone',x,-1,0); }
+    left.push(g.put('starstone:lamp',20,0,0)); g.put('minecraft:stone',20,-1,0);
+    const right = [g.put('starstone:generator',64,0,0)];
+    for (let x=65;x<68;x++) { right.push(g.put('starstone:cable',x,0,0,{'starstone:connections':10})); g.put('minecraft:stone',x,-1,0); }
+    for (const block of [...left, ...right]) placementIndex.record(block);
+    await drain();
+    const walker = player(g.dim); walker.location = {x:10,y:0,z:0}; globalThis.__mcPlayers = [walker];
+    repair.startRebuildNearby(walker,{radius:12,height:1}); await drain();
+    walker.location = {x:66,y:0,z:0};
+    repair.startRebuildNearby(walker,{radius:6,height:1}); await drain();
+    const probe = g.store.get('5,0,0');
+    assert.equal(probe.permutation.getState('starstone:powered'),true);
+    hidden.add(1); controller.pollLoadedChunks(); await drain();
+    const writesBefore = left.reduce((sum, block) => sum + block.writes, 0);
+    const commitsBefore = controller.chunkStats().commits;
+    const extra = g.put('starstone:cable',68,0,0,{'starstone:connections':10}); g.put('minecraft:stone',68,-1,0);
+    schedulePlaced(extra); flushPending(); await drain();
+    assert.ok(controller.chunkStats().commits > commitsBefore, 'the distant chunk committed');
+    assert.equal(left.reduce((sum, block) => sum + block.writes, 0), writesBefore, 'the unloaded network was not rewritten');
+    assert.equal(probe.permutation.getState('starstone:powered'),true,'the unloaded network keeps its state');
+    assert.equal(extra.permutation.getState('starstone:powered'),true,'the edited network is powered');
+}
+console.log('stale metadata: a distant commit leaves an unloaded network alone');

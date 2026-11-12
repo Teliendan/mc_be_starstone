@@ -43,6 +43,18 @@ unloaded-middle game test are separate tasks.
   Each network has stable `id`, `powered`, and Sets `segments`, `nodes`, `sources`,
   `activeSources`, `consumers`, `unresolvedBoundaries`. Power is the OR of saved
   active-source summaries. Invalid input and duplicate chunk snapshots throw.
+  `networks` is a snapshot array of the live `networkMap`; the graph object also keeps the
+  segment, contact, adjacency and per-chunk maps that `updateSegmentGraph` needs.
+- `updateSegmentGraph(graph, snapshot)` replaces one chunk's snapshot in place. It
+  deletes the networks that held an old segment of that chunk, drops the old
+  segments and contacts, inserts the new ones, relinks them and the segments of the
+  8 surrounding chunks whose ports lead into the chunk, merges any untouched network
+  a new segment now touches, and rebuilds only those components (ids are the smallest
+  segment key, as in a full build). It returns the new networks; `chunkController`
+  applies and announces only those (`refreshLogicalChunk`). A failure falls back to
+  `buildSegmentGraph` over all snapshots (cold start, an unknown source and the
+  fallback are the only full builds). `segmentGraph.test.mjs` asserts that 220 random
+  chunk writes leave the graph equal to a full build.
 - `validateChunkSegments(snapshot)` and `parseSegmentNodeRef(ref)` expose the
   validators. `reciprocalSegmentContact(a,b,direction)` shares the mounting
   compatibility rule between the local builder and metadata graph.
