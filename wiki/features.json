@@ -8,7 +8,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "5e45bfbcd0dd877550f16b2eb7b1985d32046a5dc4398fbd21612625c72b405d"
+          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -168,7 +168,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "5e45bfbcd0dd877550f16b2eb7b1985d32046a5dc4398fbd21612625c72b405d"
+          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -214,7 +214,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "5e45bfbcd0dd877550f16b2eb7b1985d32046a5dc4398fbd21612625c72b405d"
+          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -260,7 +260,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "5e45bfbcd0dd877550f16b2eb7b1985d32046a5dc4398fbd21612625c72b405d"
+          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -302,7 +302,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "5e45bfbcd0dd877550f16b2eb7b1985d32046a5dc4398fbd21612625c72b405d"
+          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -344,7 +344,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "5e45bfbcd0dd877550f16b2eb7b1985d32046a5dc4398fbd21612625c72b405d"
+          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -431,7 +431,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "5e45bfbcd0dd877550f16b2eb7b1985d32046a5dc4398fbd21612625c72b405d"
+          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -472,7 +472,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "5e45bfbcd0dd877550f16b2eb7b1985d32046a5dc4398fbd21612625c72b405d"
+          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -517,7 +517,7 @@
         },
         {
           "path": "starstone_bp/scripts/cableComponent.js",
-          "sha256": "2ba164421b604da921e1407c98be03d66690ef279182becc225136a829ae6f99"
+          "sha256": "a5cac681627757a607c969ffff37dc7ccb8aee49287072b6d23968237b4075ab"
         },
         {
           "path": "starstone_bp/scripts/cableTopology.js",
@@ -525,7 +525,7 @@
         },
         {
           "path": "starstone_bp/scripts/chunkController.js",
-          "sha256": "49dd6ec04078197131bb1c23cf1a3d8250550b0996dab71551e79613e163ba57"
+          "sha256": "d09cde0c1a37ef2cb36dd3bb748beab692f878a2f96875b841b287b34d241724"
         },
         {
           "path": "starstone_bp/scripts/chunkIndex.js",
@@ -609,7 +609,7 @@
         },
         {
           "path": "starstone_bp/scripts/powerPropagation.js",
-          "sha256": "856e146a7e2d575f669bab07015b45792a8cc2b07be9183e7bf74809e785a716"
+          "sha256": "0cb18d9ca0a9079f5cc27e3c3be5471c1d64754d1f76b920d5dbe17bcbb8f006"
         },
         {
           "path": "starstone_bp/scripts/redstoneAdapters.js",

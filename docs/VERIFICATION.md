@@ -43,3 +43,15 @@ verifier warns when dynamic registration is present, and the runtime suites chec
 wiring. A pass does not prove in-game behaviour, rendering, partial-block support, bridge
 back-contact lane policy (a design choice), unloaded-chunk continuity or safe network sizes:
 those remain in [TEST-WORLD.md](TEST-WORLD.md).
+
+## Owner game results, Bedrock 1.26.63, 2026-11-17 (development deploy)
+
+Verified in game: SS-04 a conduit and a generator joined by cables each register once and the lamp lights; restart and
+walk-around keep power; `rebuild_nearby` near Y -60 and near the top runs without error; the debug toggle shows its
+text. Batch 2: cables added one by one, joining a powered and an unpowered line, a loop and a bridge (46); a cable next
+to a 200+ cable line lights at once with no flicker (47); TNT, pistons and `/setblock` of a middle cable settle in
+about 5 s (48).
+Failed and fixed, not re-tested yet: a cable at the loaded-area edge lost its arm and cut the circuit (49/50,
+`61198e7`, inner corners `57a42b3`); a stale source state re-applied after a toggle (`a2c25b1`); cables in a returning
+chunk stayed on for seconds (catch-up check `57a42b3`); the ore was loose in the Nature tab (`d59a8cd`).
+Not tested: the 1,000-cable PC/tablet timing (49), a redstone clock on an input adapter (50), an old world (51).
