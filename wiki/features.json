@@ -525,7 +525,7 @@
         },
         {
           "path": "starstone_bp/scripts/chunkController.js",
-          "sha256": "1c85bd333b1f2cd96479299494477c4f9c44a0b59c1920e0d44e023807ad69d7"
+          "sha256": "49dd6ec04078197131bb1c23cf1a3d8250550b0996dab71551e79613e163ba57"
         },
         {
           "path": "starstone_bp/scripts/chunkIndex.js",

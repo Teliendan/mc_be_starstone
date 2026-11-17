@@ -207,6 +207,12 @@ export function commitSourceState(dimension, location, on) {
     }
     const network = current.nodeToNetwork.get(ref);
     if (!network) { refreshLogicalGraph(); return true; }
+    // The incremental update rebuilds networks from the graph's stored segments:
+    // store the toggled one too, or the next commit of another chunk of this
+    // network would restore the pre-toggle source state.
+    const view = chunkIndex.readChunk(dimension.id, chunkOf(location.x), chunkOf(location.z));
+    const segment = view?.segments.find(s => s.sources.includes(ref));
+    if (segment && current.segments.has(segment.key)) current.segments.set(segment.key, segment);
     const active = new Set(network.activeSources);
     if (on) active.add(ref); else active.delete(ref);
     const powered = active.size > 0;

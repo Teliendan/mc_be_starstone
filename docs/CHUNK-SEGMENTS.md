@@ -54,7 +54,10 @@ unloaded-middle game test are separate tasks.
   applies and announces only those (`refreshLogicalChunk`). A failure falls back to
   `buildSegmentGraph` over all snapshots (cold start, an unknown source and the
   fallback are the only full builds). `segmentGraph.test.mjs` asserts that 220 random
-  chunk writes leave the graph equal to a full build.
+  chunk writes leave the graph equal to a full build. The graph stores segment objects, so a
+  source toggle (`commitSourceState`) also stores the toggled segment's overlay view in
+  `graph.segments`; otherwise the next commit of another chunk of that network rebuilt it from
+  the pre-toggle source state (owner M49, fixed 2026-11-17, `logicalSourceState.test.mjs`).
 - `validateChunkSegments(snapshot)` and `parseSegmentNodeRef(ref)` expose the
   validators. `reciprocalSegmentContact(a,b,direction)` shares the mounting
   compatibility rule between the local builder and metadata graph.

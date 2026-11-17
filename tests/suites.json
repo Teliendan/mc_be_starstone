@@ -49,6 +49,9 @@
     "integration-regression": [
       "integrationRegression.test.mjs"
     ],
+    "logical-source-state": [
+      "logicalSourceState.test.mjs"
+    ],
     "mutation": [
       "mutation.test.mjs"
     ],
