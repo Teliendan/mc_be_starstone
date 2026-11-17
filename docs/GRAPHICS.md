@@ -59,7 +59,10 @@ past the cell edge (0.14 model units) so adjoining arms meet without a seam,
 including cables wrapped around the outside edge of one support cube. The
 unpowered and powered materials are `starstone:cable_off` and
 `starstone:cable_on`. The four arms of an ordinary cable form one joined lane;
-a four-arm intersection is not an isolated crossing.
+a four-arm intersection is not an isolated crossing. An arm whose neighbour cell (direct or
+around the outside edge) is in an unloaded chunk keeps its drawn state on a refresh; before
+2026-11-17 a repair pass at the edge of the loaded area dropped it (owner M50,
+`unloadedArms.test.mjs`). Inner corners still compute their arms without that rule.
 
 An inside edge needs multiple cable sheets in one occupied block cell.
 `starstone:inner_corner` is a separate walk-through block with 54 valid

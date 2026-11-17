@@ -8,13 +8,13 @@ import { innerSupports, stateOfFaces, facesOfPair, pairFromPermutation, withFace
     armsFromPermutation, withArms, innerArmBits, contactedFaces } from "./innerCorner.js";
 import { descriptorForBlock, cableDescriptor } from "./electricalBlocks.js";
 import { extendFromPlacement, captureRemovedNetworks, removeAndSplitNetwork } from "./networkController.js";
-import { CABLE_ID, INNER_CORNER_ID, KIND_BY_ID, SURFACE_IDS, ARM_NAMES, FACE_LIST } from "./constants.js";
+import { CABLE_ID, INNER_CORNER_ID, KIND_BY_ID, SURFACE_IDS, ARM_NAMES, ARM_BITS, FACE_LIST } from "./constants.js";
 import { placementIndex } from "./persistence.js";
 import { trackInput, refreshAdapterVisuals, reactToRedstoneUpdate } from "./redstoneAdapters.js";
 import { queueMutation } from "./mutationController.js";
 import { pistonSupport } from "./pistonController.js";
 import { topologyChanged } from "./networkEvents.js";
-import { readBlock, NEIGHBOR_OFFSETS_18 } from "./blockKeys.js";
+import { readBlock, chunkOf, NEIGHBOR_OFFSETS_18 } from "./blockKeys.js";
 
 const pending = new Map();
 const discoveries = new Map();
@@ -49,22 +49,34 @@ export function schedulePlaced(block) {
     queue(discoveries, block.dimension, block.location);
 }
 
-// A neighbor cable exposes potential contacts regardless of its old mask.
+// A cell in another chunk column whose chunk is not loaded: its content is unknown.
+function unknownCell(dimension, location, x, z) {
+    if (chunkOf(x) === chunkOf(location.x) && chunkOf(z) === chunkOf(location.z)) return false;
+    try { return !dimension.isChunkLoaded({ x, y: location.y, z }); } catch { return true; }
+}
+// A neighbor cable exposes potential contacts regardless of its old mask. An arm
+// whose direct or outside-edge neighbour is in an unloaded chunk keeps its drawn
+// state: unloaded is not proof of removal (owner M50, a border cable lost an arm).
 export function computeCableMask(block) {
     const face = mountFace(block);
     if (!face) return 0;
     const neighbors = {};
+    const { x,y,z } = block.location;
+    const normal = faceNormal(face);
+    let unknown = 0;
     for (const arm of ARM_NAMES) {
         const [dx,dy,dz] = worldOffset(face, arm);
-        const { x,y,z } = block.location;
+        if (unknownCell(block.dimension, block.location, x+dx, z+dz) ||
+            unknownCell(block.dimension, block.location, x+dx-normal[0], z+dz-normal[2])) unknown |= ARM_BITS[arm];
         const nb = readBlock(block.dimension, { x: x+dx, y: y+dy, z: z+dz });
         if (!nb?.isValid) continue;
         neighbors[arm] = nb.type.id === CABLE_ID
             ? cableDescriptor({ mountFace: mountFace(nb), connections: 15 })
             : descriptorForBlock(nb);
     }
-    return cableConnectionMask(face, neighbors) |
+    const mask = cableConnectionMask(face, neighbors) |
         outerArmMask(face, diagonalReader(block.dimension, block.location));
+    return unknown ? mask | (block.permutation.getState("starstone:connections") & unknown) : mask;
 }
 function removeUnsupported(block) {
     const { x,y,z } = block.location;

@@ -112,6 +112,9 @@
     "survival": [
       "survival.test.mjs"
     ],
+    "unloaded-arms": [
+      "unloadedArms.test.mjs"
+    ],
     "visual-geometry": [
       "visualGeometry.test.mjs"
     ],
