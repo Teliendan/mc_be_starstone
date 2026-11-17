@@ -222,7 +222,7 @@
       },
       {
         "path": "starstone_bp/blocks/ore.json",
-        "sha256": "be082c569381e2a2f23bbb81f6a0032851b7b5151877f234dcc75c8def0ef656"
+        "sha256": "71b3658e970603963da8778d43f47d5c4ff4907209948ab858f920eb31a2d62b"
       }
     ],
     "featureId": "starstone:ore",

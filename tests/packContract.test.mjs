@@ -111,3 +111,6 @@ for (const [axis,ends] of Object.entries({x:['east','west'],y:['up','down'],z:['
         assert.equal(components['minecraft:light_emission'],powered ? 1 : 0);
     }
 }
+// Creative inventory: the ore sits with the vanilla ores (Nature tab, Ores group; owner 2026-11-17).
+assert.deepEqual(read(`${bp}/blocks/ore.json`)['minecraft:block'].description.menu_category,
+    { category: 'nature', group: 'minecraft:itemGroup.name.ore' }, 'ore is in the creative Ores group');
