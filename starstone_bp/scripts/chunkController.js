@@ -4,7 +4,7 @@ import { system, world } from "@minecraft/server";
 import { placementIndex } from "./persistence.js";
 import { chunkIndex, buildIndexedChunkSegments } from "./chunkIndex.js";
 import { buildSegmentGraph, updateSegmentGraph } from "./segmentGraph.js";
-import { applyPower } from "./powerPropagation.js";
+import { applyPower, catchUpPending, PENDING_CATCHUP_INTERVAL_TICKS } from "./powerPropagation.js";
 import runtime, { isCompleteNetwork } from "./networkRuntime.js";
 import { parseNodeRef, nodeRef, chunkOf } from "./blockKeys.js";
 import { configureNetworkPersistence, subscribeNetworkDiscovery, notifyNetworkDiscovered } from "./networkEvents.js";
@@ -368,5 +368,7 @@ export function registerChunkController() {
         }
     });
     system.runInterval(pollLoadedChunks, CHUNK_OBSERVER_INTERVAL_TICKS);
+    // Skipped writes of an unloaded chunk are re-applied about half a second after it returns.
+    system.runInterval(catchUpPending, PENDING_CATCHUP_INTERVAL_TICKS);
     registered = true;
 }

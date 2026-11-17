@@ -79,6 +79,9 @@
     "persistence": [
       "persistence.test.mjs"
     ],
+    "pending-catchup": [
+      "pendingCatchUp.test.mjs"
+    ],
     "piston": [
       "piston.test.mjs"
     ],

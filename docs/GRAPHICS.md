@@ -62,7 +62,8 @@ unpowered and powered materials are `starstone:cable_off` and
 a four-arm intersection is not an isolated crossing. An arm whose neighbour cell (direct or
 around the outside edge) is in an unloaded chunk keeps its drawn state on a refresh; before
 2026-11-17 a repair pass at the edge of the loaded area dropped it (owner M50,
-`unloadedArms.test.mjs`). Inner corners still compute their arms without that rule.
+`unloadedArms.test.mjs`). Inner corners follow the same rule (an arm toward an unloaded direct or
+outside-edge cell keeps its drawn state; 2026-11-17, `pendingCatchUp.test.mjs`).
 
 An inside edge needs multiple cable sheets in one occupied block cell.
 `starstone:inner_corner` is a separate walk-through block with 54 valid

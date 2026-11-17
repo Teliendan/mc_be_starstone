@@ -26,7 +26,7 @@
 // separately, so a source block is never given a `powered` state here.
 
 import { system } from "@minecraft/server";
-import { parseNodeRef } from "./blockKeys.js";
+import { parseNodeRef, chunkOf } from "./blockKeys.js";
 import {
     CABLE_ID,
     INNER_CORNER_ID,
@@ -65,9 +65,30 @@ function targetKey(dimension, x, y, z, lane) {
     return `${dimension.id}|${x}|${y}|${z}|plan:${lane}`;
 }
 
-// NodeRefs whose chunk was unloaded when power was computed. Left here so a
-// later reconcile pass can recompute and apply power once the chunk loads.
-const pendingReconciliation = new Set();
+// Writes skipped because their chunk was unloaded: ref -> latest desired target. The latest
+// desired state wins: a newer applyPower for the ref replaces the entry (see applyPower), and
+// a processed or impossible write (block gone) drops it. At most one entry per node.
+const pendingReconciliation = new Map();
+// The same entries grouped by chunk: chunkKey -> Set(ref). catchUpPending probes one chunk per
+// group, so its cost follows the number of pending chunks and is zero when there are none.
+const pendingChunks = new Map();
+export const PENDING_CATCHUP_INTERVAL_TICKS = 10;
+function chunkKeyOf(dimension, x, z) { return `${dimension.id}|${chunkOf(x)}|${chunkOf(z)}`; }
+function addPending(target) {
+    const { ref, dimension, x, z } = target;
+    const key = chunkKeyOf(dimension, x, z);
+    pendingReconciliation.set(ref, { ...target, chunkKey: key });
+    let refs = pendingChunks.get(key);
+    if (!refs) pendingChunks.set(key, refs = new Set());
+    refs.add(ref);
+}
+function dropPending(ref) {
+    const entry = pendingReconciliation.get(ref);
+    if (!entry) return;
+    pendingReconciliation.delete(ref);
+    const refs = pendingChunks.get(entry.chunkKey);
+    if (refs) { refs.delete(ref); if (!refs.size) pendingChunks.delete(entry.chunkKey); }
+}
 
 // The block-state a lane writes, per plan section 5.2/5.3.
 export function poweredStateForLane(lane) {
@@ -98,20 +119,20 @@ function applyTarget(target) {
     const { ref, dimension, x, y, z, lane, powered, progress } = target;
     try {
         if (!dimension.isChunkLoaded({ x, y, z })) {
-            pendingReconciliation.add(ref);
+            addPending(target);
             progress.unresolved++;
             return;
         }
         const block = dimension.getBlock({ x, y, z });
         const current = currentOf(block, lane);
-        if (current === "none") return;
-        pendingReconciliation.delete(ref);
+        if (current === "none") { dropPending(ref); return; }
+        dropPending(ref);
         if (current.value === powered) return;
         block.setPermutation(block.permutation.withState(current.state, powered));
         appliedWrites++;
         progress.written++;
     } catch (err) {
-        pendingReconciliation.add(ref);
+        addPending(target);
         console.warn(`${TAG} Could not set power for ${ref}: ${err.message}`);
     }
 }
@@ -158,6 +179,7 @@ export function applyPower(network, dimension) {
             (refs === network.nodes && consumers.has(ref))) continue;
         const parsed = parseNodeRef(ref);
         const key = targetKey(dimension, parsed.x, parsed.y, parsed.z, parsed.lane);
+        dropPending(ref); // this target supersedes any skipped older one
         const old = targets.get(key);
         if (old) { old.progress.pending--; targets.delete(key); }
         targets.set(key, { ref, dimension, x: parsed.x, y: parsed.y, z: parsed.z, lane: parsed.lane, powered, progress });
@@ -166,6 +188,32 @@ export function applyPower(network, dimension) {
     peakQueued = Math.max(peakQueued, targets.size);
     startJob();
     return progress;
+}
+
+// Re-queue the skipped writes of every pending chunk that is loaded again (one chunk probe per
+// pending chunk, called every PENDING_CATCHUP_INTERVAL_TICKS). Only those nodes are touched, with
+// their latest desired state; applyTarget clears the entry (or re-adds it if the chunk went away
+// again). A node with a newer queued target is left to that target.
+export function catchUpPending() {
+    if (!pendingChunks.size) return 0;
+    let queued = 0;
+    for (const refs of pendingChunks.values()) {
+        let first;
+        for (const ref of refs) { first = pendingReconciliation.get(ref); break; }
+        if (!first) continue;
+        try { if (!first.dimension.isChunkLoaded({ x: first.x, y: first.y, z: first.z })) continue; }
+        catch { continue; }
+        for (const ref of refs) {
+            const entry = pendingReconciliation.get(ref);
+            const key = targetKey(entry.dimension, entry.x, entry.y, entry.z, entry.lane);
+            if (targets.has(key)) continue;
+            const progress = { written: 0, unresolved: 0, pending: 1 };
+            targets.set(key, { ...entry, progress });
+            queued++;
+        }
+    }
+    if (queued) { peakQueued = Math.max(peakQueued, targets.size); startJob(); }
+    return queued;
 }
 
 // The nodeRefs still waiting on an unloaded chunk, for a later reconcile pass.

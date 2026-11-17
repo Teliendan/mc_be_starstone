@@ -86,7 +86,13 @@ node and lane (consumers first, a newer state deletes and re-inserts the entry) 
 `pendingReconciliation`), reads the block, and calls `setPermutation` only on a difference, then
 yields. One read and at most one write per step; the engine's per-tick job budget sets the pace
 (not measured in game; the owner checks a long wire on PC and tablet). Bridge lane keys stay
-independent. `applyPower` always returns live `{written,unresolved,pending}`: `written` counts
+independent. A skipped (unloaded) write is kept in `pendingReconciliation` (ref -> latest target,
+one entry per node, also grouped per chunk). `catchUpPending` runs every
+`PENDING_CATCHUP_INTERVAL_TICKS = 10` (2026-11-17, owner M50), probes one `isChunkLoaded` per pending
+chunk (zero work when none), re-queues only the returned chunk's nodes and skips nodes with a newer
+queued target; a newer `applyPower`, a processed write or a missing block clears the entry. Tick sim
+(`scenario.mjs 300 4 64`): worst wrong-visual duration near the player 38 -> 0 ticks. `pendingCatchUp.test.mjs`.
+`applyPower` always returns live `{written,unresolved,pending}`: `written` counts
 actual state changes, `pending` reaches zero when every target was processed or superseded.
 `powerStats()` keeps `queued` (targets), `peakQueued`, `appliedWrites`; `planning` is 1 while the job
 runs. Fixture turns now equal job steps (one step per turn). The table below is the

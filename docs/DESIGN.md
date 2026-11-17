@@ -33,7 +33,10 @@ The system's name is Starstone (ore, dust, crystal).
    a power change never rebuilds topology.
 4. **Unloaded chunks are an unresolved continuation, not a broken circuit.** Each chunk keeps a
    segment with boundary ports; reciprocal ports join logical networks through saved metadata,
-   and a returning chunk receives the network's current state. No ticking areas, no forced
+   and a returning chunk receives the network's current state: power writes skipped because a
+   chunk was unloaded are remembered per chunk (latest state wins) and re-applied about 0.5 s
+   after it returns (`catchUpPending`, every 10 ticks, only that chunk's nodes; 2026-11-17, owner
+   M50). The 100-tick chunk poll stays as the fallback. No ticking areas, no forced
    chunk loading just for electricity.
 5. **Event-driven, with a bounded safety net.** Placement and removal update topology locally
    and merge or split networks. Commands, explosions, structures and pistons, which have no

@@ -3,9 +3,9 @@ import { world, system } from "@minecraft/server";
 import { isSupportValid, isFaceSupportValid, dropAndClear, mountFace } from "./support.js";
 import { worldOffset, supportOffset, faceNormal } from "./surfaceFrame.js";
 import { cableConnectionMask } from "./cableTopology.js";
-import { outerArmMask, innerOuterArmBits, outerContactedFaces } from "./cornerTopology.js";
+import { outerArmMask, innerOuterArmBits, outerContactedFaces, outerCornerOffset } from "./cornerTopology.js";
 import { innerSupports, stateOfFaces, facesOfPair, pairFromPermutation, withFacePair,
-    armsFromPermutation, withArms, innerArmBits, contactedFaces } from "./innerCorner.js";
+    armsFromPermutation, withArms, innerArmBits, contactedFaces, externalArms } from "./innerCorner.js";
 import { descriptorForBlock, cableDescriptor } from "./electricalBlocks.js";
 import { extendFromPlacement, captureRemovedNetworks, removeAndSplitNetwork } from "./networkController.js";
 import { CABLE_ID, INNER_CORNER_ID, KIND_BY_ID, SURFACE_IDS, ARM_NAMES, ARM_BITS, FACE_LIST } from "./constants.js";
@@ -149,7 +149,20 @@ export function computeInnerCornerState(block) {
     const grown = [...contactedFaces(supported, neighborAt), ...outerContactedFaces(supported, diagonalAt)];
     const pair = stateOfFaces([...active.filter(face => supported.includes(face)), ...grown]);
     if (!pair) return undefined;
-    return { pair, arms: innerArmBits(pair, neighborAt) | innerOuterArmBits(pair, diagonalAt) };
+    let arms = innerArmBits(pair, neighborAt) | innerOuterArmBits(pair, diagonalAt);
+    // An arm whose direct or outside-edge neighbour sits in an unloaded chunk keeps its drawn
+    // state (same rule as computeCableMask, owner M50): unknown is not proof of removal.
+    if (pair === pairFromPermutation(block.permutation)) {
+        let unknown = 0;
+        for (const { face, toward, bit } of externalArms(facesOfPair(pair))) {
+            const [nx, ny, nz] = faceNormal(toward);
+            const offset = outerCornerOffset(face, toward);
+            if (unknownCell(dimension, location, location.x + nx, location.z + nz) ||
+                (offset && unknownCell(dimension, location, location.x + offset[0], location.z + offset[2]))) unknown |= 1 << bit;
+        }
+        if (unknown) arms = (arms & ~unknown) | (armsFromPermutation(block.permutation) & unknown);
+    }
+    return { pair, arms };
 }
 export function refreshInnerCorner(block, { notify = true } = {}) {
     if (!block?.isValid || block.type.id !== INNER_CORNER_ID) return;

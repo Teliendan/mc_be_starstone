@@ -105,7 +105,8 @@ a 17x9x17 seed volume; connected loaded components can extend beyond it.
 15. Toggle the source in A while B is confirmed unloaded. Visit/load C and
     confirm its lamp receives the latest state. Reload B and confirm no duplicate
     segments or phantom sources. Repeat with the source off, save/reopen, and
-    with a removed boundary cable before unloading.
+    with a removed boundary cable before unloading. A returning chunk shows the latest state
+    within about 1 s (pending writes are re-applied every 10 ticks; was up to 5-10 s).
 16. If simulation rules cannot keep A/C observable while B unloads, record that
     limitation. Run the equivalent sequence: index all, leave B/C unloaded,
     toggle A, save/reopen, visit C, then B. Record exact observations and diagnose
