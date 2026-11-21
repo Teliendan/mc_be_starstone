@@ -29,6 +29,7 @@
 // pack shares for its lifetime.
 
 import { parseNodeRef, chunkOf } from "./blockKeys.js";
+import { SLICE_NODES, drive } from "./slicing.js";
 
 // Each runtime owns its own indexes. Keeping them inside this factory prevents
 // a test runtime from resetting the pack's shared default runtime.
@@ -83,7 +84,8 @@ function allocateId() {
 // record. Enforces the invariant that every NodeRef belongs to at most one
 // runtime network: adding a network that shares a node with a different one
 // throws instead of violating the invariant. Returns the stored record.
-function addNetwork(network, { assignId = true } = {}) {
+function* addNetworkSteps(network, { assignId = true } = {}) {
+    let counted = 0;
     if (!network || typeof network !== "object") {
         throw new Error("networkRuntime: addNetwork requires a network record");
     }
@@ -98,6 +100,7 @@ function addNetwork(network, { assignId = true } = {}) {
                 `networkRuntime: node ${node} already belongs to network ${owner}`
             );
         }
+        if (++counted % SLICE_NODES === 0) yield;
     }
 
     const id = assignId || network.id === undefined || network.id === null
@@ -119,9 +122,11 @@ function addNetwork(network, { assignId = true } = {}) {
     networks.set(id, record);
     for (const node of record.nodes) {
         nodeToNetwork.set(node, id);
+        if (++counted % SLICE_NODES === 0) yield;
     }
     return record;
 }
+function addNetwork(network, options) { return drive(addNetworkSteps(network, options)); }
 
 // Register a freshly discovered network (plan section 5.5, plus a powered flag
 // the controller computes as "any source is on"). A discovery rarely arrives into
@@ -129,7 +134,8 @@ function addNetwork(network, { assignId = true } = {}) {
 // cached network that already claims any of the new nodes is dropped first and the
 // new record becomes the single owner of every node it lists. The one-network-per-
 // node invariant is restored rather than violated. Returns the stored record.
-function registerNetwork(discovered, { assignId = true } = {}) {
+function* registerNetworkSteps(discovered, { assignId = true } = {}) {
+    let counted = 0;
     if (!discovered || typeof discovered !== "object" || !(discovered.nodes instanceof Set)) {
         throw new Error("networkRuntime: registerNetwork requires a discovered network record");
     }
@@ -140,27 +146,32 @@ function registerNetwork(discovered, { assignId = true } = {}) {
         if (owner !== undefined) {
             overlapping.add(owner);
         }
+        if (++counted % SLICE_NODES === 0) yield;
     }
     for (const id of overlapping) {
-        removeNetwork(id);
+        yield* removeNetworkSteps(id);
     }
 
-    return addNetwork(discovered, { assignId });
+    return yield* addNetworkSteps(discovered, { assignId });
 }
+function registerNetwork(discovered, options) { return drive(registerNetworkSteps(discovered, options)); }
 
 // Drop a network by id and release every NodeRef it held so those nodes may join
 // another network. Returns true when a network was removed.
-function removeNetwork(id) {
+function* removeNetworkSteps(id) {
     const record = networks.get(id);
     if (!record) {
         return false;
     }
+    let counted = 0;
     for (const node of record.nodes) {
         nodeToNetwork.delete(node);
+        if (++counted % SLICE_NODES === 0) yield;
     }
     networks.delete(id);
     return true;
 }
+function removeNetwork(id) { return drive(removeNetworkSteps(id)); }
 
 // The id a NodeRef currently belongs to, or undefined when it is unassigned.
 function networkIdOf(nodeRef) {
@@ -234,9 +245,12 @@ function invariantHolds() {
 
     return {
         addNetwork,
+        addNetworkSteps,
         registerNetwork,
+        registerNetworkSteps,
         mergeNetworks,
         removeNetwork,
+        removeNetworkSteps,
         networkIdOf,
         networkOf,
         nextNetworkId,
@@ -281,6 +295,19 @@ export function mergeProbes(record, absorbed, addedNodes) {
         else for (const ref of other.nodes) addProbe(probes, ref);
     }
     for (const ref of addedNodes) addProbe(probes, ref);
+}
+// True when the probe cache of a network is built (isCompleteNetwork is then O(chunks)).
+export const probesCached = network => chunkProbes.has(network);
+// Build the probe cache in slices, so a later isCompleteNetwork is O(chunks).
+export function* warmProbes(network) {
+    if (chunkProbes.has(network)) return;
+    const probes = new Map();
+    let counted = 0;
+    for (const ref of network.nodes || []) {
+        addProbe(probes, ref);
+        if (++counted % SLICE_NODES === 0) yield;
+    }
+    if (!chunkProbes.has(network)) chunkProbes.set(network, probes);
 }
 export function isCompleteNetwork(network, dimension) {
     if (!network || network.unresolvedBoundaries?.size > 0) return false;

@@ -14,7 +14,7 @@ import { topologyChanged } from "./networkEvents.js";
 import { nodeRef, parseNodeRef, readBlock, LANE_IDS } from "./blockKeys.js";
 
 export const VALIDATION_INTERVAL_TICKS = 100;
-export const VALIDATION_POSITION_BUDGET = 16;
+export const VALIDATION_POSITION_BUDGET = 6;
 export const PISTON_POLICY = Object.freeze({ standalone: "push_pull", supported: "popped" });
 function unsupported(block) {
     if (pistonSupport.isPending(block.dimension, block.location)) return false;

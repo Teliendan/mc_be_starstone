@@ -41,6 +41,8 @@ export async function drain() {
         for (const job of jobs.splice(0)) if (!job.next().done) jobs.push(job);
         await Promise.resolve();
         await Promise.resolve();
+        // Longer promise chains (gates, sliced jobs) settle within one macrotask.
+        if (!runs.length && !jobs.length) await new Promise(resolve => setImmediate(resolve));
         if (!runs.length && !jobs.length) return;
     }
     throw new Error('Scheduler did not finish');

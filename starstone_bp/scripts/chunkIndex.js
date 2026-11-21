@@ -8,6 +8,7 @@ import { nodeRef, chunkOf } from "./blockKeys.js";
 import { faceNormal, negate, vecEquals } from "./surfaceFrame.js";
 import { outerCornerOffset, outerOffsets, outerWrap, wrapFaces } from "./cornerTopology.js";
 import { innerNeighborAllowed, facesOfPair } from "./innerCorner.js";
+import { SLICE_BUILD, SLICE_NODES, drive } from "./slicing.js";
 
 export const CHUNK_SCHEMA_VERSION = 1;
 export const CHUNK_PROPERTY_PREFIX = "starstone:segments:";
@@ -83,9 +84,14 @@ export { allowedContact as reciprocalSegmentContact };
 // Pure construction from validated, complete indexed observations in one chunk.
 // The stable local key is its lexicographically smallest lane-aware NodeRef;
 // input order and source/visual state changes therefore do not change the key.
-export function buildChunkSegments(dimensionId, cx, cz, entries) {
+// Written as a generator that yields every SLICE_BUILD nodes so one job step never
+// grows with the chunk; buildChunkSegments is the synchronous form.
+export function* buildChunkSegmentsSteps(dimensionId, cx, cz, entries) {
     if (!validChunk(dimensionId, cx, cz)) throw new Error("Invalid segment chunk");
     const nodes = new Map(), byPosition = new Map();
+    let counted = 0;
+    // In-chunk cell -> items, keyed by a packed number (no template string per lookup).
+    const cell = (x, y, z) => (x - cx * 16) + 16 * (z - cz * 16) + 256 * y;
     for (const { location, descriptor } of entries) {
         if (!descriptor) continue;
         for (const lane of descriptor.lanes) {
@@ -95,9 +101,10 @@ export function buildChunkSegments(dimensionId, cx, cz, entries) {
             }
             const item = { ref, location, descriptor, lane, directions: directions(descriptor, lane), neighbors: new Set(), boundaries: [] };
             nodes.set(ref, item);
-            const key = `${location.x}|${location.y}|${location.z}`;
-            if (!byPosition.has(key)) byPosition.set(key, []);
-            byPosition.get(key).push(item);
+            const key = cell(location.x, location.y, location.z);
+            const here = byPosition.get(key);
+            if (here) here.push(item); else byPosition.set(key, [item]);
+            if (++counted % SLICE_BUILD === 0) yield;
         }
     }
     for (const item of nodes.values()) {
@@ -112,12 +119,13 @@ export function buildChunkSegments(dimensionId, cx, cz, entries) {
                 });
                 continue;
             }
-            for (const neighbor of byPosition.get(`${nx}|${ny}|${nz}`) || []) {
+            for (const neighbor of byPosition.get(cell(nx, ny, nz)) || []) {
                 if (allowedContact(item.descriptor, neighbor.descriptor, dir) && neighbor.directions.some(other => vecEquals(other, negate(dir)))) {
                     item.neighbors.add(neighbor.ref);
                 }
             }
         }
+        if (++counted % SLICE_BUILD === 0) yield;
     }
     const visited = new Set(), segments = [];
     for (const seed of [...nodes.keys()].sort()) {
@@ -133,17 +141,25 @@ export function buildChunkSegments(dimensionId, cx, cz, entries) {
                 activeSources.push(item.ref);
             }
             if (item.descriptor.kind === "consumer" || item.descriptor.kind === "adapter-out") consumers.push(item.ref);
-            boundaries.push(...item.boundaries);
+            for (const boundary of item.boundaries) boundaries.push(boundary);
             for (const neighbor of item.neighbors) if (!visited.has(neighbor)) {
                 visited.add(neighbor);
                 queue.push(neighbor);
             }
+            if (++counted % SLICE_BUILD === 0) yield;
         }
         members.sort(); sources.sort(); activeSources.sort(); consumers.sort();
-        boundaries.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
-        segments.push({ key: members[0], members, sources, activeSources, consumers, boundaries });
+        // Sorted by a key built once per port (ref, then direction); the old
+        // comparator stringified both ports on every comparison.
+        const keyed = boundaries.map(port => ({ port, key: `${port.ref}|${port.direction.join(",")}` }));
+        keyed.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+        segments.push({ key: members[0], members, sources, activeSources, consumers, boundaries: keyed.map(entry => entry.port) });
+        if (members.length > 32 || ++counted % SLICE_BUILD === 0) yield;
     }
     return { v: CHUNK_SCHEMA_VERSION, dimensionId, cx, cz, segments };
+}
+export function buildChunkSegments(dimensionId, cx, cz, entries) {
+    return drive(buildChunkSegmentsSteps(dimensionId, cx, cz, entries));
 }
 
 // Generator reads only explicitly loaded indexed locations. A single unavailable
@@ -169,12 +185,14 @@ export function* buildIndexedChunkSegments(dimension, cx, cz, placementIndex, { 
         else onStale?.({ ...location });
         yield;
     }
-    return buildChunkSegments(dimension.id, cx, cz, entries);
+    return yield* buildChunkSegmentsSteps(dimension.id, cx, cz, entries);
 }
 
 // Strict validation is shared by disk reads and pure graph input. A corrupt
 // chunk is never partly admitted as a valid logical conductor.
-export function validateChunkSegments(snapshot) {
+// A generator (yields every SLICE_* items) so a big chunk validates over several job steps.
+export function* validateChunkSegmentsSteps(snapshot) {
+    let counted = 0;
     if (!snapshot || snapshot.v !== CHUNK_SCHEMA_VERSION || !validChunk(snapshot.dimensionId, snapshot.cx, snapshot.cz) || !Array.isArray(snapshot.segments)) return false;
     const allMembers = new Set(), keys = new Set();
     for (const segment of snapshot.segments) {
@@ -185,14 +203,18 @@ export function validateChunkSegments(snapshot) {
             const p = parseSegmentNodeRef(ref);
             if (!p || p.dimensionId !== snapshot.dimensionId || chunkOf(p.x) !== snapshot.cx || chunkOf(p.z) !== snapshot.cz || allMembers.has(ref)) return false;
             members.add(ref); allMembers.add(ref);
+            if (++counted % SLICE_NODES === 0) yield;
         }
-        if (segment.key !== [...members].sort()[0]) return false;
+        let smallest;
+        for (const ref of members) if (smallest === undefined || ref < smallest) smallest = ref;
+        if (segment.key !== smallest) return false;
         for (const field of ["sources", "activeSources", "consumers"]) {
             if (!Array.isArray(segment[field]) || new Set(segment[field]).size !== segment[field].length || segment[field].some(ref => !members.has(ref))) return false;
         }
         if (segment.activeSources.some(ref => !segment.sources.includes(ref)) || !Array.isArray(segment.boundaries)) return false;
         const seenBoundaries = new Set();
         for (const port of segment.boundaries) {
+            if (++counted % SLICE_BUILD === 0) yield;
             if (!port || !members.has(port.ref) || !Array.isArray(port.direction) || port.direction.length !== 3 ||
                 !port.direction.every(v => Number.isInteger(v) && Math.abs(v) <= 1) ||
                 ![1,2].includes(port.direction.reduce((n, v) => n + Math.abs(v), 0)) ||
@@ -229,11 +251,20 @@ export function validateChunkSegments(snapshot) {
     return true;
 }
 
-function checksum(text) {
-    let value = 2166136261;
-    for (let i = 0; i < text.length; i++) value = Math.imul(value ^ text.charCodeAt(i), 16777619);
-    return (value >>> 0).toString(16);
+export function validateChunkSegments(snapshot) {
+    return drive(validateChunkSegmentsSteps(snapshot));
 }
+
+// FNV-1a over the text, resumable: pass the previous state to continue with the next page.
+function checksumUpdate(state, text) {
+    let value = state;
+    for (let i = 0; i < text.length; i++) value = Math.imul(value ^ text.charCodeAt(i), 16777619);
+    return value;
+}
+const CHECKSUM_START = 2166136261;
+const CHECKSUM_SLICE = 4096;
+const checksumText = value => (value >>> 0).toString(16);
+function checksum(text) { return checksumText(checksumUpdate(CHECKSUM_START, text)); }
 
 function propertyBase(dimensionId, cx, cz) {
     if (!validChunk(dimensionId, cx, cz)) throw new Error("Invalid segment chunk");
@@ -256,6 +287,67 @@ function deepFreeze(value) {
         for (const item of Object.values(value)) deepFreeze(item);
     }
     return value;
+}
+
+// The same, as a generator with an explicit stack: yields every SLICE_NODES objects
+// (a 2,000-node snapshot is ~10,000 objects).
+function* deepFreezeSteps(root) {
+    const stack = [root];
+    let counted = 0;
+    while (stack.length) {
+        const value = stack.pop();
+        if (!value || typeof value !== "object" || Object.isFrozen(value)) continue;
+        Object.freeze(value);
+        for (const item of Object.values(value)) if (item && typeof item === "object") stack.push(item);
+        if (++counted % SLICE_NODES === 0) yield;
+    }
+    return root;
+}
+
+// Non-ASCII characters are escaped so the stored text is ASCII (length == bytes).
+const escapeText = text => text.replace(/[\u007f-\uffff]/g, char => `\\u${char.charCodeAt(0).toString(16).padStart(4, "0")}`);
+
+// Snapshot text, built in slices. Same text as JSON.stringify(snapshot) (the test
+// checks it), but a long array is stringified SLICE_NODES elements at a time and
+// the object levels are walked here, so no step stringifies the whole chunk.
+function* snapshotText(snapshot) {
+    const parts = [];
+    const push = (...texts) => { for (const text of texts) parts.push(escapeText(text)); };
+    const slices = function* (list) {
+        if (list.length <= SLICE_NODES) { push(JSON.stringify(list)); return; }
+        push("[");
+        for (let i = 0; i < list.length; i += SLICE_NODES) {
+            if (i) push(",");
+            const text = JSON.stringify(list.slice(i, i + SLICE_NODES));
+            push(text.slice(1, -1));
+            yield;
+        }
+        push("]");
+    };
+    const object = function* (value, field) {
+        push("{");
+        let first = true;
+        for (const key of Object.keys(value)) {
+            if (value[key] === undefined) continue;
+            if (!first) push(",");
+            first = false;
+            push(JSON.stringify(key), ":");
+            yield* field(key, value[key]);
+        }
+        push("}");
+    };
+    yield* object(snapshot, function* (key, value) {
+        if (key !== "segments" || !Array.isArray(value)) { push(JSON.stringify(value)); return; }
+        push("[");
+        for (let i = 0; i < value.length; i++) {
+            if (i) push(",");
+            yield* object(value[i], function* (_, field) {
+                if (Array.isArray(field)) yield* slices(field); else push(JSON.stringify(field));
+            });
+        }
+        push("]");
+    });
+    return parts.join("");
 }
 
 // Only writeChunk and updateSource write these properties, so RAM mirrors disk after
@@ -282,26 +374,33 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
     }
     const overlayKey = base => `${CHUNK_SOURCES_PREFIX}${base.slice(CHUNK_PROPERTY_PREFIX.length)}`;
     const visible = base => views.get(base) ?? known.get(base);
-    function load(base, dimensionId, cx, cz) {
+    function* loadSteps(base, dimensionId, cx, cz) {
         const rawHead = storage.getDynamicProperty(`${base}:head`);
         if (rawHead === undefined) return undefined;
         let head;
         try { head = parseHead(rawHead); } catch { corrupt(base); return undefined; }
         const parts = [];
+        let sum = CHECKSUM_START;
         for (let i = 0; i < head.pages; i++) {
             const part = storage.getDynamicProperty(`${base}:${head.bank}:${i}`);
             const expected = Math.min(CHUNK_PAGE_BYTES, head.length - i * CHUNK_PAGE_BYTES);
-            if (typeof part !== "string" || part.length !== expected || /[^\x00-\x7f]/.test(part)) { corrupt(base); return undefined; }
+            if (typeof part !== "string" || part.length !== expected || /[^\x00-]/.test(part)) { corrupt(base); return undefined; }
             parts.push(part);
+            yield;
+            for (let at = 0; at < part.length; at += CHECKSUM_SLICE) {
+                sum = checksumUpdate(sum, part.slice(at, at + CHECKSUM_SLICE));
+                yield;
+            }
         }
         const text = parts.join("");
         try {
-            if (checksum(text) !== head.checksum) throw new Error("Segment checksum mismatch");
+            if (checksumText(sum) !== head.checksum) throw new Error("Segment checksum mismatch");
             const snapshot = JSON.parse(text);
-            if (!validateChunkSegments(snapshot) || snapshot.dimensionId !== dimensionId || snapshot.cx !== cx || snapshot.cz !== cz) throw new Error("Invalid segment snapshot");
+            yield;
+            if (!(yield* validateChunkSegmentsSteps(snapshot)) || snapshot.dimensionId !== dimensionId || snapshot.cx !== cx || snapshot.cz !== cz) throw new Error("Invalid segment snapshot");
             texts.set(base, text);
             checksums.set(base, head.checksum);
-            return deepFreeze(snapshot);
+            return yield* deepFreezeSteps(snapshot);
         } catch { corrupt(base); return undefined; }
     }
     // The saved overlay of a chunk, applied to its freshly loaded snapshot. A corrupt
@@ -336,21 +435,24 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         if (view === known.get(base)) views.delete(base); else views.set(base, view);
     }
     function dropOverlay(base) { overlays.delete(base); views.delete(base); }
-    function readChunk(dimensionId, cx, cz) {
+    function* readChunkSteps(dimensionId, cx, cz) {
         const base = propertyBase(dimensionId, cx, cz);
         // Storage exceptions propagate and leave nothing cached.
         if (!known.has(base)) {
-            known.set(base, load(base, dimensionId, cx, cz));
+            known.set(base, yield* loadSteps(base, dimensionId, cx, cz));
             if (known.get(base)) loadOverlay(base);
         }
         return visible(base);
     }
+    const readChunk = (dimensionId, cx, cz) => drive(readChunkSteps(dimensionId, cx, cz));
     // `trusted`: the caller built the snapshot from a validated cached one
     // (updateSource), so the schema check is skipped.
-    function writeChunk(snapshot, { trusted = false } = {}) {
-        if (!trusted && !validateChunkSegments(snapshot)) throw new Error("Invalid segment snapshot");
+    // A generator: text, validation, one page per step, then the head (the commit point)
+    // and the cache refresh. writeChunk below is the synchronous form.
+    function* writeChunkSteps(snapshot, { trusted = false } = {}) {
+        if (!trusted && !(yield* validateChunkSegmentsSteps(snapshot))) throw new Error("Invalid segment snapshot");
         const base = propertyBase(snapshot.dimensionId, snapshot.cx, snapshot.cz);
-        const text = JSON.stringify(snapshot).replace(/[\u007f-￿]/g, char => `\\u${char.charCodeAt(0).toString(16).padStart(4, "0")}`);
+        const text = yield* snapshotText(snapshot);
         const pages = Math.ceil(text.length / CHUNK_PAGE_BYTES);
         if (pages > CHUNK_MAX_PAGES) throw new Error("Segment chunk exceeds page limit");
         const sameBase = () => known.get(base) !== undefined && texts.get(base) === text;
@@ -371,16 +473,29 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         if (rawHead !== undefined) {
             try { oldHead = parseHead(rawHead); } catch { corrupt(base); }
         }
-        readChunk(snapshot.dimensionId, snapshot.cx, snapshot.cz);
+        yield* readChunkSteps(snapshot.dimensionId, snapshot.cx, snapshot.cz);
         if (sameBase()) return settleUnchanged();
         const bank = oldHead ? 1 - oldHead.bank : 0;
-        for (let i = 0; i < pages; i++) storage.setDynamicProperty(`${base}:${bank}:${i}`, text.slice(i * CHUNK_PAGE_BYTES, (i + 1) * CHUNK_PAGE_BYTES));
+        let state = CHECKSUM_START;
+        for (let i = 0; i < pages; i++) {
+            const page = text.slice(i * CHUNK_PAGE_BYTES, (i + 1) * CHUNK_PAGE_BYTES);
+            storage.setDynamicProperty(`${base}:${bank}:${i}`, page);
+            yield;
+            // The checksum loop is JS per character: a page in slices of CHECKSUM_SLICE.
+            for (let at = 0; at < page.length; at += CHECKSUM_SLICE) {
+                state = checksumUpdate(state, page.slice(at, at + CHECKSUM_SLICE));
+                yield;
+            }
+        }
         // The sole commit point. Until this succeeds all readers retain the
         // previous complete bank. Exceptions propagate; no RAM state is advanced.
-        const sum = checksum(text);
+        const sum = checksumText(state);
+        const parsed = JSON.parse(text);
+        yield;
+        yield* deepFreezeSteps(parsed);
         storage.setDynamicProperty(`${base}:head`, JSON.stringify({ v: CHUNK_SCHEMA_VERSION, bank, pages, length: text.length, checksum: sum }));
         // Cache what a disk read would now return, never the caller's object.
-        known.set(base, deepFreeze(JSON.parse(text)));
+        known.set(base, parsed);
         texts.set(base, text);
         checksums.set(base, sum);
         dropOverlay(base);
@@ -392,21 +507,42 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         }
         return { changed: true };
     }
-    function* chunks() {
-        if (!scanned) {
-            const ids = [...storage.getDynamicPropertyIds()];
-            overlayIds = new Set(ids.filter(key => typeof key === "string" && key.startsWith(CHUNK_SOURCES_PREFIX)));
-            for (const key of ids) {
-                if (typeof key !== "string" || !key.startsWith(CHUNK_PROPERTY_PREFIX) || !key.endsWith(":head")) continue;
-                const parts = key.slice(CHUNK_PROPERTY_PREFIX.length, -5).split("|");
-                let dimensionId;
-                try { dimensionId = decodeURIComponent(parts[0]); } catch { corrupt(key); continue; }
-                if (parts.length !== 3 || !parts.slice(1).every(p => INTEGER.test(p)) || !validChunk(dimensionId, Number(parts[1]), Number(parts[2])) || encodeURIComponent(dimensionId) !== parts[0]) { corrupt(key); continue; }
-                readChunk(dimensionId, Number(parts[1]), Number(parts[2]));
+    const writeChunk = (snapshot, options) => drive(writeChunkSteps(snapshot, options));
+    // Scan the saved chunk heads and load every snapshot, one chunk (and one slice of it)
+    // per step. chunks() below yields the loaded snapshots.
+    function* loadAllSteps() {
+        if (scanned) return;
+        const ids = [...storage.getDynamicPropertyIds()];
+        const found = new Set(), heads = [];
+        yield;
+        // Sort the ids (thousands of placement shards among them) in slices.
+        for (let i = 0; i < ids.length; i++) {
+            const key = ids[i];
+            if (typeof key === "string") {
+                if (key.startsWith(CHUNK_SOURCES_PREFIX)) found.add(key);
+                else if (key.startsWith(CHUNK_PROPERTY_PREFIX) && key.endsWith(":head")) heads.push(key);
             }
-            scanned = true;
+            if ((i + 1) % 1024 === 0) yield;
         }
+        overlayIds = found;
+        for (const key of heads) {
+            if (typeof key !== "string" || !key.startsWith(CHUNK_PROPERTY_PREFIX) || !key.endsWith(":head")) continue;
+            const parts = key.slice(CHUNK_PROPERTY_PREFIX.length, -5).split("|");
+            let dimensionId;
+            try { dimensionId = decodeURIComponent(parts[0]); } catch { corrupt(key); continue; }
+            if (parts.length !== 3 || !parts.slice(1).every(p => INTEGER.test(p)) || !validChunk(dimensionId, Number(parts[1]), Number(parts[2])) || encodeURIComponent(dimensionId) !== parts[0]) { corrupt(key); continue; }
+            yield* readChunkSteps(dimensionId, Number(parts[1]), Number(parts[2]));
+        }
+        scanned = true;
+    }
+    function* chunks() {
+        drive(loadAllSteps());
         for (const base of [...known.keys()]) { const snapshot = visible(base); if (snapshot) yield snapshot; }
+    }
+    // The loaded snapshots as a list, after a sliced load (the job form of chunks()).
+    function* loadedChunksSteps() {
+        yield* loadAllSteps();
+        return [...known.keys()].map(visible).filter(Boolean);
     }
     // Patch a known source's on/off summary without any block read. Writes only the
     // small overlay property; a chunk with very many sources falls back to a full write.
@@ -441,7 +577,7 @@ export function createChunkIndex(storage, { warn = message => console.warn(messa
         }
         return true;
     }
-    return { readChunk, writeChunk, chunks, updateSource };
+    return { readChunk, writeChunk, writeChunkSteps, chunks, loadedChunksSteps, updateSource };
 }
 
 export const chunkIndex = createChunkIndex(world);

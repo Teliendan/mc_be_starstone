@@ -145,6 +145,9 @@
     ],
     "geometry-tables": [
       "geometryTables.test.mjs"
+    ],
+    "slice-budget": [
+      "sliceBudget.test.mjs"
     ]
   },
   "support_files": {

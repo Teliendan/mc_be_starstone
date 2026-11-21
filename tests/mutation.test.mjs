@@ -37,7 +37,7 @@ assert.equal(globalThis.__mcWorldSubscribers.blockExplode.length, 1);
     mutation.validateKnownPositions();
     assert.equal(mutation.mutationStats().lastChecked, 0, 'pending maintenance must not stack');
     await drain();
-    for (let tick = 0; tick < 4; tick++) { mutation.validateKnownPositions(); await drain(); }
+    for (let tick = 0; tick < Math.ceil(40 / mutation.VALIDATION_POSITION_BUDGET) + 1; tick++) { mutation.validateKnownPositions(); await drain(); }
     assert.equal(placementIndex.stats().positions, 0, 'round robin reaches every stale indexed position');
 }
 
@@ -100,7 +100,7 @@ for (const replacement of ['minecraft:air', 'minecraft:water', 'minecraft:flowin
     f.put('starstone:cable',1,0,0); f.put('minecraft:stone',1,-1,0);
     repair.startRebuildNearby(player(f.dim), {radius:2,height:1}); await drain();
     const before = mutation.mutationStats().batches;
-    for (let tick = 0; tick < 4; tick++) { mutation.validateKnownPositions(); await drain(); }
+    for (let tick = 0; tick < Math.ceil(40 / mutation.VALIDATION_POSITION_BUDGET) + 1; tick++) { mutation.validateKnownPositions(); await drain(); }
     assert.equal(mutation.mutationStats().batches, before, 'first visit of an unchanged, registered block queues nothing');
 }
 

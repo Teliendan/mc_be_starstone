@@ -108,11 +108,25 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
         }
     }
 
+    // Decoded shards by property key, newest last (a small LRU): an edit used to parse,
+    // validate and re-sort a section's whole JSON (up to ~20 KB). An entry is only used
+    // while the stored text still equals the text it was decoded from, so storage stays
+    // the authority; a write refreshes it after the store accepted the text. The Set of an
+    // entry is shared and read-only; read-modify-write callers take a copy (readForUpdate).
+    const decoded = new Map();
+    const DECODED_LIMIT = 64;
+    function remember(key, raw, codes) {
+        decoded.delete(key);
+        decoded.set(key, { raw, codes });
+        if (decoded.size > DECODED_LIMIT) decoded.delete(decoded.keys().next().value);
+    }
     function read(key) {
         // Keep storage exceptions outside JSON validation: an unavailable store
         // is not an empty or corrupt shard and must never be overwritten.
         const raw = storage.getDynamicProperty(key);
-        if (raw === undefined) return new Set();
+        if (raw === undefined) { decoded.delete(key); return new Set(); }
+        const hit = decoded.get(key);
+        if (hit && hit.raw === raw) { remember(key, raw, hit.codes); return hit.codes; }
         try {
             if (typeof raw !== "string" || raw.length > PLACEMENT_MAX_STRING_BYTES) throw new Error("Invalid data");
             const data = JSON.parse(raw);
@@ -127,23 +141,32 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
                 }
                 codes.add(code);
             }
+            remember(key, raw, codes);
             return codes;
         } catch {
+            decoded.delete(key);
             corrupt(key);
             return undefined;
         }
+    }
+    function readForUpdate(key) {
+        const codes = read(key);
+        return codes ? new Set(codes) : undefined;
     }
 
     function write(key, codes) {
         if (codes.size === 0) {
             storage.setDynamicProperty(key, undefined);
+            decoded.delete(key);
             if (byChunk) track(parseKey(key), false);
             return;
         }
-        const data = JSON.stringify({ v: PLACEMENT_SCHEMA_VERSION, p: [...codes].sort((a, b) => a - b) });
+        // Codes are < 4096: a typed array sorts numerically without a comparator call per pair.
+        const data = JSON.stringify({ v: PLACEMENT_SCHEMA_VERSION, p: Array.from(Uint16Array.from(codes).sort()) });
         // ASCII-only payload means JS length equals its UTF-8 byte count.
         if (data.length > PLACEMENT_MAX_STRING_BYTES) throw new Error("Placement shard exceeds storage limit");
         storage.setDynamicProperty(key, data);
+        remember(key, data, codes);
         if (byChunk) track(parseKey(key), true);
     }
 
@@ -168,9 +191,10 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
             target = address(block.dimension.id, block.location);
         } catch { return false; }
         if (!target) return false;
-        const codes = read(target.key);
-        if (!codes) return false;
-        if (!codes.has(target.code)) {
+        const shared = read(target.key);
+        if (!shared) return false;
+        if (!shared.has(target.code)) {
+            const codes = new Set(shared);
             codes.add(target.code);
             write(target.key, codes);
             notify("record", block.dimension.id, block.location);
@@ -185,9 +209,11 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
         // no shard: answer from the key cache without a storage read.
         scan();
         if (!byChunk.get(chunkId(dimensionId, target.cx, target.cz))?.has(target.key)) return true;
-        const codes = read(target.key);
-        if (!codes) return false;
-        if (codes.delete(target.code)) {
+        const shared = read(target.key);
+        if (!shared) return false;
+        if (shared.has(target.code)) {
+            const codes = new Set(shared);
+            codes.delete(target.code);
             write(target.key, codes);
             if (announce) notify("remove", dimensionId, location);
         }
@@ -237,7 +263,7 @@ export function createPlacementIndex(storage, { warn = message => console.warn(m
                     // placement hooks can update its other entries meanwhile.
                     // Commit before yielding so a later re-placement cannot be
                     // erased by a deferred batch of previously stale positions.
-                    const current = read(shard.key);
+                    const current = readForUpdate(shard.key);
                     if (current?.delete(code)) {
                         write(shard.key, current);
                         notify("remove", dimensionId, location);

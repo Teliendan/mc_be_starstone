@@ -7,9 +7,8 @@ import { outerArmMask } from "./cornerTopology.js";
 import { descriptorForBlock, cableDescriptor } from "./electricalBlocks.js";
 import { CABLE_ID } from "./constants.js";
 import { blockKey, parseNodeRef } from "./blockKeys.js";
-import runtime, { isCompleteNetwork } from "./networkRuntime.js";
-import { anySourceOn } from "./networkController.js";
-import { applyPower } from "./powerPropagation.js";
+import runtime from "./networkRuntime.js";
+import { scheduleNetworkRefresh } from "./networkController.js";
 import { sourceChanged, subscribeNetworkDiscovery } from "./networkEvents.js";
 
 export const INPUT_RECHECK_TICKS = 100; // Cosmetic refresh only; native events own signal changes.
@@ -133,16 +132,10 @@ function commitInput(block, input, on, visualsReady = false) {
     const { dimension, location } = block;
     // Preserve the existing durable source owner and loaded-network fallback.
     const committed = sourceChanged(dimension, location, on);
-    const network = runtime.networkOf(runtime.networkIdOf(`${input.key}#main`));
-    if (!committed || isCompleteNetwork(network, dimension)) {
-        if (network) {
-            const powered = anySourceOn(network, dimension);
-            if (powered !== network.powered) {
-                network.powered = powered;
-                applyPower(network, dimension);
-            }
-        }
-    }
+    // O(1) here: the walk over the network (sources, power writes) runs as a job and a newer
+    // edge of this input supersedes it. A network that reaches unloaded chunks is left to saved metadata.
+    const ref = `${input.key}#main`;
+    if (runtime.networkIdOf(ref) !== undefined) scheduleNetworkRefresh(ref, dimension, { committed });
     input.last = on;
     transitions++;
 }

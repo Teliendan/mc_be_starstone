@@ -109,19 +109,9 @@ export function registerPistonController() {
             pistonSupport.resetAround(dimension, event.block.location);
         });
     }
-    // Existing saved circuits warm without scanning world volumes. Piston-local
-    // discovery and sparse random ticks also handle previously untracked blocks.
-    world.afterEvents.worldLoad.subscribe(() => system.runJob((function* () {
-        for (const entry of placementIndex.entries()) {
-            if (entry) {
-                try {
-                    const dimension = world.getDimension(entry.dimensionId);
-                    const block = readPistonBlock(dimension, entry.location);
-                    if (block) pistonSupport.observe(block);
-                } catch { /* Piston discovery/random ticks recover loaded records. */ }
-            }
-            yield;
-        }
-    })()));
+    // No world-load warm-up: a record per indexed block kept ~24 objects per cable alive for
+    // the whole session (GC pauses grow with the heap). Piston events discover the nearby
+    // attachments themselves (onPiston), placement observes, and sparse random ticks recover
+    // the rest, as for every other abundant block (bedrock-scripting performance.md).
     registered = true;
 }

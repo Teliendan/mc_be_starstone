@@ -39,7 +39,7 @@ function line(generatorOn) {
 
 console.log('toggle applies power exactly once per state change');
 {
-    const { f, cables, writes, setGenerator } = line(false);
+    const { f, cables, writes, setGenerator, network } = line(false);
     assert.equal(runtime.networkCount(), 1, 'one network is cached');
     const ownerId = runtime.networkIdOf(ref(f, 0));
     const ownerCountBefore = runtime.networkCount();
@@ -48,8 +48,9 @@ console.log('toggle applies power exactly once per state change');
     setGenerator(true);
     const onToggle = reactToGeneratorToggle(f.dim, 0, 0, 0);
     await drain();
-    assert.equal(onToggle.changed, true, 'powered changed when the generator turns on');
-    assert.equal(onToggle.powered, true, 'any source on recomputes powered to true');
+    // The callback is O(1): it queues a refresh walk and reports that; the result is the network state.
+    assert.equal(onToggle.scheduled, true, 'the toggle queues a refresh walk instead of walking the network');
+    assert.equal(network.powered, true, 'any source on recomputes powered to true');
     assert.equal(writes(), 3, 'power written to the two cables and the lamp once');
     assert.equal(cables[0].permutation.getState(STATE_POWERED), true, 'cable reflects the new powered state');
 
@@ -57,15 +58,14 @@ console.log('toggle applies power exactly once per state change');
     setGenerator(false);
     const offToggle = reactToGeneratorToggle(f.dim, 0, 0, 0);
     await drain();
-    assert.equal(offToggle.changed, true, 'powered changed when the generator turns off');
-    assert.equal(offToggle.powered, false, 'recompute recomputes powered to false');
+    assert.equal(network.powered, false, 'recompute recomputes powered to false');
     assert.equal(writes(), 6, 'power written back once when it turns off');
     assert.equal(cables[0].permutation.getState(STATE_POWERED), false, 'cable reflects the powered-off state');
 
     // Toggle again with no state change: writes nothing.
     const noChange = reactToGeneratorToggle(f.dim, 0, 0, 0);
     await drain();
-    assert.equal(noChange.changed, false, 'an unchanged toggle writes nothing');
+    assert.equal(noChange.scheduled, true);
     assert.equal(writes(), 6, 'no permutation writes on a no-op toggle');
 
     // No topology was rebuilt: the network kept its id and count.

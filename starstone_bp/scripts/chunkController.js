@@ -3,9 +3,11 @@
 import { system, world } from "@minecraft/server";
 import { placementIndex } from "./persistence.js";
 import { chunkIndex, buildIndexedChunkSegments } from "./chunkIndex.js";
-import { buildSegmentGraph, updateSegmentGraph } from "./segmentGraph.js";
-import { applyPower, catchUpPending, PENDING_CATCHUP_INTERVAL_TICKS } from "./powerPropagation.js";
-import runtime, { isCompleteNetwork } from "./networkRuntime.js";
+import { buildSegmentGraphSteps, updateSegmentGraphSteps } from "./segmentGraph.js";
+import { applyPowerSteps, catchUpPending, PENDING_CATCHUP_INTERVAL_TICKS } from "./powerPropagation.js";
+import { enqueueWalk } from "./networkWalks.js";
+import { SLICE_NODES, SLICE_BUILD, SLICE_SOURCES } from "./slicing.js";
+import runtime, { isCompleteNetwork, warmProbes } from "./networkRuntime.js";
 import { parseNodeRef, nodeRef, chunkOf } from "./blockKeys.js";
 import { configureNetworkPersistence, subscribeNetworkDiscovery, notifyNetworkDiscovered } from "./networkEvents.js";
 import { KIND_BY_ID } from "./constants.js";
@@ -13,69 +15,94 @@ import { KIND_BY_ID } from "./constants.js";
 export const CHUNK_OBSERVER_INTERVAL_TICKS = 100;
 export const CHUNK_OBSERVER_BUDGET = 32;
 // Write-only property families of earlier versions (source hints, per-network
-// power). Nothing read them; ensureGraph() deletes leftovers once per session.
+// power). Nothing read them; the graph load deletes leftovers once per session.
 const OBSOLETE_PREFIXES = ["starstone:source_state:", "starstone:logical_power:"];
 let swept = false;
 const pending = new Map(), retry = new Map(), revisions = new Map(), observed = new Set();
 const knownDimensions = new Map();
 const discoveryRetries = new Map();
 let observerCandidates = new Map(), candidateList;
-let graph, registered = false, running = false, scheduled = false;
+// The logical graph is built and changed only by the rebuild job below (one job, one
+// writer): `graph` is undefined until the first build, `graphBusy` is true while a chunk
+// commit (snapshot write + incremental graph update) is between two steps, and
+// `refreshRequested` asks for a full rebuild. Readers treat "busy or missing" as "no
+// logical data" and fall back to the live walk, which they already do for an unknown source.
+let graph, registered = false, running = false, scheduled = false, graphBusy = false, refreshRequested = false, graphBlocked = false;
 let builds = 0, commits = 0, staleBuilds = 0, pollOffset = 0;
 const keyOf = (id, cx, cz) => `${id}|${cx}|${cz}`;
 const dimensionFor = id => { try { return world.getDimension(id); } catch { return knownDimensions.get(id); } };
 function loaded(dimension, position) {
     try { return Boolean(dimension?.isChunkLoaded(position)); } catch { return false; }
 }
-function sweepObsoleteProperties() {
+function* sweepObsoleteProperties() {
     swept = true;
     try {
-        for (const id of world.getDynamicPropertyIds()) {
+        const ids = world.getDynamicPropertyIds();
+        yield;
+        for (let i = 0; i < ids.length; i++) {
+            const id = ids[i];
             if (OBSOLETE_PREFIXES.some(prefix => id.startsWith(prefix))) world.setDynamicProperty(id, undefined);
+            if ((i + 1) % 1024 === 0) yield;
         }
     } catch (error) {
         console.warn(`[Starstone] Obsolete property sweep failed: ${error.message}`);
     }
 }
-function ensureGraph() {
-    if (!swept) sweepObsoleteProperties();
-    if (!graph) {
-        const snapshots = [...chunkIndex.chunks()];
-        const next = buildSegmentGraph(snapshots, { trusted: true });
-        graph = next;
-        cacheCandidates(snapshots);
-    }
-    return graph;
+// Cold start: load and validate the saved chunks and build the graph, in slices. Runs as the
+// first part of the rebuild job (never in a callback).
+function* loadGraphSteps() {
+    if (!swept) yield* sweepObsoleteProperties();
+    const snapshots = yield* chunkIndex.loadedChunksSteps();
+    const next = yield* buildSegmentGraphSteps(snapshots, { trusted: true });
+    graph = next;
+    yield* cacheCandidatesSteps(snapshots);
+}
+// Ask the rebuild job to build the graph (or rebuild it completely). Never blocks.
+function requestGraph({ refresh = false } = {}) {
+    if (refresh) refreshRequested = true;
+    else if (graph) return;
+    schedule();
 }
 // Saved snapshots are rebuilt a chunk at a time after every edit, so a logical
 // network can briefly describe an older topology. Nodes owned by a completely
 // discovered live network keep the live result; logical power only fills in
 // nodes whose live network reaches unloaded chunks or that no walk has seen.
-function applyLogical(network, dimension) {
+// A generator (yields every SLICE_NODES nodes), run as a walk.
+function* applyLogicalSteps(network, dimension, cancelled) {
     const nodes = new Set();
     const owners = new Set();
-    // Chunk availability cannot change inside one synchronous call.
     const complete = new Map();
+    let counted = 0;
     for (const ref of network.nodes) {
         const owner = runtime.networkIdOf(ref);
         if (owner !== undefined) {
             let done = complete.get(owner);
-            if (done === undefined) { done = isCompleteNetwork(runtime.networkOf(owner), dimension); complete.set(owner, done); }
+            if (done === undefined) {
+                const live = runtime.networkOf(owner);
+                if (live) yield* warmProbes(live);
+                done = isCompleteNetwork(live, dimension);
+                complete.set(owner, done);
+            }
             if (done) continue;
         }
         if (owner !== undefined) owners.add(owner);
         nodes.add(ref);
+        if (++counted % SLICE_NODES === 0) { yield; if (cancelled()) return; }
     }
     for (const id of owners) {
         const cached = runtime.networkOf(id);
         if (cached) cached.powered = network.powered;
     }
-    if (nodes.size) applyPower({ ...network, nodes }, dimension);
+    if (nodes.size) yield* applyPowerSteps({ ...network, nodes }, dimension, cancelled);
+}
+// Queue the logical power of one network as a walk (a newer one for the same logical id supersedes it).
+function applyLogical(network, dimension) {
+    enqueueWalk(`logical:${network.id}`, cancelled => applyLogicalSteps(network, dimension, cancelled));
 }
 // An unchanged snapshot leaves the graph as it is; a chunk that became loaded
 // again only needs the latest state re-applied to the networks it belongs to.
 // Returns false when there is no usable graph (caller rebuilds it).
-function reapplyChunkNetworks(snapshot) {
+function* reapplyChunkNetworksSteps(snapshot) {
     if (!graph) return false;
     const networks = new Set();
     for (const segment of snapshot.segments) {
@@ -83,11 +110,14 @@ function reapplyChunkNetworks(snapshot) {
         if (!network) return false;
         networks.add(network);
     }
+    let counted = 0;
     for (const network of networks) {
         const dimension = dimensionFor(parseNodeRef(network.nodes.values().next().value).dimensionId);
         if (!dimension) continue;
         applyLogical(network, dimension);
         notifyNetworkDiscovered(network, dimension);
+        counted += network.sources.size;
+        if (counted >= SLICE_SOURCES) { counted = 0; yield; }
     }
     return true;
 }
@@ -97,33 +127,44 @@ function applyAndNotify(network) {
     applyLogical(network, dimension);
     notifyNetworkDiscovered(network, dimension);
 }
-// Full rebuild: cold start, an unknown source, or a failed incremental update.
-function refreshLogicalGraph() {
-    const snapshots = [...chunkIndex.chunks()];
-    const next = buildSegmentGraph(snapshots, { trusted: true });
+// Full rebuild: an unknown source or a failed incremental update.
+function* refreshLogicalGraphSteps() {
+    refreshRequested = false;
+    const snapshots = yield* chunkIndex.loadedChunksSteps();
+    const next = yield* buildSegmentGraphSteps(snapshots, { trusted: true });
     graph = next;
-    cacheCandidates(snapshots);
-    for (const network of graph.networks) applyAndNotify(network);
+    yield* cacheCandidatesSteps(snapshots);
+    let counted = 0;
+    for (const network of graph.networks) {
+        applyAndNotify(network);
+        counted += 1 + network.sources.size;
+        if (counted >= SLICE_SOURCES) { counted = 0; yield; }
+    }
 }
 // A committed snapshot changed: update only the components that touch its chunk
 // and re-apply only those networks. Any failure falls back to the full build
 // (a half-updated graph is never kept).
-function refreshLogicalChunk(snapshot) {
-    if (!graph) { refreshLogicalGraph(); return; }
+function* refreshLogicalChunkSteps(snapshot) {
+    if (!graph) { yield* refreshLogicalGraphSteps(); return; }
     let created;
-    try { created = updateSegmentGraph(graph, snapshot, { trusted: true }); }
+    try { created = yield* updateSegmentGraphSteps(graph, snapshot, { trusted: true }); }
     catch (error) {
         console.warn(`[Starstone] Incremental logical update failed, rebuilding: ${error.message}`);
-        refreshLogicalGraph();
+        yield* refreshLogicalGraphSteps();
         return;
     }
-    cacheSnapshotCandidates(snapshot);
-    for (const network of created) applyAndNotify(network);
+    yield* cacheSnapshotCandidatesSteps(snapshot);
+    let counted = 0;
+    for (const network of created) {
+        applyAndNotify(network);
+        counted += 1 + network.sources.size;
+        if (counted >= SLICE_SOURCES) { counted = 0; yield; }
+    }
 }
 export function chunkStats() {
     return { running, queued: pending.size, retry: retry.size, observed: observed.size,
         discoveryRetry: discoveryRetries.size,
-        builds, commits, staleBuilds, logicalNetworks: graph?.networkCount || 0,
+        builds, commits, staleBuilds, logicalNetworks: graph?.networkCount || 0, graphReady: Boolean(graph),
         pollBudget: CHUNK_OBSERVER_BUDGET, pollInterval: CHUNK_OBSERVER_INTERVAL_TICKS };
 }
 
@@ -137,12 +178,12 @@ export function queueChunkRebuild(dimension, cx, cz, y = 0) {
     schedule();
 }
 function schedule() {
-    if (running || scheduled || !pending.size) return;
+    if (running || scheduled || graphBlocked || (!pending.size && graph && !refreshRequested)) return;
     scheduled = true;
     try {
         system.run(() => {
             scheduled = false;
-            if (running || !pending.size) return;
+            if (running || graphBlocked || (!pending.size && graph && !refreshRequested)) return;
             running = true;
             try { system.runJob(rebuildPending()); }
             catch (error) { running = false; console.warn(`[Starstone] Chunk scheduling failed: ${error.message}`); }
@@ -153,9 +194,24 @@ function hasDiscoveryRetry(key) {
     for (const entry of discoveryRetries.values()) if (entry.key === key) return true;
     return false;
 }
+// The graph writer: builds the graph when it is missing or a full rebuild was asked, then
+// rebuilds one pending chunk at a time. Every part is sliced: one step handles at most ~128
+// nodes (or one saved page, or one block read) of a chunk, so no step grows with the chunk.
 function* rebuildPending() {
     try {
-        while (pending.size) {
+        while (pending.size || !graph || refreshRequested) {
+            if (!graph || refreshRequested) {
+                try {
+                    if (!graph) yield* loadGraphSteps(); else yield* refreshLogicalGraphSteps();
+                } catch (error) {
+                    // Retried by the next observer poll; no tight loop.
+                    graphBlocked = true;
+                    console.warn(`[Starstone] Logical graph build failed: ${error.message}`);
+                    return;
+                }
+                yield;
+                continue;
+            }
             const [key, request] = pending.entries().next().value;
             pending.delete(key);
             const { dimension, cx, cz, y } = request;
@@ -172,17 +228,24 @@ function* rebuildPending() {
                     continue;
                 }
                 if (!snapshot) { retry.set(key, request); continue; }
-                const { changed } = chunkIndex.writeChunk(snapshot);
-                commits++;
-                retry.delete(key);
-                // The snapshot already excludes these; drop their hints without
-                // re-queueing this chunk. Re-read: a block may have returned.
-                for (const p of stale) {
-                    if (!loaded(dimension, p)) continue;
-                    const block = dimension.getBlock(p);
-                    if (block?.isValid && !KIND_BY_ID[block.typeId]) placementIndex.remove(dimension.id, p, { notify: false });
-                }
-                if (changed || !reapplyChunkNetworks(snapshot)) refreshLogicalChunk(snapshot);
+                // Commit: snapshot pages, then the graph. A source toggle arriving meanwhile
+                // (commitSourceState) queues its own rebuild and leaves the graph alone.
+                graphBusy = true;
+                try {
+                    const { changed } = yield* chunkIndex.writeChunkSteps(snapshot);
+                    commits++;
+                    retry.delete(key);
+                    // The snapshot already excludes these; drop their hints without
+                    // re-queueing this chunk. Re-read: a block may have returned.
+                    let reads = 0;
+                    for (const p of stale) {
+                        if (!loaded(dimension, p)) continue;
+                        const block = dimension.getBlock(p);
+                        if (block?.isValid && !KIND_BY_ID[block.typeId]) placementIndex.remove(dimension.id, p, { notify: false });
+                        if (++reads % 16 === 0) yield;
+                    }
+                    if (changed || !(yield* reapplyChunkNetworksSteps(snapshot))) yield* refreshLogicalChunkSteps(snapshot);
+                } finally { graphBusy = false; }
             } catch (error) {
                 retry.set(key, request);
                 console.warn(`[Starstone] Chunk reconciliation failed: ${error.message}`);
@@ -200,13 +263,20 @@ export function commitSourceState(dimension, location, on) {
     const ref = nodeRef(dimension.id, location, "main");
     const key = keyOf(dimension.id, chunkOf(location.x), chunkOf(location.z));
     revisions.set(key, (revisions.get(key) || 0) + 1);
-    const current = ensureGraph();
+    // No graph yet (cold start) or a commit in flight: the block state is authoritative and
+    // the chunk's own rebuild, queued here, brings the saved data and the graph up to date.
+    if (!graph || graphBusy) {
+        requestGraph();
+        queueChunkRebuild(dimension, chunkOf(location.x), chunkOf(location.z), location.y);
+        return false;
+    }
+    const current = graph;
     if (!chunkIndex.updateSource(ref, Boolean(on))) {
         queueChunkRebuild(dimension, chunkOf(location.x), chunkOf(location.z), location.y);
         return false;
     }
     const network = current.nodeToNetwork.get(ref);
-    if (!network) { refreshLogicalGraph(); return true; }
+    if (!network) { requestGraph({ refresh: true }); return true; }
     // The incremental update rebuilds networks from the graph's stored segments:
     // store the toggled one too, or the next commit of another chunk of this
     // network would restore the pre-toggle source state.
@@ -218,6 +288,7 @@ export function commitSourceState(dimension, location, on) {
     const powered = active.size > 0;
     network.activeSources = active;
     network.powered = powered;
+    // The walk over the network's nodes is queued, not run here (a newer toggle supersedes it).
     applyLogical(network, dimension);
     return true;
 }
@@ -229,7 +300,9 @@ function discovered(network, dimension) {
     knownDimensions.set(dimension.id, dimension);
     const job = function* () {
         const chunks = new Map();
-        const committed = ensureGraph().nodeToNetwork;
+        // Wait for the logical graph (built by the rebuild job); without one nothing counts as saved.
+        while (!graph && !graphBlocked) { requestGraph(); yield; }
+        const committed = graph?.nodeToNetwork ?? new Map();
         try {
             for (const ref of network.nodes) {
                 const position = parseNodeRef(ref);
@@ -278,22 +351,24 @@ function rememberCandidate(request) {
         candidateList = undefined;
     }
 }
-function cacheSnapshotCandidates(snapshot) {
+function* cacheSnapshotCandidatesSteps(snapshot) {
     const dimension = dimensionFor(snapshot.dimensionId);
     if (!dimension) return;
     const y = snapshot.segments.length ? parseNodeRef(snapshot.segments[0].members[0]).y : 0;
     rememberCandidate({dimension,cx:snapshot.cx,cz:snapshot.cz,y});
+    let counted = 0;
     for (const segment of snapshot.segments) for (const boundary of segment.boundaries) {
         const [cx,cz] = boundary.destination;
         rememberCandidate({dimension,cx,cz,y:parseNodeRef(boundary.ref).y || y});
+        if (++counted % SLICE_BUILD === 0) yield;
     }
 }
-function cacheCandidates(snapshots) {
+function* cacheCandidatesSteps(snapshots) {
     // Replaced on a full rebuild; a committed chunk only adds its own entries.
     // Never on a standing poll.
     observerCandidates = new Map();
     candidateList = undefined;
-    for (const snapshot of snapshots) cacheSnapshotCandidates(snapshot);
+    for (const snapshot of snapshots) yield* cacheSnapshotCandidatesSteps(snapshot);
     for (const request of pending.values()) rememberCandidate(request);
     for (const request of retry.values()) rememberCandidate(request);
 }
@@ -320,7 +395,8 @@ function retryDiscoveries() {
 // Availability probes do not access Block objects. Standing in a loaded chunk
 // does not reschedule it; unload/reload and explicit mutations do.
 export function pollLoadedChunks() {
-    ensureGraph();
+    graphBlocked = false;
+    requestGraph();
     retryDiscoveries();
     for (const player of world.getAllPlayers()) {
         if (!player.isValid) continue;
@@ -357,12 +433,20 @@ export function registerChunkController() {
         topologyChanged(dimension, location) {
             queueChunkRebuild(dimension, chunkOf(location.x), chunkOf(location.z), location.y);
         },
-        resolvePower(network) {
-            const known = ensureGraph();
-            let found = false, powered = false;
+        // Saved-metadata power of a live network: undefined while the graph is missing or being
+        // changed (callers then keep the live result), otherwise any overlapping logical network.
+        // A generator: a big network is read in slices.
+        *resolvePowerSteps(network) {
+            if (!graph || graphBusy) { requestGraph(); return undefined; }
+            const known = graph;
+            let found = false, powered = false, counted = 0;
             for (const ref of network.nodes) {
                 const logical = known.nodeToNetwork.get(ref);
-                if (logical) { found = true; powered ||= logical.powered; }
+                if (logical) {
+                    found = true; powered ||= logical.powered;
+                    if (powered) break;
+                }
+                if (++counted % SLICE_NODES === 0) { yield; if (graphBusy || graph !== known) return undefined; }
             }
             return found ? powered : undefined;
         }

@@ -9,7 +9,7 @@ Summary of the budgets in force: power visuals are written by one engine-paced `
 generator (SS-09, 2026-11-12): each step reads one block and writes at most one permutation, then
 yields, so the engine's job budget sets the pace and a newer state for a node supersedes an unread
 one; recovery and cosmetic refresh handle at most 32 registered positions per deferred callback
-every 100 ticks; validation visits at most 16 indexed cursor entries every 100 ticks; the
+every 100 ticks; validation visits at most 6 indexed cursor entries every 100 ticks (was 16; ~72 block reads per call instead of ~181); the
 chunk observer checks at most 32 cached chunk candidates every 100 ticks.
 
 ## Script performance and idle work
@@ -181,3 +181,45 @@ toggle is now one job step per node (1,024 cables: 1,025 steps, 0 `system.run` c
 4,097 steps). `node tests/stress.mjs` asserts one read per power job step at 1k/5k/10k and exact
 write counts. How many steps the engine runs per tick is not measured: the owner checks a
 1,000-cable line on PC and tablet (TEST-WORLD item 23).
+
+## No call grows with the world (2026-11-21, Bedrock 1.26.63, offline only)
+
+Owner rule (performance.md "When a call needs a job"): no callback, job step or microtask burst may do
+work that grows with the network or chunk; per step <= ~128 block reads, <= 16 writes, ~1-3 ms pure JS.
+Audit findings S1-S7 (`temp/perf-audit/report.md`) are fixed; behaviour is unchanged (all suites and the
+full-rebuild oracle pass). **Not measured in game**: fixture numbers exclude native and dynamic-property
+cost; a Starstone DIAG build (`.\mods diag starstone <version>`, `tools/diag/`) is the way to measure.
+
+- S1 chunk snapshot rebuild: `buildChunkSegmentsSteps` (generator, packed numeric cell keys, boundary sort by
+  a key built once, not `JSON.stringify` in the comparator), `writeChunkSteps` (text built in slices, one
+  property page per step, head last), `validateChunkSegmentsSteps`, `updateSegmentGraphSteps`,
+  `buildNetworksSteps` in slices of 128-256 nodes. Sync forms (`buildChunkSegments`, `writeChunk`,
+  `updateSegmentGraph`) drive the same generators for pure code and tests.
+- S2 generator click / redstone-input edge: the callback commits the source and calls
+  `scheduleNetworkRefresh`; the node walk (`anySourceOn`, power enqueue) is a walk in `networkWalks.js`
+  (one engine job, slices of 256 nodes, 48 sources). A newer refresh/logical walk of the same key supersedes
+  a running one (latest state wins), as the power writer already does per node.
+- S3 split / registration: `captureRemovedNetworks` keeps the live node sets (no copy); `removeAndSplitNetwork`,
+  `registerAndApplyNetworkSteps`, probe cache (`warmProbes`) and power enqueue run in slices. A cooperative gate
+  keeps the placement merge (one synchronous section) out of a half-registered network.
+- S4 cold start: the graph is loaded (sweep, load + validate + freeze saved chunks, build) by the rebuild job
+  (`loadGraphSteps`); until it is ready callers get "no logical data" and use the live walk. A source toggle
+  before that queues the chunk rebuild instead.
+- S5 the world-load support warm-up is gone (see SUPPORT-MOTION.md). S6 validation budget 6. S7 the placement
+  index keeps decoded shards in a 64-entry LRU keyed by the stored text, sorts with a typed array.
+- Test: `tests/sliceBudget.test.mjs` (suite `slice-budget`): counting mock, 2,048-cable chunk, per-call
+  reads/writes, O(1) toggle callback, superseding toggles, split, cold load.
+
+Offline bench (`temp/starstone-perf/`, slowest single call, ms, JIT / jitless), before -> after:
+
+| Scenario | Before | After |
+|---|---|---|
+| place one cable, 256/chunk (40 chunks) | 10 / 25 | 0.9 / 4.0 |
+| break one cable, 256/chunk, 10k cables | 24 / 39 | 6.8 / 10.3 |
+| place one cable, 2,048/chunk (4k cables) | 46 / 159 | 2.1 / 6.3 |
+| place one cable, 2,048/chunk (10k cables) | 66 / 161 | 1.9 / 6.2 |
+| break one cable, 2,048/chunk | 58-77 / 162-173 | 2.1 / 6.7-7.0 |
+| toggle generator, 10k cables | 7-10 / 15 | 1.5 / 2.3 |
+| cold graph load, 10k cables (one call before) | ~90 / ~220 | worst step 1.7 / 2.1 (total 56 / 219) |
+| cold graph load, 2,048/chunk | ~26 / ~83 | worst step 1.1 / 2.7 |
+| validation interval | 181 reads | 72 reads |

@@ -27,6 +27,7 @@
 
 import { system } from "@minecraft/server";
 import { parseNodeRef, chunkOf } from "./blockKeys.js";
+import { SLICE_NODES, drive } from "./slicing.js";
 import {
     CABLE_ID,
     INNER_CORNER_ID,
@@ -166,14 +167,17 @@ function startJob() {
 // of a circuit, so a distant lamp does not wait behind every cable), then the
 // rest. Returns live { written, unresolved, pending } progress: written counts
 // actual state changes, pending reaches zero when every target was processed or
-// superseded. Nothing is read or written synchronously.
-export function applyPower(network, dimension) {
+// superseded. Nothing is read or written here: this only queues targets, a
+// generator that yields every SLICE_NODES nodes so a big network never queues
+// in one call. `cancelled` (optional) stops it early at a slice boundary.
+export function* applyPowerSteps(network, dimension, cancelled) {
     if (!network || !(network.nodes instanceof Set) || !dimension) {
         return { written: 0, unresolved: 0, pending: 0 };
     }
     const progress = { written: 0, unresolved: 0, pending: 0 };
     const consumers = network.consumers instanceof Set ? network.consumers : new Set();
     const powered = Boolean(network.powered);
+    let counted = 0;
     for (const refs of [consumers, network.nodes]) for (const ref of refs) {
         if ((refs === consumers && !network.nodes.has(ref)) ||
             (refs === network.nodes && consumers.has(ref))) continue;
@@ -184,10 +188,19 @@ export function applyPower(network, dimension) {
         if (old) { old.progress.pending--; targets.delete(key); }
         targets.set(key, { ref, dimension, x: parsed.x, y: parsed.y, z: parsed.z, lane: parsed.lane, powered, progress });
         progress.pending++;
+        if (++counted % SLICE_NODES === 0) {
+            peakQueued = Math.max(peakQueued, targets.size);
+            startJob();
+            yield;
+            if (cancelled?.()) return progress;
+        }
     }
     peakQueued = Math.max(peakQueued, targets.size);
     startJob();
     return progress;
+}
+export function applyPower(network, dimension) {
+    return drive(applyPowerSteps(network, dimension));
 }
 
 // Re-queue the skipped writes of every pending chunk that is loaded again (one chunk probe per

@@ -11,8 +11,8 @@ Piston departure destroys a whole inner corner; ordinary support edits retain
 its ability to shrink to a remaining bend. Existing shape eligibility is unchanged.
 
 `pistonController.js` adapts the shared `support_motion_service.js`. Placement
-callbacks warm support history; saved placements also warm in a yielded
-load job. Local piston jobs preserve that history and sample departure immediately,
+callbacks warm support history (the world-load warm-up of every saved placement was removed
+2026-11-21: it kept ~24 objects per cable alive; piston events and random ticks discover the rest). Local piston jobs preserve that history and sample departure immediately,
 then reconcile after at least ten samples and a stationary piston (forty-sample
 limit). Unknown/moving support retains history; witnessed departure after a timeout
 is recovered on the next stable observation. Native popping cannot duplicate script loot.
