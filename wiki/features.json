@@ -8,7 +8,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
+          "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -168,7 +168,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
+          "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -214,7 +214,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
+          "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -260,7 +260,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
+          "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -302,7 +302,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
+          "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -344,7 +344,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
+          "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -431,7 +431,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
+          "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -472,7 +472,7 @@
       "evidence": [
         {
           "path": "docs/DESIGN.md",
-          "sha256": "c5a99f05b3c79cb421b351066a2a1eb1fbc6dc30508af043218c9a8466e495ce"
+          "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
         },
         {
           "path": "docs/SURVIVAL.md",
@@ -525,11 +525,11 @@
         },
         {
           "path": "starstone_bp/scripts/chunkController.js",
-          "sha256": "d09cde0c1a37ef2cb36dd3bb748beab692f878a2f96875b841b287b34d241724"
+          "sha256": "bdb2e7d1dde722cef678c0542bad626f10928729f081a648d14c0f1c27b61443"
         },
         {
           "path": "starstone_bp/scripts/chunkIndex.js",
-          "sha256": "13fc03a42ba8bf8db57d185164c8cb42294a7e0d1938ae8d0db461d96bf0b52d"
+          "sha256": "83d690b93524fa36ba77b36d56585b51c0304b70c181069b335491699be53ff2"
         },
         {
           "path": "starstone_bp/scripts/constants.js",
@@ -549,7 +549,7 @@
         },
         {
           "path": "starstone_bp/scripts/generatorComponent.js",
-          "sha256": "b7462daf1c5de420d938162c4b892ac88e2bfa7432aad56fb96dddfc16d5ddb7"
+          "sha256": "07e1e5031b2dbea1a165fdfc3985f705268afd956312159e1f93f966f32f9001"
         },
         {
           "path": "starstone_bp/scripts/harvestGate.js",
@@ -573,15 +573,15 @@
         },
         {
           "path": "starstone_bp/scripts/mutationController.js",
-          "sha256": "0d288acc65363264751c4f76926052494f87a8a92f1398e352204cd959866855"
+          "sha256": "48104412bc1315abfabb055086c7e0df3415368104302146a66c747c325cb6ee"
         },
         {
           "path": "starstone_bp/scripts/networkController.js",
-          "sha256": "ce596baf37857bcd81c66286e1d0c8a4f1437f06da3765119c94af2b79e1f36f"
+          "sha256": "b30ce8bd4b2da710c29b82bab634bccd29d8e7b0767e0483e13294c6e174006f"
         },
         {
           "path": "starstone_bp/scripts/networkEvents.js",
-          "sha256": "f9788cd2945e65cad4dbec35c7523056bedd363faab9fbf870bf4deaba566309"
+          "sha256": "a02a86caebd6b14c424e9c88d386b173e7ffa76d4290a1874f323a2e6e60f72d"
         },
         {
           "path": "starstone_bp/scripts/networkGraph.js",
@@ -589,7 +589,7 @@
         },
         {
           "path": "starstone_bp/scripts/networkRuntime.js",
-          "sha256": "cfb71f69f40cf8e4c47114ae71cb1da7cc4133baa7496bdaac173e0a086728d1"
+          "sha256": "3711f5455408605b28decd97f035d9ac5fc9c8bdb803d7116c579258e52049dd"
         },
         {
           "path": "starstone_bp/scripts/oreExperience.js",
@@ -597,11 +597,11 @@
         },
         {
           "path": "starstone_bp/scripts/persistence.js",
-          "sha256": "5e26542ccbb4d2ce037e19497143564d386ae3d77aea6c8ddb16fb536c7d1a76"
+          "sha256": "10624f4857a20f13f5a9b34560e9d5de89953958fb6f2b672d88b8d947afb73f"
         },
         {
           "path": "starstone_bp/scripts/pistonController.js",
-          "sha256": "0b25bb0bc0f0dd2b144e0dc19b3e8f7645adef0da1b78f70e5e2b03d9527a333"
+          "sha256": "e36cc22822e5ed480668be886c6369545312bf614f1ad542e0e290501f6e6bc2"
         },
         {
           "path": "starstone_bp/scripts/portDirections.js",
@@ -609,11 +609,11 @@
         },
         {
           "path": "starstone_bp/scripts/powerPropagation.js",
-          "sha256": "0cb18d9ca0a9079f5cc27e3c3be5471c1d64754d1f76b920d5dbe17bcbb8f006"
+          "sha256": "cbe4885fa00a9b43e5adcb02388667e2ab77b95e4a705a0aeeff02cac53e5973"
         },
         {
           "path": "starstone_bp/scripts/redstoneAdapters.js",
-          "sha256": "437e44c6ca1f74ccc361c1c80776c653fb859373fe0fefb7ac9136691cc3de07"
+          "sha256": "430f573fbc838d7c21dadf49d2430e77a07918def545ae00aaae702fc9e0d250"
         },
         {
           "path": "starstone_bp/scripts/repair.js",
@@ -621,7 +621,7 @@
         },
         {
           "path": "starstone_bp/scripts/segmentGraph.js",
-          "sha256": "13e81c262baf0e81ce770a2da93a5aa1f0757634554fa963cb14ba387455445b"
+          "sha256": "51e789c5cd3baafd279c876b4015470a4ec6518e833aa0d3d072b77fcc1fcf54"
         },
         {
           "path": "starstone_bp/scripts/support.js",
