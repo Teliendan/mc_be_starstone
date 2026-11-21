@@ -6,10 +6,10 @@ item.starstone:inner_corner_item=Angle intérieur de Starstone
 tile.starstone:inner_corner.name=Angle intérieur de Starstone
 tile.starstone:bridge.name=Croisement de Starstone
 tile.starstone:generator.name=Générateur de Starstone
-tile.starstone:lamp.name=Lampe de Starstone
+tile.starstone:lamp.name=Lampe à Starstone
 tile.starstone:conduit.name=Conduit de Starstone
-tile.starstone:redstone_input.name=Entrée de redstone de Starstone
-tile.starstone:redstone_output.name=Sortie de redstone de Starstone
+tile.starstone:redstone_input.name=Entrée redstone de Starstone
+tile.starstone:redstone_output.name=Sortie redstone de Starstone
 tile.starstone:ore.name=Minerai de Starstone
 item.starstone:dust=Poudre de Starstone
 item.starstone:crystal=Cristal de Starstone
@@ -17,25 +17,25 @@ item.starstone:compressed_dust=Poudre de Starstone compressée
 starstone.message.diagnose.counts=[Starstone] réseaux=%s nœuds=%s tâches de reconstruction=%s
 starstone.message.diagnose.validation=[Starstone] tâches de modification=%s validation=%s/%s tous les %s ticks
 starstone.message.diagnose.logical=[Starstone] réseaux logiques=%s tâches de chunks=%s nouvelles tentatives=%s sources d’entrée=%s entrées interrogées=%s
-starstone.message.diagnose.power=[Starstone] file d’alimentation=%s maximum=%s planification=%s octets des propriétés dynamiques du monde pour l’extension=%s
+starstone.message.diagnose.power=[Starstone] file d’alimentation=%s pic=%s planification=%s octets des propriétés dynamiques du monde (extension)=%s
 starstone.message.target.none=[Starstone] cible : aucun bloc
 starstone.message.target.other=[Starstone] cible : %s : ce n’est pas un bloc électrique
 starstone.message.target.electrical=[Starstone] cible : %s (%s), voies : %s, alimentées : %s
 starstone.message.debug.active=  [Starstone] journaux de débogage activés
 starstone.message.debug.on=[Starstone] Journaux de débogage : activés
 starstone.message.debug.off=[Starstone] Journaux de débogage : désactivés
-starstone.message.debug.usage_on=[Starstone] Journaux de débogage : activés. Utilise /scriptevent starstone:debug on|off
-starstone.message.debug.usage_off=[Starstone] Journaux de débogage : désactivés. Utilise /scriptevent starstone:debug on|off
+starstone.message.debug.usage_on=[Starstone] Journaux de débogage : activés. Utilisez /scriptevent starstone:debug on|off
+starstone.message.debug.usage_off=[Starstone] Journaux de débogage : désactivés. Utilisez /scriptevent starstone:debug on|off
 starstone.message.rebuild.start=[Starstone] Reconstruction dans un rayon de %s blocs (%s vers le haut/bas)…
 starstone.message.rebuild.complete=[Starstone] Reconstruction terminée. Blocs électriques : %s ; composants : %s.
 starstone.message.rebuild.busy=[Starstone] Une reconstruction est déjà en cours ; aucune autre ne sera lancée.
 starstone.message.chunk.loaded=[Starstone] dimension=%s chunk=(%s,%s) y=%s chargé=oui
 starstone.message.chunk.unloaded=[Starstone] dimension=%s chunk=(%s,%s) y=%s chargé=non
 starstone.message.chunk.unavailable=[Starstone] dimension=%s chunk=(%s,%s) y=%s état de chargement indisponible
-starstone.message.chunk.usage=[Starstone] Utilise /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Les coordonnées doivent être des nombres entiers.
-starstone.message.cable.target=[Starstone] Vise un câble de Starstone à 6 blocs maximum, puis utilise /scriptevent starstone:diagnose cable.
+starstone.message.chunk.usage=[Starstone] Utilisez /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Les coordonnées doivent être des nombres entiers.
+starstone.message.cable.target=[Starstone] Visez un câble de Starstone à 6 blocs maximum, puis utilisez /scriptevent starstone:diagnose cable.
 starstone.message.cable.invalid=[Starstone] La face ou le masque de connexion du câble est illisible.
 starstone.message.cable.state=[Starstone] câble=(%s,%s,%s) face=%s masque=%s branches=%s
-starstone.message.corner.support=[Starstone] L’angle intérieur nécessite deux faces d’appui solides et perpendiculaires.
+starstone.message.corner.support=[Starstone] L’angle intérieur doit s’appuyer sur deux faces solides perpendiculaires.
 pack.name=Starstone — Pack de ressources
 pack.description=Pack de ressources de Starstone : textures, modèles et textes.

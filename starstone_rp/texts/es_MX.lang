@@ -32,9 +32,9 @@ starstone.message.chunk.loaded=[Starstone] dimensión=%s chunk=(%s,%s) y=%s carg
 starstone.message.chunk.unloaded=[Starstone] dimensión=%s chunk=(%s,%s) y=%s cargado=no
 starstone.message.chunk.unavailable=[Starstone] dimensión=%s chunk=(%s,%s) y=%s estado de carga no disponible
 starstone.message.chunk.usage=[Starstone] Usa /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Las coordenadas deben ser números enteros.
-starstone.message.cable.target=[Starstone] Mira un cable de Starstone a un máximo de 6 bloques y usa /scriptevent starstone:diagnose cable.
+starstone.message.cable.target=[Starstone] Mira directamente un cable de Starstone a 6 bloques o menos y usa /scriptevent starstone:diagnose cable.
 starstone.message.cable.invalid=[Starstone] No se puede leer la cara o la máscara de conexiones del cable.
 starstone.message.cable.state=[Starstone] cable=(%s,%s,%s) cara=%s máscara=%s brazos=%s
-starstone.message.corner.support=[Starstone] La esquina interior necesita dos caras de apoyo sólidas y perpendiculares.
-pack.name=Starstone — Paquete de recursos
-pack.description=Paquete de recursos de Starstone: texturas, modelos y textos.
+starstone.message.corner.support=[Starstone] La esquina interior debe apoyarse en dos caras sólidas perpendiculares.
+pack.name=Starstone — Pack de recursos
+pack.description=Pack de recursos de Starstone: texturas, modelos y textos.

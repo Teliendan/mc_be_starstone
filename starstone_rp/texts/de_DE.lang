@@ -32,9 +32,9 @@ starstone.message.chunk.loaded=[Starstone] Dimension=%s Chunk=(%s,%s) y=%s gelad
 starstone.message.chunk.unloaded=[Starstone] Dimension=%s Chunk=(%s,%s) y=%s geladen=nein
 starstone.message.chunk.unavailable=[Starstone] Dimension=%s Chunk=(%s,%s) y=%s Ladestatus nicht verfügbar
 starstone.message.chunk.usage=[Starstone] Verwende /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Koordinaten müssen ganze Zahlen sein.
-starstone.message.cable.target=[Starstone] Sieh ein Starstone-Kabel in höchstens 6 Blöcken Entfernung an und verwende /scriptevent starstone:diagnose cable.
+starstone.message.cable.target=[Starstone] Schau aus höchstens 6 Blöcken Entfernung direkt auf ein Starstone-Kabel und verwende dann /scriptevent starstone:diagnose cable.
 starstone.message.cable.invalid=[Starstone] Kabelfläche oder Verbindungsmaske ist nicht lesbar.
 starstone.message.cable.state=[Starstone] Kabel=(%s,%s,%s) Fläche=%s Maske=%s Arme=%s
-starstone.message.corner.support=[Starstone] Die Innenecke braucht zwei senkrecht zueinander stehende, feste Stützflächen.
+starstone.message.corner.support=[Starstone] Die Starstone-Innenecke braucht Halt an zwei festen Blockseiten, die im rechten Winkel zueinander stehen.
 pack.name=Starstone — Ressourcenpaket
 pack.description=Ressourcenpaket für Starstone: Texturen, Modelle und Texte.

@@ -7,19 +7,19 @@ tile.starstone:bridge.name=Skrzyżowanie Starstone
 tile.starstone:generator.name=Generator Starstone
 tile.starstone:lamp.name=Lampa Starstone
 tile.starstone:conduit.name=Przewód Starstone
-tile.starstone:redstone_input.name=Wejście redstone Starstone
-tile.starstone:redstone_output.name=Wyjście redstone Starstone
+tile.starstone:redstone_input.name=Wejście czerwienitu Starstone
+tile.starstone:redstone_output.name=Wyjście czerwienitu Starstone
 tile.starstone:ore.name=Ruda Starstone
-item.starstone:dust=Proszek Starstone
+item.starstone:dust=Pył Starstone
 item.starstone:crystal=Kryształ Starstone
-item.starstone:compressed_dust=Sprasowany proszek Starstone
+item.starstone:compressed_dust=Sprasowany pył Starstone
 starstone.message.diagnose.counts=[Starstone] sieci=%s węzły=%s zadania odbudowy=%s
 starstone.message.diagnose.validation=[Starstone] zadania zmian=%s sprawdzanie=%s/%s co %s ticków
 starstone.message.diagnose.logical=[Starstone] sieci logiczne=%s zadania chunków=%s ponowienia=%s źródła wejściowe=%s sprawdzone wejścia=%s
 starstone.message.diagnose.power=[Starstone] kolejka zasilania=%s maksimum=%s planowanie=%s bajty dynamicznych właściwości dodatku w świecie=%s
-starstone.message.target.none=[Starstone] cel: brak bloku
-starstone.message.target.other=[Starstone] cel: %s: to nie jest blok elektryczny
-starstone.message.target.electrical=[Starstone] cel: %s (%s), tory: %s, zasilane: %s
+starstone.message.target.none=[Starstone] patrzysz na: żaden blok
+starstone.message.target.other=[Starstone] patrzysz na: %s — to nie jest blok elektryczny
+starstone.message.target.electrical=[Starstone] patrzysz na: %s (%s), kanały: %s, zasilane: %s
 starstone.message.debug.active=  [Starstone] dzienniki debugowania są włączone
 starstone.message.debug.on=[Starstone] Dzienniki debugowania: włączone
 starstone.message.debug.off=[Starstone] Dzienniki debugowania: wyłączone
@@ -32,9 +32,9 @@ starstone.message.chunk.loaded=[Starstone] wymiar=%s chunk=(%s,%s) y=%s wczytany
 starstone.message.chunk.unloaded=[Starstone] wymiar=%s chunk=(%s,%s) y=%s wczytany=nie
 starstone.message.chunk.unavailable=[Starstone] wymiar=%s chunk=(%s,%s) y=%s stan wczytania niedostępny
 starstone.message.chunk.usage=[Starstone] Użyj /scriptevent starstone:diagnose chunk <cx> <cz> [y]. Współrzędne muszą być liczbami całkowitymi.
-starstone.message.cable.target=[Starstone] Spójrz na kabel Starstone w odległości do 6 bloków i użyj /scriptevent starstone:diagnose cable.
-starstone.message.cable.invalid=[Starstone] Nie można odczytać powierzchni lub maski połączeń kabla.
-starstone.message.cable.state=[Starstone] kabel=(%s,%s,%s) powierzchnia=%s maska=%s ramiona=%s
-starstone.message.corner.support=[Starstone] Narożnik wewnętrzny wymaga dwóch prostopadłych, pełnych powierzchni podparcia.
-pack.name=Starstone — Pakiet zasobów
-pack.description=Pakiet zasobów Starstone: tekstury, modele i teksty.
+starstone.message.cable.target=[Starstone] Spójrz prosto na kabel Starstone z odległości najwyżej 6 bloków, a potem użyj /scriptevent starstone:diagnose cable.
+starstone.message.cable.invalid=[Starstone] Nie można odczytać strony mocowania ani maski połączeń kabla.
+starstone.message.cable.state=[Starstone] kabel=(%s,%s,%s) strona=%s maska=%s ramiona=%s
+starstone.message.corner.support=[Starstone] Narożnik wewnętrzny musi opierać się o dwie prostopadłe, pełne ściany bloków.
+pack.name=Starstone — Paczka zasobów
+pack.description=Paczka zasobów Starstone: tekstury, modele i teksty.
