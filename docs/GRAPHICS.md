@@ -29,7 +29,7 @@ Review state: see the table. Rule since 2026-11-22 (owner): a flat device's icon
 and where that view is unclear the block changes, not just the icon.
 
 Owner verdicts: 2026-11-22, the icon and device redesign below (Crystal, Inner Corner icon, adapters, Bridge,
-pack icon): "I like these, we are done." 2026-10-26, after the 16x16 redo (commits `7aa74ca` and `f7e6283`): "The
+pack icon, commit `e52ce73`): "I like these, we are done." 2026-10-26, after the 16x16 redo (commits `7aa74ca` and `f7e6283`): "The
 graphics as such is OK", and after the follow-up fixes "Fixed, I like it." Verdicts are final
 (owner accepted in game), to check (deployed, owner to look) or to do. Per-asset notes:
 
