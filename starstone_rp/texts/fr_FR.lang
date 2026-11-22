@@ -37,4 +37,4 @@ starstone.message.cable.invalid=[Starstone] La face ou le masque de connexion du
 starstone.message.cable.state=[Starstone] câble=(%s,%s,%s) face=%s masque=%s branches=%s
 starstone.message.corner.support=[Starstone] L’angle intérieur doit s’appuyer sur deux faces solides perpendiculaires.
 pack.name=Starstone — Pack de ressources
-pack.description=Pack de ressources de Starstone : textures, modèles et textes.
+pack.description=v0.5.0 · Pack de ressources de Starstone : textures, modèles et textes.

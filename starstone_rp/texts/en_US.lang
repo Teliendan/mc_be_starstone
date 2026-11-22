@@ -76,4 +76,4 @@ starstone.message.corner.support=[Starstone] Inner Corner needs two perpendicula
 ## Context: Pack title or description for starstone_rp. BP means behavior pack; RP means resource pack. Keep mod brands unchanged.
 pack.name=Starstone — Resource Pack
 ## Context: Pack title or description for starstone_rp. BP means behavior pack; RP means resource pack. Keep mod brands unchanged.
-pack.description=Starstone resource pack: textures, models and text.
+pack.description=v0.5.0 · Starstone resource pack: textures, models and text.

@@ -38,4 +38,4 @@ starstone.message.cable.invalid=[Starstone] Cable has an unreadable face or conn
 starstone.message.cable.state=[Starstone] cable=(%s,%s,%s) face=%s mask=%s arms=%s
 starstone.message.corner.support=[Starstone] Inner Corner needs two perpendicular solid support faces.
 pack.name=Starstone — Resource Pack
-pack.description=Starstone resource pack: textures, models and text.
+pack.description=v0.5.0 · Starstone resource pack: textures, models and text.

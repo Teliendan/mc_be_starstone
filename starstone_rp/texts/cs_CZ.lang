@@ -37,4 +37,4 @@ starstone.message.cable.invalid=[Starstone] Nelze přečíst plochu nebo masku s
 starstone.message.cable.state=[Starstone] kabel=(%s,%s,%s) plocha=%s maska=%s ramena=%s
 starstone.message.corner.support=[Starstone] Vnitřní roh musí přiléhat ke dvěma pevným plochám, které jsou na sebe kolmé.
 pack.name=Starstone — Balíček zdrojů
-pack.description=Balíček zdrojů Starstone: textury, modely a texty.
+pack.description=v0.5.0 · Balíček zdrojů Starstone: textury, modely a texty.

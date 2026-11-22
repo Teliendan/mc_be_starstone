@@ -37,4 +37,4 @@ starstone.message.cable.invalid=[Starstone] Não é possível ler a face ou a m�
 starstone.message.cable.state=[Starstone] cabo=(%s,%s,%s) face=%s máscara=%s braços=%s
 starstone.message.corner.support=[Starstone] O Canto Interior precisa de duas faces de apoio sólidas e perpendiculares.
 pack.name=Starstone — Pack de Recursos
-pack.description=Pack de recursos do Starstone: texturas, modelos e textos.
+pack.description=v0.5.0 · Pack de recursos do Starstone: texturas, modelos e textos.

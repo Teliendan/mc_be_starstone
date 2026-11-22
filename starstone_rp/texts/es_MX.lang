@@ -37,4 +37,4 @@ starstone.message.cable.invalid=[Starstone] No se puede leer la cara o la másca
 starstone.message.cable.state=[Starstone] cable=(%s,%s,%s) cara=%s máscara=%s brazos=%s
 starstone.message.corner.support=[Starstone] La esquina interior debe apoyarse en dos caras sólidas perpendiculares.
 pack.name=Starstone — Pack de recursos
-pack.description=Pack de recursos de Starstone: texturas, modelos y textos.
+pack.description=v0.5.0 · Pack de recursos de Starstone: texturas, modelos y textos.

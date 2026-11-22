@@ -37,4 +37,4 @@ starstone.message.cable.invalid=[Starstone] Nie można odczytać strony mocowani
 starstone.message.cable.state=[Starstone] kabel=(%s,%s,%s) strona=%s maska=%s ramiona=%s
 starstone.message.corner.support=[Starstone] Narożnik wewnętrzny musi opierać się o dwie prostopadłe, pełne ściany bloków.
 pack.name=Starstone — Paczka zasobów
-pack.description=Paczka zasobów Starstone: tekstury, modele i teksty.
+pack.description=v0.5.0 · Paczka zasobów Starstone: tekstury, modele i teksty.

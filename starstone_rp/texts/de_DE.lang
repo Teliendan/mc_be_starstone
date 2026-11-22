@@ -37,4 +37,4 @@ starstone.message.cable.invalid=[Starstone] Kabelfläche oder Verbindungsmaske i
 starstone.message.cable.state=[Starstone] Kabel=(%s,%s,%s) Fläche=%s Maske=%s Arme=%s
 starstone.message.corner.support=[Starstone] Die Starstone-Innenecke braucht Halt an zwei festen Blockseiten, die im rechten Winkel zueinander stehen.
 pack.name=Starstone — Ressourcenpaket
-pack.description=Ressourcenpaket für Starstone: Texturen, Modelle und Texte.
+pack.description=v0.5.0 · Ressourcenpaket für Starstone: Texturen, Modelle und Texte.
