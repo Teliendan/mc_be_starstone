@@ -1,72 +1,62 @@
-# Starstone
+# Starstone for Minecraft Bedrock
 
-A Minecraft Bedrock add-on: a power network parallel to redstone. Starstone ore and dust,
-surface cables on all six faces, isolated bridges, conduits, generators, lamps, and
-redstone input/output adapters.
+A glowing power network that works beside redstone: cables for floors, walls and ceilings, generators, lamps, and adapters to and from redstone. A network is simply on or off, and power never fades with distance, so a long line needs no repeaters.
 
-| | |
-|---|---|
-| Packs | `starstone_bp/` + `starstone_rp/` (deploy: `.\mods deploy starstone`) |
-| Script API | `@minecraft/server` 2.11.0, min engine 1.26.60 (`starstone_bp/manifest.json`) |
-| Redstone input | native `onRedstoneUpdate` callbacks (owner-approved 2026-10-21), not polling |
-| Install | Download from the repo's GitHub Releases page, https://github.com/Teliendan/mc_be_starstone/releases, or build locally with `.\mods package starstone` |
+> **Status: Test version.** Things may still change before the public release, so back up any world you care about. Download: [Releases page](https://github.com/Teliendan/mc_be_starstone/releases).
 
-## Layout
+**Project page:** [teliendan.com](https://teliendan.com/mods/starstone/?utm_source=github&utm_medium=referral&utm_campaign=profile&utm_content=readme) · **Wiki:** [blocks, recipes and how the network works](https://teliendan.com/wiki/starstone/?utm_source=github&utm_medium=referral&utm_campaign=profile&utm_content=readme)
 
-- `starstone_bp/`, `starstone_rp/` - the packs; `tests/` - Node suites (`node tests/run.mjs`)
-  with a `@minecraft/server` shim in `tests/shims/`; `wiki/` - player-facing records.
-- `tools/make_block_art.py`, `tools/make_item_art.py`, `tools/make_block_models.py` generate every
-  16x16 texture, icon and model UV from the palette in `tools/starstone_art.py`;
-  `tools/make_pack_icon.py` renders the pack icon from the real blocks;
-  `tools/build_inner_corner.py --model-only` regenerates the Inner Corner model.
-- `docs/` (12 files):
+## Features
 
-| Doc | Holds |
-|---|---|
-| [DESIGN.md](docs/DESIGN.md) | product design, architecture decisions, blocks and operation, crystal route, later kiln option |
-| [SURVIVAL.md](docs/SURVIVAL.md) | ore, drops, tuning, generation, every recipe |
-| [VANILLA_PARITY.md](docs/VANILLA_PARITY.md) | final design, owner decisions, limits, checks, 26.60 review; per-block materials, tags, water and harvest decisions |
-| [GRAPHICS.md](docs/GRAPHICS.md) | art contract, generators, per-asset verdicts |
-| [ADAPTER-API.md](docs/ADAPTER-API.md), [CHUNK-SEGMENTS.md](docs/CHUNK-SEGMENTS.md), [INNER-CORNER.md](docs/INNER-CORNER.md), [SUPPORT-MOTION.md](docs/SUPPORT-MOTION.md) | subsystem designs (CHUNK-SEGMENTS also holds recovery and the observer) |
-| [PERFORMANCE.md](docs/PERFORMANCE.md) | script budgets, offline stress numbers, review baseline |
-| [VERIFICATION.md](docs/VERIFICATION.md) | suite map |
-| [TEST-WORLD.md](docs/TEST-WORLD.md) | in-game checklist and the owner's results |
-| [LOCALIZATION.md](docs/LOCALIZATION.md) | text workflow |
+- **On or off:** when any generator or powered input in a network is on, every cable and device connected to it gets power. A change spreads through the whole network within moments; very large networks can take a little longer.
+- **Cables:** cables, bridges, lamps and redstone adapters attach to floors, walls and ceilings, and cables join up on their own as you place them. A line can wrap around the outer edge of a block, for example from its top down onto its side.
+- **Inner Corner:** craft it from two cables and place it where a floor meets a wall, or where two walls meet. It joins the cable lines on both faces into one network.
+- **Conduit:** a solid block that carries power straight through, so you can pass power through a wall or floor. It points the way you place it, and its sides do not connect.
+- **Bridge:** two cable lines cross in the same spot without connecting. Each line keeps its own power.
+- **Generator and Lamp:** the generator powers its network as soon as you place it; use it to switch it off and on. The lamp gives full-brightness light while its network is powered.
+- **Redstone adapters:** the Redstone Input turns any redstone signal into Starstone power, so levers, buttons, observers and circuits can switch a network. The Redstone Output turns the network back into a full-strength redstone signal for pistons, doors, lamps and other redstone devices.
+- **Starstone Ore:** lies underground in the Overworld at Y 15 and below and glows faintly. Mine it with an iron, diamond or netherite pickaxe for 2-4 Starstone Dust and some experience; Fortune gives more dust and Silk Touch keeps the ore block.
+- **Crafting:** cables need only copper and Starstone Dust. Four dust and a copper ingot make Compressed Starstone Dust, which a furnace smelts into a Starstone Crystal for the generator, lamp and redstone adapters. Recipes unlock when you first pick up the material they use.
+- **Languages:** English, Czech, German, French, Polish, Spanish (Spain and Mexico) and Portuguese (Portugal and Brazil). The translations are AI drafts; corrections are welcome.
 
-Retired docs (merged or deleted 2026-11-11; git `1492493` holds every one): `PROPOSAL`,
-`CRYSTAL-REFINING-PROPOSAL`, `RECIPES`, `STRESS`, `SCRIPT_PERFORMANCE`, `BLOCK_MATERIALS`,
-`TAGS`, `WATER`, `HARVEST` (merged into the docs above, each names its source), and the
-history-only `CONTENT-LOG`, `VISUAL_PARAMETERS`, `TEST_FEEDBACK_2026-10-25`,
-`TEST_FEEDBACK_2026-10-26`, `STARSTONE-AUDIT-2026-09-27` (a 2026-09-27 audit; its error
-classes are mapped in VERIFICATION.md), `GRAPHICS_TASKS` and `TODO` (nothing open).
+## Install
 
-## Commands
+1. Download the `.mcaddon` from the [Releases page](https://github.com/Teliendan/mc_be_starstone/releases).
+2. Open the file with Minecraft; it imports both packs.
+3. In the world settings, turn on the Starstone **behavior pack** (its resource pack comes with it).
 
-From the workspace root: `.\mods verify starstone` (shared verifier plus every regression suite;
-`--suite <name>`, see `.\mods suites starstone`), `.\mods deploy starstone`,
-`.\mods brief starstone`. Extra: `python -B tools/verification/test_verify_addon.py`,
-`node mods/starstone/tests/mutation-check.mjs`, `node mods/starstone/tests/stress.mjs`.
-In game: `/scriptevent starstone:diagnose`, `diagnose chunk <x> <z> <y>`, `rebuild_nearby`,
-`debug on|off` (details in DESIGN.md).
+Starstone Ore generates only in newly generated chunks: start a new world, or explore areas you have not visited yet.
 
-## Open in-game checks
+Requirements: Minecraft Bedrock 1.26.60 or newer. No experimental toggles are needed. It works on its own and needs none of my other add-ons.
 
-Procedure: [TEST-WORLD.md](docs/TEST-WORLD.md), which also records the owner's results. Accepted
-in game: 2026-09-29 six-face placement and art readability, piston policy and explosions, strong
-redstone output and support input, mining and new-chunk ore distribution; 2026-10-25 input
-scenarios S1-S3 and S5; 2026-10-26 the 16x16 art and side-contact fixes; 2026-11-22 Fortune and Silk Touch drops, and no furnace XP from smelting the ore (Bedrock 1.26.63). Offline A-B-C
-fixtures pass; no Minecraft test of the unloaded-middle case has run.
+## Known issues
 
-| Check | Status |
-|---|---|
-| Actual unloaded-middle or alternate save/unload/load sequence (TEST-WORLD gate 7.6) | Not run |
-| 1k/5k/10k real ticks, queue observations and watchdog logs; since 2026-11-12 also the engine-paced power writer on a 1,000-cable line, PC and tablet (TEST-WORLD item 23) | Not run |
-| Partial-block support classification | Needs in-game validation |
-| Piston-pushed conduit/generator into a mob; dust bends into Redstone Output; load on 26.60 (VANILLA_PARITY "Bedrock 26.60 impact") | Optional owner checks |
+- Very large networks may take a moment to update and can swallow very short redstone pulses.
+- There is no in-game manual. Look blocks and recipes up in the [wiki](https://teliendan.com/wiki/starstone/?utm_source=github&utm_medium=referral&utm_campaign=profile&utm_content=readme).
 
-## Localization
+## Feedback
 
-Nine locales use a mod-scoped contextual catalog. See [the localization notes](docs/LOCALIZATION.md) before adding or changing player-facing text.
+Found a bug or have an idea? Tell me through the [report form](https://teliendan.com/contact/?project=starstone&utm_source=github&utm_medium=referral&utm_campaign=profile&utm_content=readme#report).
+
+## Credits
+
+Made by [Teliendan](https://teliendan.com/?utm_source=github&utm_medium=referral&utm_campaign=profile&utm_content=readme).
+
+- Code written with AI coding agents, directed and tested by Teliendan.
+- Every texture, icon and block model is drawn by scripts written for this mod.
+- Block sounds are Minecraft's own.
+
+## Disclaimer
+
+Unofficial add-on for Minecraft. Not affiliated with or endorsed by Mojang Studios or Microsoft. "Minecraft" is a trademark of Mojang Studios / Microsoft.
+
+## Licence
+
+See [LICENSE.md](LICENSE.md).
+
+## For developers
+
+Pack layout, generators, tests, diagnostics, open in-game checks and design notes: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
 
 ## What's new
 
