@@ -16,7 +16,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/blocks/cable.json",
@@ -38,7 +38,7 @@
           "id": "starstone:cable_item/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Craft it at a crafting table; the recipe is below."
         }
       ],
       "relations": [
@@ -58,7 +58,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/items/compressed_dust.json",
@@ -76,7 +76,7 @@
           "id": "starstone:compressed_dust/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Craft it from Starstone Dust and a copper ingot at a crafting table; the recipe is below."
         }
       ],
       "relations": [],
@@ -91,7 +91,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/items/crystal.json",
@@ -109,7 +109,7 @@
           "id": "starstone:crystal/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Smelt Compressed Starstone Dust in a furnace."
         }
       ],
       "relations": [],
@@ -124,7 +124,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/items/dust.json",
@@ -176,7 +176,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/blocks/inner_corner.json",
@@ -198,7 +198,7 @@
           "id": "starstone:inner_corner_item/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Craft it from two Starstone Cables at a crafting table; the recipe is below."
         }
       ],
       "relations": [
@@ -222,7 +222,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/blocks/bridge.json",
@@ -244,7 +244,7 @@
           "id": "starstone:bridge/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Craft it at a crafting table; the recipe is below."
         }
       ],
       "relations": [
@@ -268,7 +268,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/blocks/conduit.json",
@@ -286,7 +286,7 @@
           "id": "starstone:conduit/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Craft it at a crafting table; the recipe is below."
         }
       ],
       "relations": [
@@ -310,7 +310,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/blocks/generator.json",
@@ -328,7 +328,7 @@
           "id": "starstone:generator/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Craft it at a crafting table; the recipe is below."
         }
       ],
       "relations": [
@@ -352,7 +352,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/blocks/lamp.json",
@@ -374,7 +374,7 @@
           "id": "starstone:lamp/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Craft it at a crafting table; the recipe is below."
         }
       ],
       "relations": [
@@ -394,7 +394,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/blocks/ore.json",
@@ -439,7 +439,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/blocks/redstone_input.json",
@@ -461,7 +461,7 @@
           "id": "starstone:redstone_input/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Craft it at a crafting table; the recipe is below."
         }
       ],
       "relations": [],
@@ -480,7 +480,7 @@
         },
         {
           "path": "docs/VANILLA_PARITY.md",
-          "sha256": "f6777ce46bc56297fa7e771683f2418e32243fc5e3c7c22b03f90259ad3bc858"
+          "sha256": "35610ea9fe68be0be667c3d84d9fe9a1629e49f0af314a653db19019d52a583a"
         },
         {
           "path": "starstone_bp/blocks/redstone_output.json",
@@ -502,7 +502,7 @@
           "id": "starstone:redstone_output/obtain",
           "kind": "crafting",
           "related": [],
-          "text": "Craft or process it using the recipes for this item."
+          "text": "Craft it at a crafting table; the recipe is below."
         }
       ],
       "relations": [],
