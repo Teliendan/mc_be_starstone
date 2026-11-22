@@ -1,0 +1,1 @@
+- Very large networks may take a moment to update and can swallow very short redstone pulses.
