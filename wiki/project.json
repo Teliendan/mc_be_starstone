@@ -58,6 +58,10 @@
     },
     {
       "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/jobs.js"
+    },
+    {
+      "featureId": "starstone:network",
       "pattern": "starstone_bp/scripts/main.js"
     },
     {
@@ -90,6 +94,10 @@
     },
     {
       "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/networkWalks.js"
+    },
+    {
+      "featureId": "starstone:network",
       "pattern": "starstone_bp/scripts/oreExperience.js"
     },
     {
@@ -119,6 +127,10 @@
     {
       "featureId": "starstone:network",
       "pattern": "starstone_bp/scripts/segmentGraph.js"
+    },
+    {
+      "featureId": "starstone:network",
+      "pattern": "starstone_bp/scripts/slicing.js"
     },
     {
       "featureId": "starstone:network",
