@@ -10,15 +10,15 @@ const geo=JSON.parse(readFileSync('starstone_rp/models/blocks/starstone_adapter.
 const bones=new Map(geo.bones.map(bone=>[bone.name,bone]));
 assert.equal(bones.get('center').cubes.length,1,'center box has no permanent side tabs');
 for(const kind of ['blue','red']) for(const [direction,origin,size] of [
-  ['n',[-1,.02,-8.14],[2,.12,5.14]],['e',[-8.14,.02,-1],[5.14,.12,2]],
-  ['s',[-1,.02,3],[2,.12,5.14]],['w',[3,.02,-1],[5.14,.12,2]]
+  ['n',[-1,.02,-8.14],[2,.12,4.14]],['e',[-8.14,.02,-1],[4.14,.12,2]],
+  ['s',[-1,.02,4],[2,.12,4.14]],['w',[4,.02,-1],[4.14,.12,2]]
 ]) {
   const arm=bones.get(`${kind}_${direction}`).cubes[0];
   assert.deepEqual(arm.origin,origin,`${kind}_${direction} aligns with cable centerline`);
   assert.deepEqual(arm.size,size,`${kind}_${direction} matches cable width, height and edge overlap`);
   for(const face of ['up','down']) {
-    assert.deepEqual(arm.uv[face].uv,[0,2],`${kind} arms sample the 5-unit conductor strip, not the center emblem`);
-    assert.deepEqual(arm.uv[face].uv_size,[5,2],`${kind} arm texels match its 5x2 face`);
+    assert.deepEqual(arm.uv[face].uv,[0,4],`${kind} arms sample the 4-unit conductor strip, not the center emblem`);
+    assert.deepEqual(arm.uv[face].uv_size,[4,2],`${kind} arm texels match its 4x2 face`);
   }
 }
 for(const id of ['redstone_input','redstone_output']) {

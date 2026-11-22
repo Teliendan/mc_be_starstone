@@ -1,6 +1,7 @@
-"""Starstone item icons and the pack icon, drawn at 16x16 (deterministic; re-running overwrites the outputs).
+"""Starstone item icons, drawn at 16x16 (deterministic; re-running overwrites the outputs).
 
-    python -B tools/make_item_art.py            # write the icons into starstone_rp/textures/items + both pack icons
+    python -B tools/make_item_art.py            # write the icons into starstone_rp/textures/items
+    (the pack icon is a render of real blocks: tools/make_pack_icon.py)
     python -B tools/make_item_art.py --sheet    # also write the review sheet temp/starstone-art/items_sheet.png
 
 Shapes are painters or character grids, shading is by rule (light from the top-left), outlines are derived.
@@ -13,13 +14,12 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from starstone_art import BP, CLEAR, CRYSTAL, METAL, RED_ON, RP, Canvas, from_rows  # noqa: E402
+from starstone_art import CLEAR, CRYSTAL, METAL, RP, Canvas, from_rows  # noqa: E402
 import make_block_art as block_art  # noqa: E402
 from make_block_art import bevel  # noqa: E402
 
 ITEMS = RP / 'textures' / 'items'
 WORKSPACE = Path(__file__).resolve().parents[3]
-LIGHT = (-1 / math.sqrt(2), -1 / math.sqrt(2))  # towards the light: top-left
 
 
 def mask_outline(mask):
@@ -41,49 +41,36 @@ def lit_side(mask, p):
 
 # ---------------------------------------------------------------- crystal cluster
 
-def crystal_prism(c, base, tip, hw, tip_len, glint=()):
-    """One hexagonal crystal, base -> tip, half-width hw. Three facets across (lit, front, shadow),
-    lighter towards the tip; own outline painted first so it lies on whatever is behind it."""
-    bx, by = base
-    dx, dy = tip[0] - bx, tip[1] - by
-    length = math.hypot(dx, dy)
-    ux, uy = dx / length, dy / length
-    px_, py_ = -uy, ux
-    if px_ * LIGHT[0] + py_ * LIGHT[1] < 0:
-        px_, py_ = -px_, -py_
-    fill = {}
-    for y in range(16):
-        for x in range(16):
-            cx, cy = x + 0.5 - bx, y + 0.5 - by
-            u = cx * ux + cy * uy
-            s = cx * px_ + cy * py_
-            if not 0 <= u <= length:
-                continue
-            w = hw * min(1.0, (length - u) / tip_len)
-            if abs(s) > w + 0.05:
-                continue
-            f = s / hw
-            idx = 4 if f > 0.3 else 3 if f > -0.3 else 2
-            t = u / length
-            if t > 0.72:
-                idx += 1
-            elif t < 0.22:
-                idx -= 1
-            fill[(x, y)] = idx
-    for p in mask_outline(set(fill)):
-        c[p] = CRYSTAL[1] if lit_side(fill, p) else CRYSTAL[0]
-    for p, idx in fill.items():
-        c[p] = CRYSTAL[idx]
-    for p in glint:
-        c[p] = CRYSTAL[6]
-    return fill
-
-
 def crystal_icon():
+    """Starstone Crystal: a brilliant-cut gem (vanilla diamond/emerald convention), echoing the cut crystal on
+    the Generator face. Octagon; a table lit top-left with a white rim and a shaded lower-right rim; eight
+    crown facets shaded by their direction to the top-left light; dark indigo outline; three glints.
+    Owner picked this (option C3) on 2026-11-22."""
     c = Canvas()
-    crystal_prism(c, (6.6, 13.3), (2.2, 6.9), 1.35, 1.8, glint=[(3, 8)])
-    crystal_prism(c, (9.4, 13.3), (13.8, 6.3), 1.35, 1.8, glint=[(12, 7)])
-    crystal_prism(c, (8.0, 13.5), (8.0, 1.4), 2.0, 2.6, glint=[(6, 5), (6, 6), (7, 3)])
+    cx, cy = 8.0, 8.0
+
+    def octo(x, y, r, cut):
+        dx, dy = abs(x + 0.5 - cx), abs(y + 0.5 - cy)
+        return dx <= r and dy <= r and dx + dy <= r + cut
+
+    gem = {(x, y) for y in range(16) for x in range(16) if octo(x, y, 6, 2.6)}
+    table = {(x, y) for (x, y) in gem if octo(x, y, 2.6, 1.2)}
+    for (x, y) in gem:
+        dx, dy = x + 0.5 - cx, y + 0.5 - cy
+        if (x, y) in table:
+            i = 5 if dx + dy < -1 else 4 if dx + dy < 2 else 3
+        else:
+            k = round(math.atan2(dy, dx) / (math.pi / 4)) % 8          # which of the 8 crown facets
+            lit = -(math.cos(k * math.pi / 4) + math.sin(k * math.pi / 4)) / math.sqrt(2)   # 1 = faces the light
+            i = 5 if lit > 0.8 else 4 if lit > 0.3 else 3 if lit > -0.3 else 2 if lit > -0.8 else 1
+        c[x, y] = CRYSTAL[i]
+    for (x, y) in table:
+        if any(q not in table for q in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))):
+            c[x, y] = CRYSTAL[6] if x + y < 15 else CRYSTAL[2]
+    for p in mask_outline(gem):
+        c[p] = CRYSTAL[0]
+    for p in ((5, 5), (6, 4), (7, 6)):
+        c[p] = CRYSTAL[6]
     return c
 
 
@@ -248,111 +235,80 @@ def paint_part(c, part):
 
 
 def inner_corner_icon():
-    """The bend of a cable running into an inside corner, seen from above: one arm up the back wall, one along
-    the floor towards the viewer (2:1), a hub in the crease. Sheath lit on its top/left side, energy line in
-    the middle, like the coil."""
+    """The bend of a cable running into an inside corner, drawn as a square L: one arm up the wall, one along
+    the floor to the left, a hub in the crease. Sheath lit on its top/left side, energy line in the middle,
+    end ferrules, like the coil. (Owner 2026-11-22: the earlier 2:1 floor arm read as a wrong angle.)"""
     c = Canvas()
-    ox, oy = 1, 0                                  # placement of the whole drawing
+    ox, oy = 0, 2                                  # placement of the whole drawing
     floor = {}
-    for x in range(2, 8):
-        line = 9 + (7 - x) // 2
+    for x in range(2, 9):
         for v, col in enumerate((METAL[4], CRYSTAL[4] if x < 5 else CRYSTAL[3], METAL[2])):
-            floor[(x + ox, line + v + oy)] = METAL[(5, 4, 3)[v]] if x == 2 else col     # x == 2: end ferrule
+            floor[(x + ox, 8 + v + oy)] = METAL[(5, 4, 3)[v]] if x == 2 else col     # x == 2: end ferrule
     paint_part(c, floor)
     wall = {}
     for y in range(2, 8):
         tip = y == 2
-        wall[(9 + ox, y + oy)] = METAL[5] if tip else METAL[4]
-        wall[(10 + ox, y + oy)] = METAL[4] if tip else CRYSTAL[4] if y < 5 else CRYSTAL[3]
-        wall[(11 + ox, y + oy)] = METAL[3] if tip else METAL[2]
+        wall[(10 + ox, y + oy)] = METAL[5] if tip else METAL[4]
+        wall[(11 + ox, y + oy)] = METAL[4] if tip else CRYSTAL[4] if y < 5 else CRYSTAL[3]
+        wall[(12 + ox, y + oy)] = METAL[3] if tip else METAL[2]
     paint_part(c, wall)
     hub_rows = ['56554', '5ab43', '4cd32', '33221']
     key = {str(i): METAL[i] for i in range(7)} | {'a': CRYSTAL[5], 'b': CRYSTAL[4], 'c': CRYSTAL[4], 'd': CRYSTAL[2]}
-    paint_part(c, {(8 + x + ox, 8 + y + oy): key[ch] for y, row in enumerate(hub_rows) for x, ch in enumerate(row)})
+    paint_part(c, {(9 + x + ox, 8 + y + oy): key[ch] for y, row in enumerate(hub_rows) for x, ch in enumerate(row)})
     return c
 
 
 # ---------------------------------------------------------------- redstone adapters
 
-ADAPTER = [
-    '................',
-    '................',
-    '................',
-    '................',
-    '...oooooooooo...',
-    '..o6555555544o..',
-    '.o54ddddddddd3o.',
-    '.o4dAAAdddddd2o.',
-    '.o4dAAAdddddd2o.',
-    '.o3dddddddddd2o.',
-    '..o3222222221o..',
-    '...oooooooooo...',
-    '................',
-    '................',
-    '................',
-    '................',
-]
-ARROW = {  # (x, y): shade 0 dark .. 3 light; shaft then head pointing right
-    (7, 7): 2, (8, 7): 2, (9, 7): 2, (7, 8): 1, (8, 8): 1, (9, 8): 1,
-    (10, 5): 3, (10, 6): 2, (10, 7): 2, (10, 8): 1, (10, 9): 1, (10, 10): 0,
-    (11, 6): 3, (11, 7): 2, (11, 8): 1, (11, 9): 0,
-    (12, 7): 3, (12, 8): 1,
-}
-ARROW_EDGE = [(9, 4), (10, 4), (11, 5), (12, 6), (13, 7), (13, 8), (12, 9), (11, 10), (10, 11), (9, 11)]
-
-
-def adapter_icon(source, target):
-    """Navy plate with a recessed slot: the source signal as a block on the left, an arrow of the target
-    signal pointing right. source/target: 4-shade ramps dark -> light."""
-    key = {'o': METAL[0], 'd': METAL[1], 'A': METAL[1]} | {str(i): METAL[i] for i in range(7)}
-    c = from_rows(ADAPTER, key)     # 'd' = the dark slot floor, 'A' = where the source block sits
-    for (x, y), shade in {(4, 7): 3, (5, 7): 2, (6, 7): 1, (4, 8): 2, (5, 8): 1, (6, 8): 0}.items():
-        c[x, y] = source[shade]
-    for p in ARROW_EDGE:
-        c[p] = METAL[0]
-    for (x, y), shade in ARROW.items():
-        c[x, y] = target[shade]
+def adapter_icon(kind):
+    """The placed adapter seen from above (owner 2026-11-22: icon and block must look alike): the block's own
+    8x8 casing and "->" emblem, unmirrored (source left, target right), with a powered source arm in from the
+    left and a powered target arm out to the right, each 3 long, on a derived dark outline."""
+    c = Canvas()
+    red, blue = block_art.redstone_arm(True), block_art.cable_arm(True)
+    src, dst = (red, blue) if kind == 'input' else (blue, red)
+    ax, ay, _, _ = block_art.LAYOUT['arm4']
+    for i in range(3):
+        for j in range(2):
+            c[1 + i, 7 + j] = src[ax + i, ay + j]
+            c[12 + i, 7 + j] = dst[ax + 1 + i, ay + j]
+    block_art.casing8(c, 4, 4, block_art.adapter_emblem(kind), mirror=False)
+    mask = {(x, y) for y in range(16) for x in range(16) if c.opaque(x, y)}
+    for p in mask_outline(mask):
+        c[p] = METAL[1] if lit_side(mask, p) else METAL[0]
     return c
 
 
 # ---------------------------------------------------------------- bridge and lamp
 
 def bridge_icon():
-    """The Bridge seen from above, as placed: a raised navy plate with corner rivets, the north-south lane
-    running over it (bright) and the east-west lane passing under it (dimmer), entering through dark ports
-    in the rim. Lanes are outlined only off the plate, so the plate stays readable."""
+    """The placed Bridge seen from above (owner 2026-11-22: icon and block must look alike), powered: the
+    north-south cable with the dot in the middle, the east-west arms running into the port housings beside
+    it, on a derived dark outline. Every texel comes from the block textures."""
     c = Canvas()
-    x0, y0, x1, y1 = 3, 3, 12, 12
-    on_plate = lambda q: x0 <= q[0] <= x1 and y0 <= q[1] <= y1
-    def lane(cells, core, outline=True):
-        """A 2-wide conductor: lit sheath on the top/left side, energy core, shaded sheath."""
-        part = {}
-        for (u, v, axis) in cells:
-            for k, col in enumerate((METAL[4], core[0], core[1], METAL[2])):
-                part[(u, v + k - 1) if axis == 'x' else (u + k - 1, v)] = col
-        for q in mask_outline(set(part)):
-            if outline and not on_plate(q):
-                c[q] = METAL[0]
-        for q, col in part.items():
-            c[q] = col
-    lane([(x, 7, 'x') for x in [*range(1, 4), *range(12, 15)]], (CRYSTAL[2], CRYSTAL[1]))
-    for x in range(x0, x1 + 1):
-        for y in range(y0, y1 + 1):
-            c[x, y] = METAL[3]
-    for x in range(x0 - 1, x1 + 2):
-        c[x, y0 - 1] = c[x, y1 + 1] = METAL[0]
-    for y in range(y0 - 1, y1 + 2):
-        c[x0 - 1, y] = c[x1 + 1, y] = METAL[0]
-    bevel(c, x0, y0, x1, y1, METAL[5], METAL[1])
-    for x, y in ((4, 4), (11, 4), (4, 11), (11, 11)):
-        c[x, y], c[x + 1, y + 1] = METAL[6], METAL[1]   # rivets (shadow below-right, clipped by the rim)
-    for y in (7, 8):                               # ports where the east-west lane dives under
-        c[x0, y] = c[x1, y] = METAL[0]
-        c[x0 + 1, y] = c[x1 - 1, y] = METAL[1]
-    lane([(7, y, 'y') for y in range(1, 15)], (CRYSTAL[4], CRYSTAL[3]))
-    for x in (6, 7, 8, 9):                         # end ferrules
-        c[x, 1] = METAL[5] if x < 8 else METAL[4]
-        c[x, 14] = METAL[3] if x < 8 else METAL[2]
+    arm, ports = block_art.cable_arm(True), block_art.bridge()
+    lay = block_art.LAYOUT
+    ax, ay, _, _ = lay['arm4']
+    for i in range(3):                              # east-west arms, 3 long on the icon
+        for j in range(2):
+            c[1 + i, 7 + j] = arm[ax + i, ay + j]
+            c[14 - i, 7 + j] = arm[ax + 3 - i, ay + j]
+    px, py, _, _ = lay['port']
+    for k in range(4):                              # port housings, 2 wide, the window turned upright
+        for x in (4, 5, 10, 11):
+            c[x, 6 + k] = ports[px + k, py]
+    sx, sy, _, _ = lay['arm6']
+    for k in range(5):                              # north-south arms, 5 long, turned upright
+        for j in range(2):
+            c[7 + j, 1 + k] = arm[sx + 1 + k, sy + j]
+            c[7 + j, 14 - k] = arm[sx + 1 + k, sy + j]
+    hx, hy, _, _ = lay['xhub']
+    for i in range(4):
+        for j in range(4):
+            c[6 + i, 6 + j] = arm[hx + i, hy + j]
+    mask = {(x, y) for y in range(16) for x in range(16) if c.opaque(x, y)}
+    for q in mask_outline(mask):
+        c[q] = METAL[1] if lit_side(mask, q) else METAL[0]
     return c
 
 
@@ -372,35 +328,6 @@ def lamp_icon():
     return c
 
 
-RED = [RED_ON[1], RED_ON[2], RED_ON[3], RED_ON[4]]
-CYAN = [CRYSTAL[3], CRYSTAL[4], CRYSTAL[5], CRYSTAL[6]]
-
-
-# ---------------------------------------------------------------- pack icon
-
-def pack_icon():
-    c = Canvas()
-    for y in range(16):
-        for x in range(16):
-            edge = min(x, y, 15 - x, 15 - y)
-            if edge == 0:
-                col = METAL[0]
-            elif edge == 1:
-                col = METAL[4] if (x == 1 or y == 1) and x < 15 - 1 and y < 15 - 1 else METAL[2]
-            else:
-                col = METAL[2] if (x + y) < 15 else METAL[1]
-            c[x, y] = col
-    for corner in ((0, 0), (0, 15), (15, 0), (15, 15)):
-        c[corner] = CLEAR
-    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):   # corner bolts, as on the casing
-        c[x, y] = METAL[5]
-        c[x + 1, y + 1] = METAL[0]
-    crystal = crystal_icon()
-    for y in range(16):
-        for x in range(16):
-            if crystal.opaque(x, y):
-                c[x, y] = crystal[x, y]
-    return c
 
 
 ICONS = {
@@ -409,8 +336,8 @@ ICONS = {
     'starstone_compressed_dust': compressed_icon,
     'starstone_cable': cable_icon,
     'starstone_inner_corner': inner_corner_icon,
-    'starstone_redstone_input': lambda: adapter_icon(RED, CYAN),
-    'starstone_redstone_output': lambda: adapter_icon(CYAN, RED),
+    'starstone_redstone_input': lambda: adapter_icon('input'),
+    'starstone_redstone_output': lambda: adapter_icon('output'),
     'starstone_bridge': bridge_icon,
     'starstone_lamp': lamp_icon,
 }
@@ -429,24 +356,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--sheet', action='store_true', help='write temp/starstone-art/items_sheet.png')
     ap.add_argument('--out', type=Path, default=ITEMS, help='icon output folder (default: the RP)')
-    ap.add_argument('--no-pack', action='store_true', help='do not write the pack icons')
     args = ap.parse_args()
     written = []
     for name, paint in ICONS.items():
         written.append(paint().save(args.out / f'{name}.png'))
-    pack16 = pack_icon()
-    big = pack16.image().resize((256, 256), resample=0)  # NEAREST, exactly 16x
-    if not args.no_pack:
-        for pack in (BP, RP):
-            big.save(pack / 'pack_icon.png')
     sheet_dir = WORKSPACE / 'temp/starstone-art'
-    pack16.save(sheet_dir / 'icons/pack_icon16.png')
     for p in written:
         print(p)
     if args.sheet:
         out = sheet_dir / 'items_sheet.png'
         cmd = [sys.executable, '-B', str(WORKSPACE / '.claude/skills/bedrock-art/scripts/icon_sheet.py'), str(out),
-               *map(str, written), str(sheet_dir / 'icons/pack_icon16.png'), '--ref', *map(str, REFS)]
+               *map(str, written), '--ref', *map(str, REFS)]
         subprocess.run(cmd, check=True)
 
 

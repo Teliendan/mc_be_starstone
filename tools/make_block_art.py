@@ -21,14 +21,19 @@ OUT = RP / 'textures' / 'blocks'
 # Texture windows used by the models: name -> (x, y, w, h).
 LAYOUT = {
     'arm6': (0, 0, 6, 2),     # cable / inner corner arm, cell edge -> hub (6 units)
-    'arm5': (0, 2, 5, 2),     # adapter and bridge arm, cell edge -> casing (5 units)
+    'arm4': (0, 4, 4, 2),     # adapter and bridge arm, cell edge -> casing or port (4 units)
     'arm_side6': (0, 0, 6, 1),
-    'arm_side5': (0, 2, 5, 1),
+    'arm_side4': (0, 4, 4, 1),
     'arm_end': (0, 0, 2, 1),
     'hub': (6, 6, 4, 4),      # cable hub top (4x4)
     'hub_side': (6, 6, 4, 1),
-    'plate': (5, 5, 6, 6),    # bridge / adapter casing top (6x6)
-    'plate_side': (5, 5, 6, 1),
+    'xhub': (0, 6, 4, 4),     # bridge dot (in the cable arm textures): cable hub closed east/west
+    'xhub_side': (0, 6, 4, 1),
+    'port': (0, 0, 4, 2),     # bridge port housing top (2x4 face, rotated)
+    'port_side_long': (0, 0, 4, 1),
+    'port_side_short': (4, 0, 2, 1),
+    'plate8': (4, 4, 8, 8),   # adapter casing top (8x8)
+    'plate8_side': (4, 4, 8, 1),
     'panel': (2, 2, 12, 12),  # lamp panel top
     'panel_side': (2, 2, 12, 1),
     'contact_ns': (6, 0, 4, 2),
@@ -224,7 +229,17 @@ def cable_arm(powered):
     # Palindromes: the end at the cell edge and the end at the hub look alike, so the
     # mirrored/rotated arms all join neighbours with a clamp pair (a coupling).
     strip(c, 0, 0, 'm2332m' if powered else 'm1221m', ramp, METAL[3])
-    strip(c, 0, 2, 'm232m' if powered else 'm121m', ramp, METAL[3])
+    strip(c, 0, 4, 'm33m' if powered else 'm22m', ramp, METAL[3])
+    # The Bridge's dot: the cable hub with metal east/west edges, so only the north-south lane runs through it
+    # (the east-west lane passes underneath and must not look joined).
+    x0, y0, _, _ = LAYOUT['xhub']
+    edge, core = (ramp[1], ramp[4]) if powered else (ramp[1], ramp[3])
+    for dy in range(4):
+        for dx in range(4):
+            corner = dx in (0, 3) and dy in (0, 3)
+            inner = dx in (1, 2) and dy in (1, 2)
+            side = dx in (0, 3)
+            c[x0 + dx, y0 + dy] = METAL[4] if corner else core if inner else METAL[3] if side else edge
     return c
 
 
@@ -232,10 +247,9 @@ def redstone_arm(powered):
     c = Canvas()
     ramp = RED_ON if powered else RED_OFF
     strip(c, 0, 0, '213312' if powered else '123321', ramp, None)
-    strip(c, 0, 2, '23432' if powered else '12321', ramp, None)
+    strip(c, 0, 4, '2332' if powered else '1221', ramp, None)
+    c[2, 4] = ramp[1]
     # Dust grain: one darker texel per row, offset between rows (no checkerboard).
-    c[1, 2] = ramp[1]
-    c[3, 3] = ramp[1]
     c[2, 0] = ramp[1]
     c[4, 1] = ramp[1]
     return c
@@ -255,45 +269,55 @@ def cable_hub(powered):
     return c
 
 
-def plate(c, emblem):
-    """6x6 raised casing plate at LAYOUT['plate'] with a 4x4 emblem (rows of ramp colours)."""
-    x0, y0, _, _ = LAYOUT['plate']
-    c.rect(x0, y0, x0 + 5, y0 + 5, METAL[3])
-    bevel(c, x0, y0, x0 + 5, y0 + 5, METAL[5], METAL[1], METAL[3])
-    for dy, row in enumerate(emblem):
-        for dx, col in enumerate(row):
-            if col is not None:
-                c[x0 + 1 + dx, y0 + 1 + dy] = col
-
-
 def bridge():
+    """Port housings beside the Bridge's dot, where the east-west lane goes in underneath: dark mouth in the
+    middle of the long side (towards the lane), metal ends; symmetric, as the part turns with its support."""
     c = Canvas()
-    m = METAL
-    # The east-west lane runs under the plate: dark ports at its ends, a covered channel between.
-    plate(c, [
-        [m[4], m[3], m[3], m[2]],
-        [m[0], m[1], m[1], m[0]],
-        [m[0], m[1], m[1], m[0]],
-        [m[3], m[2], m[2], m[2]],
-    ])
+    x0, y0, w, _ = LAYOUT['port']
+    for dx, col in enumerate((METAL[3], METAL[0], METAL[0], METAL[3])):
+        c[x0 + dx, y0] = c[x0 + dx, y0 + 1] = col
+    x0, y0, w, _ = LAYOUT['port_side_short']
+    for dx in range(w):
+        c[x0 + dx, y0] = METAL[2]
     return c
 
 
+ADAPTER_EMBLEM = [  # 6x6 "->" as seen from above: s/t shaft in the source colour, 0/1/2 head in the target colour
+    '...0..',
+    '...00.',
+    'sss110',
+    'ttt221',
+    '...22.',
+    '...2..',
+]
+
+
+def adapter_emblem(kind):
+    """{(dx, dy): colour} of the emblem as seen from above (source left, target right), lit top rows."""
+    red = {'s': RED_ON[3], 't': RED_ON[1], '0': RED_ON[4], '1': RED_ON[3], '2': RED_ON[1]}
+    blue = {'s': ENERGY_ON[2], 't': ENERGY_ON[0], '0': ENERGY_ON[3], '1': ENERGY_ON[2], '2': ENERGY_ON[1]}
+    src, dst = (red, blue) if kind == 'input' else (blue, red)
+    key = {k: src[k] for k in 'st'} | {k: dst[k] for k in '012'}
+    return {(dx, dy): key[ch] for dy, row in enumerate(ADAPTER_EMBLEM) for dx, ch in enumerate(row) if ch != '.'}
+
+
+def casing8(c, x0, y0, emblem, mirror):
+    """8x8 raised casing: bevelled rim, recessed field, 6x6 emblem (mirrored for the model's mirrored X)."""
+    c.rect(x0, y0, x0 + 7, y0 + 7, METAL[2])
+    bevel(c, x0, y0, x0 + 7, y0 + 7, METAL[5], METAL[1], METAL[3])
+    for (dx, dy), col in emblem.items():
+        c[x0 + 1 + (5 - dx if mirror else dx), y0 + 1 + dy] = col
+
+
 def adapter(kind):
-    """Redstone input: red -> blue. Output: blue -> red. The emblem shows the conversion direction."""
+    """Redstone input: red -> blue. Output: blue -> red. An 8x8 casing whose emblem is one big arrow ("->";
+    owner 2026-11-22: the old item icon's arrow, so the placed block and its icon match): shaft in the source
+    colour, head in the target colour. Model X mirrors world X (see the cableVisual tests), so the emblem is
+    drawn pointing to texture left; seen from above in the world it runs from the source on the left to the
+    target on the right."""
     c = Canvas()
-    r, b = RED_ON[2], ENERGY_ON[1]
-    rd, bd = RED_ON[1], ENERGY_ON[0]
-    src, src_d, dst, dst_d = (r, rd, b, bd) if kind == 'input' else (b, bd, r, rd)
-    # A "->": shaft in the source colour, arrowhead in the target colour. Model X mirrors world X
-    # (see the cableVisual tests), so it is drawn pointing to texture left; seen from above in the
-    # world it runs from the source on the left to the target on the right.
-    plate(c, [
-        [None, dst, None, None],
-        [dst, dst, src, src],
-        [dst_d, dst, src_d, src_d],
-        [None, dst_d, None, None],
-    ])
+    x0, y0, _, _ = LAYOUT['plate8']
+    casing8(c, x0, y0, adapter_emblem(kind), mirror=True)
     return c
 
 
@@ -361,10 +385,13 @@ def check_windows(images):
     uses = {
         'arm6': ['starstone_cable_arm_on', 'starstone_cable_arm_off', 'starstone_redstone_arm_on',
                  'starstone_redstone_arm_off'],
-        'arm5': ['starstone_cable_arm_on', 'starstone_cable_arm_off', 'starstone_redstone_arm_on',
+        'arm4': ['starstone_cable_arm_on', 'starstone_cable_arm_off', 'starstone_redstone_arm_on',
                  'starstone_redstone_arm_off'],
         'hub': ['starstone_cable_hub_on', 'starstone_cable_hub_off'],
-        'plate': ['starstone_bridge', 'starstone_redstone_input', 'starstone_redstone_output'],
+        'xhub': ['starstone_cable_arm_on', 'starstone_cable_arm_off'],
+        'port': ['starstone_bridge'],
+        'port_side_short': ['starstone_bridge'],
+        'plate8': ['starstone_redstone_input', 'starstone_redstone_output'],
         'panel': ['starstone_lamp_on', 'starstone_lamp_off'],
         'contact_ns': ['starstone_lamp_on', 'starstone_lamp_off'],
         'contact_ew': ['starstone_lamp_on', 'starstone_lamp_off'],

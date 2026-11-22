@@ -16,7 +16,8 @@ atlases, sampled at twice vanilla density) is in git history before this redo.
 | `starstone_art.py` | Shared ramps (METAL navy/gunmetal, STONE dark purple-grey, CRYSTAL, ENERGY_OFF, ENERGY_ON, RED_OFF, RED_ON) and pixel helpers |
 | `make_block_art.py` | Every block texture; `LAYOUT` names the texture windows the models sample |
 | `make_block_models.py` | Face UVs of every block model (`assign_uvs`), also used by `build_inner_corner.py --model-only` |
-| `make_item_art.py` | Item icons and both 256x256 pack icons (16x16 art scaled 16x) |
+| `make_item_art.py` | Item icons; the flat devices' icons are top views of the placed block built from its own textures |
+| `make_pack_icon.py` | Both 256x256 pack icons: a render of real blocks (uses the skill's `soft3d.py`) |
 
 Rules the art follows: light from the top on full cubes; parts that turn with
 their support face (cable arms and hubs, adapter arms) are shaded symmetrically
@@ -24,9 +25,11 @@ and their strips are palindromes, so every arm meets its neighbour with a clamp
 pair at the cell edge. Custom geometry renders model X mirrored, so the machine
 frame shared by Generator (vanilla full block) and Conduit (custom cube) is
 symmetric left-right, and the adapter emblems are drawn mirrored in the texture.
-Review state: every asset below is final (owner accepted in game).
+Review state: see the table. Rule since 2026-11-22 (owner): a flat device's icon is the top view of the placed block,
+and where that view is unclear the block changes, not just the icon.
 
-Owner verdicts: 2026-10-26, after the 16x16 redo (commits `7aa74ca` and `f7e6283`): "The
+Owner verdicts: 2026-11-22, the icon and device redesign below (Crystal, Inner Corner icon, adapters, Bridge,
+pack icon): "I like these, we are done." 2026-10-26, after the 16x16 redo (commits `7aa74ca` and `f7e6283`): "The
 graphics as such is OK", and after the follow-up fixes "Fixed, I like it." Verdicts are final
 (owner accepted in game), to check (deployed, owner to look) or to do. Per-asset notes:
 
@@ -37,16 +40,18 @@ graphics as such is OK", and after the follow-up fixes "Fixed, I like it." Verdi
 | Conduit ends on/off, casing sides | final | Round port with glowing core; vented casing |
 | Cable arms and hubs on/off | final | 2-wide conductor, clamp pair at each cell edge, 4-fold hub |
 | Inner Corner | final | Same textures as the cable |
-| Bridge | final | Own plate texture; NS lane over it, EW ports under |
+| Bridge | final | The cable dot (hub with metal east/west edges, on the north-south lane's material) carrying the north-south lane; the east-west arms (4 long) run into two 2x4 port housings beside it, where they go underneath. Replaced the 6x6 riveted plate on 2026-11-22 (owner: plate read as a beetle; keep an element in the middle like the cable's dot; the lower lane must not stop short) |
 | Lamp on/off | final | Four-pane lens, contacts lit when powered |
-| Redstone Input/Output emblems | final | One arrow ("->" per owner, not ">>"): shaft in the source colour, head in the target colour, drawn mirrored for the mirrored model X |
+| Redstone Input/Output casing and emblem | final | 8x8 casing (was 6x6) with a 6x6 arrow ("->" per owner, not ">>"): shaft in the source colour, head in the target colour, drawn mirrored for the mirrored model X; arms 4.14 long (window `arm4`). Enlarged 2026-11-22 so the placed block and the icon look alike (owner picked "both meet in the middle") |
 | Redstone arms on/off | final | Red strips in vanilla redstone dust colours |
-| Crystal, Dust, Compressed Dust icons | final | |
+| Crystal icon | final | Brilliant-cut gem echoing the Generator's cut crystal; owner picked it from five options on 2026-11-22. The old three-prism fan was "usable, not nice" |
+| Dust, Compressed Dust icons | final | |
 | Cable icon | final | Stacked coil with a plug end |
-| Inner Corner icon | final | L bend (wall arm + floor arm) |
-| Redstone Input/Output icons | final | Capsule with arrow, source colour on the left |
-| Bridge, Lamp icons | final | Riveted plate with lane over and lane under; lit lamp panel (held-item fix) |
-| Pack icon | final | Crystal cluster on a navy tile, 16x16 scaled 16x |
+| Inner Corner icon | final | Square L bend (wall arm up, floor arm left, hub in the crease); the earlier 2:1 floor arm read as a wrong angle (owner 2026-11-22) |
+| Redstone Input/Output icons | final | Top view of the placed block: the 8x8 casing and arrow unmirrored, powered source arm left, target arm right (2026-11-22; the earlier capsule icon was clear but looked unlike the placed block) |
+| Bridge icon | final | Top view of the placed Bridge, powered, from the block textures (2026-11-22) |
+| Lamp icon | final | Lit lamp panel (held-item fix) |
+| Pack icon | final | "Working circuit" render (owner pick B1 of six, 2026-11-22): deepslate-brick room corner, powered Generator, Cable, Inner Corner, lit Lamp on the side wall, one ore block in the back wall. Was a 16x16 crystal cluster scaled 16x |
 
 The retired task list is in git `1492493` (`docs/GRAPHICS_TASKS.md`).
 
@@ -91,13 +96,14 @@ face and neighbor coordinate recorded.
 The lamp uses `geometry.starstone_surface_device`, a thin panel and contacts.
 It is a consumer and also carries power between its four surface ports.
 
-`geometry.starstone_bridge` is a grounded, flat casing with narrow local
-north-south and east-west lanes extending to opposite cell edges. The two lanes
-are electrically isolated and separately mapped to on/off cable materials by
-`starstone:powered_ns` and `starstone:powered_ew`. The center casing covers the
-crossing without floating duplicate wires. Its body uses the registered
-`starstone:bridge` texture: a raised plate with dark ports where the east-west
-lane passes underneath.
+`geometry.starstone_bridge` has narrow local north-south and east-west lanes
+extending to opposite cell edges. The two lanes are electrically isolated and
+separately mapped to on/off cable materials by `starstone:powered_ns` and
+`starstone:powered_ew`. Bones: `lane_ns` (two 6-long arms), `hub` (the 4x4 dot,
+on the `lane_ns` material, texture window `xhub` in the cable arm textures),
+`lane_ew` (two 4-long arms, window `arm4`) and `body` (two 2x4 port housings,
+`starstone:bridge` texture, windows `port*`) where the east-west lane goes in
+under the dot.
 
 `geometry.starstone_adapter` is a grounded center box. It has independently
 masked blue Starstone arms and red redstone contact arms; unused arms disappear.
@@ -119,8 +125,10 @@ Ore emits light level 3.
 
 ## Pack artwork and rebuilding
 
-Both development packs have the same 256x256 `pack_icon.png`, drawn at 16x16 by
-`tools/make_item_art.py` and scaled up 16x without smoothing.
+Both development packs have the same 256x256 `pack_icon.png`, rendered by
+`tools/make_pack_icon.py` from the real models and textures (re-run it after changing
+any piece it shows; `--sheet` writes a 256/128/64/32 check to `temp/starstone-art/`).
+The glow halos are graded on top; in game the blocks emit little light.
 
 From `C:\mcmods`, rebuild everything with:
 
@@ -129,9 +137,11 @@ python -B mods/starstone/tools/make_block_art.py
 python -B mods/starstone/tools/make_block_models.py
 python -B mods/starstone/tools/build_inner_corner.py --model-only
 python -B mods/starstone/tools/make_item_art.py
+python -B mods/starstone/tools/make_pack_icon.py
 ```
 
-The generators change only PNGs and model UVs, never block behaviour JSON.
+The generators change only PNGs and model UVs, never block behaviour JSON (cube sizes are hand-edited in the
+geometry files; `make_block_models.py` then maps their UVs).
 
 ## Material parameter note (2026-10-10, Bedrock 1.26.52)
 

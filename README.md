@@ -16,7 +16,8 @@ redstone input/output adapters.
 - `starstone_bp/`, `starstone_rp/` - the packs; `tests/` - Node suites (`node tests/run.mjs`)
   with a `@minecraft/server` shim in `tests/shims/`; `wiki/` - player-facing records.
 - `tools/make_block_art.py`, `tools/make_item_art.py`, `tools/make_block_models.py` generate every
-  16x16 texture, icon, pack icon and model UV from the palette in `tools/starstone_art.py`;
+  16x16 texture, icon and model UV from the palette in `tools/starstone_art.py`;
+  `tools/make_pack_icon.py` renders the pack icon from the real blocks;
   `tools/build_inner_corner.py --model-only` regenerates the Inner Corner model.
 - `docs/` (12 files):
 

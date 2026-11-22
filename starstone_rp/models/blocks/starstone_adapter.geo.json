@@ -25,79 +25,79 @@
           "cubes": [
             {
               "origin": [
-                -3,
+                -4,
                 0,
-                -3
+                -4
               ],
               "size": [
-                6,
+                8,
                 0.32,
-                6
+                8
               ],
               "uv": {
                 "up": {
                   "material_instance": "center",
                   "uv": [
-                    5,
-                    5
+                    4,
+                    4
                   ],
                   "uv_size": [
-                    6,
-                    6
+                    8,
+                    8
                   ]
                 },
                 "down": {
                   "material_instance": "center",
                   "uv": [
-                    5,
-                    5
+                    4,
+                    4
                   ],
                   "uv_size": [
-                    6,
-                    6
+                    8,
+                    8
                   ]
                 },
                 "north": {
                   "material_instance": "center",
                   "uv": [
-                    5,
-                    5
+                    4,
+                    4
                   ],
                   "uv_size": [
-                    6,
+                    8,
                     1
                   ]
                 },
                 "east": {
                   "material_instance": "center",
                   "uv": [
-                    5,
-                    5
+                    4,
+                    4
                   ],
                   "uv_size": [
-                    6,
+                    8,
                     1
                   ]
                 },
                 "south": {
                   "material_instance": "center",
                   "uv": [
-                    5,
-                    5
+                    4,
+                    4
                   ],
                   "uv_size": [
-                    6,
+                    8,
                     1
                   ]
                 },
                 "west": {
                   "material_instance": "center",
                   "uv": [
-                    5,
-                    5
+                    4,
+                    4
                   ],
                   "uv_size": [
-                    6,
+                    8,
                     1
                   ]
                 }
@@ -122,17 +122,17 @@
               "size": [
                 2,
                 0.12,
-                5.14
+                4.14
               ],
               "uv": {
                 "up": {
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ],
                   "uv_rotation": 90
@@ -141,10 +141,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ],
                   "uv_rotation": 90
@@ -164,10 +164,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -186,10 +186,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 }
@@ -212,7 +212,7 @@
                 -1
               ],
               "size": [
-                5.14,
+                4.14,
                 0.12,
                 2
               ],
@@ -221,10 +221,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ]
                 },
@@ -232,10 +232,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ]
                 },
@@ -243,10 +243,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -265,10 +265,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -299,22 +299,22 @@
               "origin": [
                 -1,
                 0.02,
-                3
+                4
               ],
               "size": [
                 2,
                 0.12,
-                5.14
+                4.14
               ],
               "uv": {
                 "up": {
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ],
                   "uv_rotation": 90
@@ -323,10 +323,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ],
                   "uv_rotation": 90
@@ -346,10 +346,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -368,10 +368,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 }
@@ -389,12 +389,12 @@
           "cubes": [
             {
               "origin": [
-                3,
+                4,
                 0.02,
                 -1
               ],
               "size": [
-                5.14,
+                4.14,
                 0.12,
                 2
               ],
@@ -403,10 +403,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ]
                 },
@@ -414,10 +414,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ]
                 },
@@ -425,10 +425,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -447,10 +447,10 @@
                   "material_instance": "blue",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -486,17 +486,17 @@
               "size": [
                 2,
                 0.12,
-                5.14
+                4.14
               ],
               "uv": {
                 "up": {
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ],
                   "uv_rotation": 90
@@ -505,10 +505,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ],
                   "uv_rotation": 90
@@ -528,10 +528,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -550,10 +550,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 }
@@ -576,7 +576,7 @@
                 -1
               ],
               "size": [
-                5.14,
+                4.14,
                 0.12,
                 2
               ],
@@ -585,10 +585,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ]
                 },
@@ -596,10 +596,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ]
                 },
@@ -607,10 +607,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -629,10 +629,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -663,22 +663,22 @@
               "origin": [
                 -1,
                 0.02,
-                3
+                4
               ],
               "size": [
                 2,
                 0.12,
-                5.14
+                4.14
               ],
               "uv": {
                 "up": {
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ],
                   "uv_rotation": 90
@@ -687,10 +687,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ],
                   "uv_rotation": 90
@@ -710,10 +710,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -732,10 +732,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 }
@@ -753,12 +753,12 @@
           "cubes": [
             {
               "origin": [
-                3,
+                4,
                 0.02,
                 -1
               ],
               "size": [
-                5.14,
+                4.14,
                 0.12,
                 2
               ],
@@ -767,10 +767,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ]
                 },
@@ -778,10 +778,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     2
                   ]
                 },
@@ -789,10 +789,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },
@@ -811,10 +811,10 @@
                   "material_instance": "red",
                   "uv": [
                     0,
-                    2
+                    4
                   ],
                   "uv_size": [
-                    5,
+                    4,
                     1
                   ]
                 },

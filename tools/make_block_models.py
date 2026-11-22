@@ -21,8 +21,8 @@ TEXTURE_SIZE = 16
 ROLES = {
     'geometry.starstone_cable': {'center': 'hub'},
     'geometry.starstone_inner_corner': {'center_': 'hub'},
-    'geometry.starstone_adapter': {'center': 'plate'},
-    'geometry.starstone_bridge': {'body': 'plate'},
+    'geometry.starstone_adapter': {'center': 'plate8'},
+    'geometry.starstone_bridge': {'body': 'port', 'hub': 'xhub'},
     'geometry.starstone_surface_device': {'panel': 'panel', 'contacts': 'contact'},
     'geometry.starstone_conduit': {'conduit': 'full'},
 }
@@ -37,9 +37,12 @@ def window(role, long, short):
     if role == 'contact':
         return LAYOUT['contact_side_long' if long == 4 else 'contact_side_short'] if short == 0 else None
     if short == 0:
-        thin = {'hub': 'hub_side', 'plate': 'plate_side', 'panel': 'panel_side'}.get(role)
-        return LAYOUT[thin or {6: 'arm_side6', 5: 'arm_side5', 2: 'arm_end'}[long]]
-    return LAYOUT[{'hub': 'hub', 'plate': 'plate', 'panel': 'panel'}.get(role) or {6: 'arm6', 5: 'arm5'}[long]]
+        if role == 'port':
+            return LAYOUT['port_side_long' if long == 4 else 'port_side_short']
+        thin = {'hub': 'hub_side', 'xhub': 'xhub_side', 'plate8': 'plate8_side', 'panel': 'panel_side'}.get(role)
+        return LAYOUT[thin or {6: 'arm_side6', 4: 'arm_side4', 2: 'arm_end'}[long]]
+    return LAYOUT[{'hub': 'hub', 'xhub': 'xhub', 'port': 'port', 'plate8': 'plate8', 'panel': 'panel'}.get(role)
+                  or {6: 'arm6', 4: 'arm4'}[long]]
 
 
 def role_of(geometry_id, bone):

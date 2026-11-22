@@ -68,6 +68,9 @@ const bridgeBody = bone(bridgeGeo, 'body');
 const laneNs = bone(bridgeGeo, 'lane_ns');
 const laneEw = bone(bridgeGeo, 'lane_ew');
 assert.ok(bridgeBody && laneNs && laneEw, 'bridge retains body and two named electrical lanes');
+const bridgeHub = bone(bridgeGeo, 'hub');
+assert.ok(bridgeHub?.cubes.every((cube) => Object.values(cube.uv).every((face) => face.material_instance === 'lane_ns')),
+  'the bridge dot belongs to the north-south lane and lights with it');
 assert.ok(bridgeBody.cubes.some((cube) => cube.origin[1] === 0), 'bridge body contacts its support plane');
 assert.ok(bridgeBody.cubes.some((cube) => cube.size[0] < 16 && cube.size[2] < 16), 'bridge body has a compact grounded footprint');
 assert.ok(laneEw.cubes.every((cube) => cube.origin[1] < .2), 'east-west lane lies on the support');
@@ -81,7 +84,7 @@ for (const lane of [laneNs, laneEw]) {
     assert.equal(Object.values(cube.uv).some((face) => face.material_instance === lane.name), true,
       `${lane.name} cube keeps its independently powered material`);
     const length = Math.round(Math.max(cube.size[0], cube.size[2]));
-    assert.deepEqual(cube.uv.up.uv,[0,length === 6 ? 0 : 2],`${lane.name} samples conductor pixels rather than the old whole-wire decal`);
+    assert.deepEqual(cube.uv.up.uv,[0,length === 6 ? 0 : 4],`${lane.name} samples conductor pixels rather than the old whole-wire decal`);
     assert.deepEqual(cube.uv.up.uv_size,[length,2],`${lane.name} has a narrow conductor UV, one texel per unit`);
   }
 }
