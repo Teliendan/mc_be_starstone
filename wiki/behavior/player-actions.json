@@ -315,7 +315,7 @@
     ],
     "featureId": "starstone:network",
     "id": "starstone:network/extending",
-    "text": "To extend a circuit, mount Starstone Cable directly on the generator and continue a joined run across full supporting blocks to a lamp. Neighboring surface parts must meet along the same mounting surface. Cables, lamps, bridges and adapters also meet around an outside edge of a support, such as a lamp on top of a block and a cable on its side; use a Starstone Inner Corner for an inside bend."
+    "text": "To reach further, place Starstone Cable on the generator or on the ground right next to it and lay a line to a lamp. Parts join when they sit side by side on the same surface or meet around the outside edge of a block, such as a lamp on top of a block and a cable on its side. For an inside corner, use a Starstone Inner Corner."
   },
   {
     "evidence": [
@@ -334,7 +334,7 @@
     ],
     "featureId": "starstone:network",
     "id": "starstone:network/check-connections",
-    "text": "If a lamp stays dark, first check that a generator is on or a Starstone Redstone Input is receiving power. Follow the cable run and check that each part still has a full support and meets the next part on the same surface. A Starstone Conduit connects through its two ends, not its sides: run the cable into an end, or break and replace the conduit using the desired end face. A Starstone Bridge keeps its crossing lanes separate; continue along the powered lane instead of expecting power to turn onto the other lane."
+    "text": "If a lamp stays dark, first check that a generator is on or a Starstone Redstone Input is getting a redstone signal. Then follow the line from the source: each part needs the block behind it and must meet the next part on the same surface, around an outside edge or through a Starstone Inner Corner. A Starstone Conduit connects only at its two ends, not its sides: run the cable into an end, or break the conduit and place it again from the right face. A Starstone Bridge keeps its two lines apart, so follow the powered line straight across."
   },
   {
     "evidence": [

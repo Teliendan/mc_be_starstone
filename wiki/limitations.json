@@ -140,7 +140,7 @@
     ],
     "featureId": "starstone:network",
     "id": "starstone:network/pulses",
-    "text": "Large networks can delay output changes and combine rapid changes. Do not rely on them to preserve short redstone pulses."
+    "text": "Very large networks can take a moment to update and can merge quick on-off changes. Do not rely on them to carry very short redstone pulses, such as an observer’s blink."
   },
   {
     "evidence": [
@@ -159,6 +159,6 @@
     ],
     "featureId": "starstone:ore",
     "id": "starstone:ore/smelting-xp",
-    "text": "Smelting collected Starstone Ore produces dust without furnace experience."
+    "text": "Smelting a collected Starstone Ore block gives Starstone Dust but no experience, unlike smelting vanilla ores."
   }
 ]
