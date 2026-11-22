@@ -4,7 +4,7 @@
     "featureId": "starstone:cable_item",
     "source": "starstone_rp/textures/items/starstone_cable.png",
     "kind": "item",
-    "alt": "Surface Cable"
+    "alt": "Starstone Cable"
   },
   {
     "id": "starstone:compressed_dust/icon",
@@ -32,14 +32,14 @@
     "featureId": "starstone:inner_corner_item",
     "source": "starstone_rp/textures/items/starstone_inner_corner.png",
     "kind": "item",
-    "alt": "Inner Corner"
+    "alt": "Starstone Inner Corner"
   },
   {
     "id": "starstone:bridge/icon",
     "featureId": "starstone:bridge",
     "source": "starstone_rp/textures/items/starstone_bridge.png",
     "kind": "item",
-    "alt": "Isolated Bridge"
+    "alt": "Starstone Bridge"
   },
   {
     "id": "starstone:conduit/icon",
@@ -78,13 +78,13 @@
     "featureId": "starstone:redstone_input",
     "source": "starstone_rp/textures/items/starstone_redstone_input.png",
     "kind": "item",
-    "alt": "Redstone Input"
+    "alt": "Starstone Redstone Input"
   },
   {
     "id": "starstone:redstone_output/icon",
     "featureId": "starstone:redstone_output",
     "source": "starstone_rp/textures/items/starstone_redstone_output.png",
     "kind": "item",
-    "alt": "Redstone Output"
+    "alt": "Starstone Redstone Output"
   }
 ]

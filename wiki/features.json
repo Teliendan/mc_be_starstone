@@ -29,7 +29,7 @@
       ],
       "id": "starstone:cable_item",
       "kind": "item",
-      "name": "Surface Cable",
+      "name": "Starstone Cable",
       "nativeIds": [
         "starstone:cable_item"
       ],
@@ -189,7 +189,7 @@
       ],
       "id": "starstone:inner_corner_item",
       "kind": "item",
-      "name": "Inner Corner",
+      "name": "Starstone Inner Corner",
       "nativeIds": [
         "starstone:inner_corner_item"
       ],
@@ -235,7 +235,7 @@
       ],
       "id": "starstone:bridge",
       "kind": "block",
-      "name": "Isolated Bridge",
+      "name": "Starstone Bridge",
       "nativeIds": [
         "starstone:bridge"
       ],
@@ -452,7 +452,7 @@
       ],
       "id": "starstone:redstone_input",
       "kind": "block",
-      "name": "Redstone Input",
+      "name": "Starstone Redstone Input",
       "nativeIds": [
         "starstone:redstone_input"
       ],
@@ -493,7 +493,7 @@
       ],
       "id": "starstone:redstone_output",
       "kind": "block",
-      "name": "Redstone Output",
+      "name": "Starstone Redstone Output",
       "nativeIds": [
         "starstone:redstone_output"
       ],
