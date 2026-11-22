@@ -22,12 +22,14 @@ A glowing power network that works beside redstone: cables for floors, walls and
 ## Install
 
 1. Download the `.mcaddon` from the [Releases page](https://github.com/Teliendan/mc_be_starstone/releases).
-2. Open the file with Minecraft; it imports both packs.
+2. Open the file with Minecraft on Windows, Android or iPhone/iPad; it imports both packs.
 3. In the world settings, turn on the Starstone **behavior pack** (its resource pack comes with it).
 
 Starstone Ore generates only in newly generated chunks: start a new world, or explore areas you have not visited yet.
 
-Requirements: Minecraft Bedrock 1.26.60 or newer. No experimental toggles are needed. It works on its own and needs none of my other add-ons.
+Xbox, PlayStation and Switch can't import add-on files directly, but console players can join a world that already has it.
+
+Requirements: Minecraft Bedrock 1.26.60 or newer, tested on 1.26.63. No experimental toggles are needed. It works on its own and needs none of my other add-ons.
 
 ## Known issues
 
