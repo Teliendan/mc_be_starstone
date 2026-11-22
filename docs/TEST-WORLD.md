@@ -4,8 +4,7 @@ Status: **partly run by the owner** (details in "Owner results" at the end). Acc
 game: six-face placement, art readability, piston policy, explosions, strong redstone output,
 support input, mining and new-chunk ore distribution (2026-09-29); sustained, placed-beside
 and observer-pulse input, quick mining with Mending (2026-10-25); the 16x16 art and the
-side-contact fixes (2026-10-26). Still open: the unloaded-middle sequence (gate 7.6), Silk
-Touch and Fortune drops, and 1k/5k/10k real-tick budgets. Node results do not establish game
+side-contact fixes (2026-10-26). Fortune and Silk Touch drops and no furnace XP accepted 2026-11-22 (1.26.63). Still open: the unloaded-middle sequence (gate 7.6) and 1k/5k/10k real-tick budgets. Node results do not establish game
 compatibility.
 
 Use a disposable creative world with both development packs. Record game version,
@@ -168,6 +167,7 @@ Bedrock 1.26.52 unless noted. Everything not listed here is unrun.
 | 2026-09-29 | Accepted: six-face placement and final art readability, piston policy and explosions, strong redstone output and support input, mining and new-chunk ore distribution. Pack load accepted; Content Log/version details not needed. |
 | 2026-10-25 | S1 sustained/reloaded input, S2 placement beside a powered source, S3 observer pulse, S5 quick mining breaks with Mending: owner PASS. S4 summoned XP orb: the native orb awards exactly 1 XP (no ore reward refactor in that pass). Input/output floating outside the hand: fixed with same-ID native block-item replacements using the existing inventory sprites; owner accepted ("Rest is OK"). Full graphics revision deferred, done on 2026-10-26. |
 | 2026-10-26 | After the 16x16 art redo (commit `7aa74ca`) the owner said "The graphics as such is OK". Fixed and re-tested the same day (commit `f7e6283`; "Fixed, I like it."): Bridge and Lamp float in front of the player (same-ID block-item replacements with new icons, as for the adapters); a floor cable beside a horizontal conduit's end now extends its arm and takes power (a full block's world port facing a surface arm is a contact: `hasReciprocalPort`, live graph and saved segments); an inner corner laid over a conduit end now carries power (`innerNeighborAllowed`, `neighborContactsFace`); a lamp on a block with a cable on its side connects (every one-face device wraps outside edges: `wrapFaces`, `outerArmMask`; adapters draw their blue arm toward the edge); the adapter emblem reads "->" not ">>". A conduit side still never connects. `tests/sideContacts.test.mjs` covers each report (each failed before the fix). |
+| 2026-11-22 | Bedrock 1.26.63: item 20 Fortune gives more Dust and Silk Touch keeps the Ore block: PASS. Smelting the Silk-Touched Ore in a furnace gives Dust and no furnace experience: confirmed, a documented limitation, not a bug. |
 
 Full text of the retired feedback notes: git `1492493` (`docs/TEST_FEEDBACK_2026-10-25.md`,
 `docs/TEST_FEEDBACK_2026-10-26.md`).

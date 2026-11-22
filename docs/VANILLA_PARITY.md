@@ -48,7 +48,7 @@ study, probe notes): git `08a2e65` and earlier. Counterparts: redstone ore, lamp
   `_item` placers; no saved-item migration.
 - Lamp is a thin panel, not a full-cube lamp (no 6-tick off delay, no opacity); lamp/devices
   do not copy redstone ore's contact glow.
-- Silk-Touched ore smelting gives no furnace XP.
+- Silk-Touched ore smelting gives no furnace XP (confirmed in game by the owner, 2026-11-22, Bedrock 1.26.63).
 
 ## In-game checks still worth doing
 
@@ -59,7 +59,7 @@ study, probe notes): git `08a2e65` and earlier. Counterparts: redstone ore, lamp
 2. Observer pulse (2 ticks) through an input lights the lamp.
 3. One ore break gives 1-5 total XP (`spawnXp` orbs); Mending repairs; Silk Touch gives none.
 4. Two quick ore breaks both drop orbs.
-5. `doTileDrops` false behaviour vs. vanilla redstone ore; furnace/blast furnace smelting;
+5. `doTileDrops` false behaviour vs. vanilla redstone ore; furnace smelting (checked 2026-11-22, 1.26.63: Dust, no XP; blast furnace not separately checked);
    note block under ore plays bass drum.
 
 ## Bedrock 26.60 impact (2026-10-27, documented only)
@@ -337,7 +337,7 @@ enchanted tools against redstone block/ore. Check durability/Unbreaking, Creativ
 doTileDrops false, TNT decay true/false and mob explosions, rapid attempts,
 replacement protection and network cleanup. Conduit/generator collection must
 remain native for every tool, while Ore alone takes the rejected-tool route.
-Fortune/Silk remain unverified in game.
+Fortune/Silk verified in game by the owner (2026-11-22, Bedrock 1.26.63).
 
 ### Questions saved for the owner
 

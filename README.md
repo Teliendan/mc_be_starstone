@@ -54,12 +54,11 @@ In game: `/scriptevent starstone:diagnose`, `diagnose chunk <x> <z> <y>`, `rebui
 Procedure: [TEST-WORLD.md](docs/TEST-WORLD.md), which also records the owner's results. Accepted
 in game: 2026-09-29 six-face placement and art readability, piston policy and explosions, strong
 redstone output and support input, mining and new-chunk ore distribution; 2026-10-25 input
-scenarios S1-S3 and S5; 2026-10-26 the 16x16 art and side-contact fixes. Offline A-B-C
+scenarios S1-S3 and S5; 2026-10-26 the 16x16 art and side-contact fixes; 2026-11-22 Fortune and Silk Touch drops, and no furnace XP from smelting the ore (Bedrock 1.26.63). Offline A-B-C
 fixtures pass; no Minecraft test of the unloaded-middle case has run.
 
 | Check | Status |
 |---|---|
-| Silk Touch and Fortune ore drops | Not tested (plain mining works) |
 | Actual unloaded-middle or alternate save/unload/load sequence (TEST-WORLD gate 7.6) | Not run |
 | 1k/5k/10k real ticks, queue observations and watchdog logs; since 2026-11-12 also the engine-paced power writer on a 1,000-cable line, PC and tablet (TEST-WORLD item 23) | Not run |
 | Partial-block support classification | Needs in-game validation |
