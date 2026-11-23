@@ -16,6 +16,7 @@ A glowing power network that works beside redstone: cables for floors, walls and
 - **Generator and Lamp:** the generator powers its network as soon as you place it; use it to switch it off and on. The lamp gives full-brightness light while its network is powered.
 - **Redstone adapters:** the Redstone Input turns any redstone signal into Starstone power, so levers, buttons, observers and circuits can switch a network. The Redstone Output turns the network back into a full-strength redstone signal for pistons, doors, lamps and other redstone devices.
 - **Starstone Ore:** lies underground in the Overworld at Y 15 and below and glows faintly. Mine it with an iron, diamond or netherite pickaxe for 2-4 Starstone Dust and some experience; Fortune gives more dust and Silk Touch keeps the ore block.
+- **Vibrant Visuals:** with the Vibrant Visuals graphics mode on, powered cables, conduits, generators and lamps glow, the ore glints faintly and the metal casings shine. Without it, nothing looks different.
 - **Crafting:** cables need only copper and Starstone Dust. Four dust and a copper ingot make Compressed Starstone Dust, which a furnace smelts into a Starstone Crystal for the generator, lamp and redstone adapters. Recipes unlock when you first pick up the material they use.
 - **Languages:** English, Czech, German, French, Polish, Spanish (Spain and Mexico) and Portuguese (Portugal and Brazil). The translations are AI drafts; corrections are welcome.
 

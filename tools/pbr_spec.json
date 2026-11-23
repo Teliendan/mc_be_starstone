@@ -1,0 +1,517 @@
+{
+ "schema": 1,
+ "rp": "starstone_rp",
+ "palettes": {
+  "METAL": [
+   "#0b0b17",
+   "#151a2d",
+   "#1e2641",
+   "#2a3558",
+   "#3a4a74",
+   "#566b98",
+   "#8299c3"
+  ],
+  "CRYSTAL": [
+   "#0d1352",
+   "#132f9c",
+   "#1b58d6",
+   "#2a8cf4",
+   "#48c2ff",
+   "#9ce8ff",
+   "#effcff"
+  ],
+  "ENERGY_OFF": [
+   "#121f43",
+   "#1a3263",
+   "#24478a",
+   "#2f5aa6"
+  ],
+  "ENERGY_ON": [
+   "#1b58d6",
+   "#2aa6ff",
+   "#5fdcff",
+   "#bff5ff",
+   "#ffffff"
+  ],
+  "RED_OFF": [
+   "#2e0404",
+   "#4a0808",
+   "#650d0b",
+   "#7d1510"
+  ],
+  "RED_ON": [
+   "#6a0000",
+   "#a80a06",
+   "#e01a10",
+   "#ff5a3c",
+   "#ff9c80"
+  ]
+ },
+ "textures": {
+  "blocks/starstone_bridge": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    }
+   ]
+  },
+  "blocks/starstone_cable_arm_off": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "blocks/starstone_cable_arm_on": {
+   "light": 1,
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "ENERGY_ON"
+     },
+     "like": "blocks/redstone_lamp_on",
+     "like_select": "mers:E>0",
+     "emissive": {
+      "like": "blocks/redstone_torch_on",
+      "like_select": "mers:E>0"
+     }
+    }
+   ]
+  },
+  "blocks/starstone_cable_hub_off": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "blocks/starstone_cable_hub_on": {
+   "light": 1,
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "ENERGY_ON"
+     },
+     "like": "blocks/redstone_lamp_on",
+     "like_select": "mers:E>0",
+     "emissive": {
+      "like": "blocks/redstone_torch_on",
+      "like_select": "mers:E>0"
+     }
+    }
+   ]
+  },
+  "blocks/starstone_casing": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    }
+   ]
+  },
+  "blocks/starstone_conduit_end": {
+   "light": 1,
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "ENERGY_ON,CRYSTAL"
+     },
+     "like": "blocks/redstone_lamp_on",
+     "like_select": "mers:E>0",
+     "emissive": {
+      "like": "blocks/redstone_torch_on",
+      "like_select": "mers:E>0"
+     }
+    }
+   ]
+  },
+  "blocks/starstone_conduit_end_off": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "blocks/starstone_generator": {
+   "light": 1,
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "CRYSTAL",
+      "lum": [
+       90,
+       255
+      ]
+     },
+     "like": "blocks/redstone_block",
+     "emissive": {
+      "like": "blocks/redstone_torch_on",
+      "like_select": "mers:E>0"
+     }
+    },
+    {
+     "select": {
+      "palette": "CRYSTAL"
+     },
+     "like": "blocks/redstone_block",
+     "E": 0
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "blocks/starstone_generator_off": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "CRYSTAL"
+     },
+     "like": "blocks/redstone_block",
+     "E": 0
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "blocks/starstone_lamp_off": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "blocks/starstone_lamp_on": {
+   "light": 15,
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_on",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_on",
+     "like_select": "mers:E>0"
+    }
+   ]
+  },
+  "blocks/starstone_ore": {
+   "light": 3,
+   "regions": [
+    {
+     "select": {
+      "palette": "CRYSTAL"
+     },
+     "like": "blocks/redstone_ore",
+     "like_select": {
+      "hue": [
+       330,
+       30
+      ],
+      "sat_min": 0.4
+     },
+     "emissive": {
+      "like": "items/redstone_dust",
+      "like_select": "mers:E>0"
+     }
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_ore",
+     "like_select": {
+      "not": {
+       "hue": [
+        330,
+        30
+       ],
+       "sat_min": 0.4
+      }
+     }
+    }
+   ]
+  },
+  "blocks/starstone_redstone_arm_off": {
+   "regions": [
+    {
+     "select": {
+      "palette": "RED_OFF"
+     },
+     "like": "items/redstone_dust",
+     "E": 0
+    }
+   ]
+  },
+  "blocks/starstone_redstone_arm_on": {
+   "regions": [
+    {
+     "select": {
+      "palette": "RED_ON"
+     },
+     "like": "items/redstone_dust",
+     "emissive": {
+      "like": "items/redstone_dust",
+      "like_select": "mers:E>0"
+     }
+    }
+   ]
+  },
+  "blocks/starstone_redstone_input": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "RED_OFF,RED_ON"
+     },
+     "like": "items/redstone_dust",
+     "E": 0
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "blocks/starstone_redstone_output": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "RED_OFF,RED_ON"
+     },
+     "like": "items/redstone_dust",
+     "E": 0
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "items/starstone_bridge": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "ENERGY_ON,CRYSTAL"
+     },
+     "like": "blocks/redstone_lamp_on",
+     "like_select": "mers:E>0",
+     "E": 0
+    }
+   ]
+  },
+  "items/starstone_cable": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "items/starstone_compressed_dust": {
+   "like": "items/redstone_dust"
+  },
+  "items/starstone_crystal": {
+   "like": "items/diamond"
+  },
+  "items/starstone_dust": {
+   "like": "items/redstone_dust"
+  },
+  "items/starstone_inner_corner": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "items/starstone_lamp": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_on",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_on",
+     "like_select": "mers:E>0",
+     "emissive": {
+      "like": "items/lantern",
+      "like_select": "mers:E>0"
+     }
+    }
+   ]
+  },
+  "items/starstone_redstone_input": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "RED_ON,RED_OFF"
+     },
+     "like": "items/redstone_dust",
+     "E": 0
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  },
+  "items/starstone_redstone_output": {
+   "regions": [
+    {
+     "select": {
+      "palette": "METAL"
+     },
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M>0"
+    },
+    {
+     "select": {
+      "palette": "RED_ON,RED_OFF"
+     },
+     "like": "items/redstone_dust",
+     "E": 0
+    },
+    {
+     "select": "rest",
+     "like": "blocks/redstone_lamp_off",
+     "like_select": "mers:M==0"
+    }
+   ]
+  }
+ }
+}
