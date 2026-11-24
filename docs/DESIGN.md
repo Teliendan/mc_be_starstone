@@ -72,7 +72,10 @@ blocks and items use their normal IDs (`starstone:generator`, `starstone:dust`).
   connects there; its sides never connect. Break and replace it to change the axis. A matching
   conduit or full generator supplies a back contact.
 - **Generator**: starts enabled, interaction toggles it. Any active source powers its whole
-  connected component.
+  connected component. Besides its six faces it wraps every outside edge of its cube to a
+  one-face device or inner-corner face, exactly as a lamp in its cell would (a generator on a
+  block meets a cable on that block's side); two diagonal generators do not join (owner report
+  2026-11-24, `outer-corner` suite).
 - **Support and motion**: removing a support drops the surface device once and repairs the
   network. Generator, conduit and ore move with pistons; mounted devices pop when pushed or
   when a selected original support moves, even if a valid block replaces it

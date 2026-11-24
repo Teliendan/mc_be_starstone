@@ -34,7 +34,9 @@ destroys the corner. A face change re-queues neighbors and `queueMutation`.
 Outer wraps (`cornerTopology.outerWrap`): an inner corner's face wraps an
 outside support edge to a diagonal one-face device (cable, bridge, lamp,
 adapter) or inner corner exactly like two cables do (floor -> inner corner ->
-wall -> over the wall top). A face's arm also reaches a conduit end or
+wall -> over the wall top). A generator wraps like a one-face device mounted on
+each of its faces (`wrapFaces`), so a corner face also wraps to a diagonal
+generator; two generators never wrap to each other. A face's arm also reaches a conduit end or
 generator it points at, so a corner laid over a conduit end takes its power
 (owner report 2026-10-26). The arm toward
 the edge must be external. Live graph, saved segments (including diagonal

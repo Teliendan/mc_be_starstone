@@ -3,7 +3,7 @@
     "evidence": [
       {
         "path": "docs/DESIGN.md",
-        "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
+        "sha256": "f4cffc87ceb3791806ad91e742ec72f485b968079940e3f486cf4cf641e399b1"
       },
       {
         "path": "docs/SURVIVAL.md",
@@ -87,7 +87,7 @@
     "evidence": [
       {
         "path": "docs/DESIGN.md",
-        "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
+        "sha256": "f4cffc87ceb3791806ad91e742ec72f485b968079940e3f486cf4cf641e399b1"
       },
       {
         "path": "docs/SURVIVAL.md",
@@ -114,7 +114,7 @@
     "evidence": [
       {
         "path": "docs/DESIGN.md",
-        "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
+        "sha256": "f4cffc87ceb3791806ad91e742ec72f485b968079940e3f486cf4cf641e399b1"
       },
       {
         "path": "docs/SURVIVAL.md",
@@ -137,7 +137,7 @@
     "evidence": [
       {
         "path": "docs/DESIGN.md",
-        "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
+        "sha256": "f4cffc87ceb3791806ad91e742ec72f485b968079940e3f486cf4cf641e399b1"
       },
       {
         "path": "docs/SURVIVAL.md",
@@ -168,7 +168,7 @@
     "evidence": [
       {
         "path": "docs/DESIGN.md",
-        "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
+        "sha256": "f4cffc87ceb3791806ad91e742ec72f485b968079940e3f486cf4cf641e399b1"
       },
       {
         "path": "docs/SURVIVAL.md",
@@ -181,17 +181,21 @@
       {
         "path": "starstone_bp/blocks/generator.json",
         "sha256": "54de46e494a7078ad475c38716f38f437534fa461ca9360e4137f13d860e4e63"
+      },
+      {
+        "path": "starstone_bp/scripts/cornerTopology.js",
+        "sha256": "1d6e1469882da27f6b549a6272bbd4387eaa31979dc35c96ea76a2c95c48d52a"
       }
     ],
     "featureId": "starstone:generator",
     "id": "starstone:generator/use",
-    "text": "A power source that needs no fuel. A new generator starts switched on; use it to switch it off and on. Cables and parts touching any of its six faces connect to it, and while it is on, its whole network has power."
+    "text": "A power source that needs no fuel. A new generator starts switched on; use it to switch it off and on. Cables and parts touching any of its six faces connect to it, and so do parts around its outside edges, such as a cable on the side of the block it stands on. While it is on, its whole network has power."
   },
   {
     "evidence": [
       {
         "path": "docs/DESIGN.md",
-        "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
+        "sha256": "f4cffc87ceb3791806ad91e742ec72f485b968079940e3f486cf4cf641e399b1"
       },
       {
         "path": "docs/SURVIVAL.md",
@@ -233,7 +237,7 @@
     "evidence": [
       {
         "path": "docs/DESIGN.md",
-        "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
+        "sha256": "f4cffc87ceb3791806ad91e742ec72f485b968079940e3f486cf4cf641e399b1"
       },
       {
         "path": "docs/SURVIVAL.md",
@@ -260,7 +264,7 @@
     "evidence": [
       {
         "path": "docs/DESIGN.md",
-        "sha256": "b4f31ec55100b25b43fab7a6a549a9c0b9cd4a5fe9d164f8b148d6881e77f817"
+        "sha256": "f4cffc87ceb3791806ad91e742ec72f485b968079940e3f486cf4cf641e399b1"
       },
       {
         "path": "docs/SURVIVAL.md",
@@ -310,7 +314,7 @@
       },
       {
         "path": "starstone_bp/scripts/cornerTopology.js",
-        "sha256": "1c2eca2f2f60666ac4d257e8e914b164fdb7cf4497d27d9611a7dd6588b2194e"
+        "sha256": "1d6e1469882da27f6b549a6272bbd4387eaa31979dc35c96ea76a2c95c48d52a"
       }
     ],
     "featureId": "starstone:network",
@@ -364,7 +368,7 @@
       },
       {
         "path": "starstone_bp/scripts/cornerTopology.js",
-        "sha256": "1c2eca2f2f60666ac4d257e8e914b164fdb7cf4497d27d9611a7dd6588b2194e"
+        "sha256": "1d6e1469882da27f6b549a6272bbd4387eaa31979dc35c96ea76a2c95c48d52a"
       },
       {
         "path": "starstone_bp/scripts/diagnostics.js",

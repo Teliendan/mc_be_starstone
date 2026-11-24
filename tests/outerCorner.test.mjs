@@ -75,6 +75,32 @@ const broken=buildSegmentGraph([a]);
 assert.ok(broken.nodeToNetwork.get(`${f.dim.id}|15|1|0#main`).unresolvedBoundaries.size>0,
     'missing destination leaves a reconcilable corner boundary');
 
+// A generator wraps an outside edge like a lamp in its cell: generator on top of
+// a block, cable on that block's side (owner report 2026-11-24). Two diagonal
+// generators do not join.
+const g=fixture(); g.dim.id='test:generator-wrap';
+const wrapGen=g.put('starstone:generator',31,1,0);
+g.put('minecraft:stone',31,0,0);
+const sideCable=g.put('starstone:cable',32,0,0,{'minecraft:block_face':'east'});
+const otherGen=g.put('starstone:generator',30,0,0);
+assert.equal(computeCableMask(sideCable)&1,1,'side cable arm reaches the generator above its support');
+sideCable.setPermutation(sideCable.permutation.withState('starstone:connections',computeCableMask(sideCable)));
+const genWalkPromise=discoverNetwork(wrapGen);
+await drain();
+const genWalk=await genWalkPromise;
+assert.ok(genWalk.nodes.has(`${g.dim.id}|32|0|0#main`),'live graph wraps from generator to side cable');
+assert.ok(!genWalk.nodes.has(`${g.dim.id}|30|0|0#main`),'diagonal generators do not join');
+const genSeg=buildChunkSegments(g.dim.id,1,0,[{location:{x:31,y:1,z:0},descriptor:generator}]);
+const sideSeg=buildChunkSegments(g.dim.id,2,0,[{location:{x:32,y:0,z:0},descriptor:cable('east')}]);
+assert.ok(validateChunkSegments(genSeg) && validateChunkSegments(sideSeg),'generator diagonal boundary persists validly');
+const genGraph=buildSegmentGraph([genSeg,sideSeg]);
+assert.equal(genGraph.nodeToNetwork.get(`${g.dim.id}|31|1|0#main`),
+    genGraph.nodeToNetwork.get(`${g.dim.id}|32|0|0#main`),'saved segments wrap generator across chunk edge');
+assert.equal(genGraph.nodeToNetwork.get(`${g.dim.id}|32|0|0#main`).powered,true);
+const twinSeg=buildChunkSegments(g.dim.id,1,0,[{location:{x:31,y:1,z:0},descriptor:generator},
+    {location:{x:30,y:0,z:0},descriptor:generator}]);
+assert.equal(twinSeg.segments.length,2,'diagonal generators stay separate segments');
+
 // Same-cell inner turns cannot hold two different face states in this block
 // format; the helper must never invent an electrical edge for coincident cells.
 assert.equal(outerCornerContact(cable('up'),cable('west'),[0,0,0],[0,0,0],[0,0,0]),false);

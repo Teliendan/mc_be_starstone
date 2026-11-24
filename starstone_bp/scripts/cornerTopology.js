@@ -25,17 +25,24 @@ export function outerCornerContact(from, to, delta, fromPort, toPort) {
     return vecEquals(fromPort, b) && vecEquals(toPort, a);
 }
 
-// The surfaces a conductor can carry around an outside edge. Full blocks
-// (generator, conduit) have no mount face and never wrap.
+// A full-cube generator: a source with no mount face.
+const isGenerator = descriptor => descriptor?.kind === "source" && !descriptor.mountFace;
+
+// The surfaces a conductor can carry around an outside edge. A generator meets
+// a one-face device at every edge of its cube, as a lamp in its cell would
+// (owner report 2026-11-24). A conduit conducts only at its ends and never wraps.
 export function wrapFaces(descriptor) {
     if (descriptor?.kind === "inner-corner") return facesOfPair(descriptor.facePair) || [];
+    if (isGenerator(descriptor)) return FACE_LIST;
     return descriptor?.mountFace ? [descriptor.mountFace] : [];
 }
 
 // The faces joined when `from` and `to` (at `delta` from it) wrap one outside
 // edge, or undefined. An inner corner's arm toward that edge must be external:
-// an arm ending in another of its own supports cannot reach the edge.
+// an arm ending in another of its own supports cannot reach the edge. Two
+// diagonal generators only share an edge with no surface between them.
 export function outerWrap(from, to, delta) {
+    if (isGenerator(from) && isGenerator(to)) return undefined;
     const fromFaces = wrapFaces(from), toFaces = wrapFaces(to);
     for (const fromFace of fromFaces) for (const toFace of toFaces) {
         const expected = outerCornerOffset(fromFace, toFace);
